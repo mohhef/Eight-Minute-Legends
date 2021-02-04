@@ -11,19 +11,15 @@
 using namespace std;
 
 struct Continent {
-private:
     string *name;
-public:
     Continent(string name) {
         this -> name = new string(name);
     }
 };
 
 struct Region {
-private:
     string *name;
     Continent *continent;
-public:
     Region(string name, Continent *c){
         this->name = new string(name);
         this->continent = c;
@@ -31,6 +27,14 @@ public:
 };
 
 class Map {
+public:
+    Map();
+    // a vector that has a pair of region and all of its adjacent regions
+    vector< pair <Region*, vector<pair<Region*, bool>>>> *countries;
+
+    // a vector that has all the continents and its regions
+    vector< pair <Continent*, vector<Region*>>> *continents;
+
     void addRegion(Region *region);
     //use true if path is land, else false
     void addPath(Region *start, Region *destination,bool land);
