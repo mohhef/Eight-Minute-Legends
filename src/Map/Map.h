@@ -30,7 +30,7 @@ class Map {
 public:
     Map();
     // a vector that has a pair of region and all of its adjacent regions
-    vector< pair <Region*, vector<pair<Region*, bool>>>> *countries;
+    vector< pair <Region*, vector<pair<Region*, bool>>>> *regions;
 
     // a vector that has all the continents and its regions
     vector< pair <Continent*, vector<Region*>>> *continents;

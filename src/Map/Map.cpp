@@ -7,14 +7,14 @@
 #include <iomanip>
 
 Map::Map(){
-    countries = new vector< pair <Region*, vector<pair<Region*, bool>>>>;
+    regions = new vector< pair <Region*, vector<pair<Region*, bool>>>>;
     continents = new vector< pair <Continent*, vector<Region*>>>;
 }
 
 void Map::addRegion(Region *region){
 
     vector<pair<Region*, bool>> intiAdjacency;
-    countries -> push_back(make_pair(region,intiAdjacency));
+    regions -> push_back(make_pair(region,intiAdjacency));
     string regionContinent = *(region->continent->name);
 
     //if the continent exits then add the country to that continent
@@ -30,6 +30,19 @@ void Map::addRegion(Region *region){
     vector<Region*> oneRegion = {region};
     continents->push_back(make_pair(region->continent,oneRegion));
 
+}
 
+
+void Map::addPath(Region *start, Region *destination, bool land) {
+
+    for(int i = 0; i < (*regions).size(); i++){
+
+        if((*regions)[i].first == start){
+            (*regions)[i].second.push_back(make_pair(destination,land));
+        }
+        else if((*regions)[i].first == destination){
+            (*regions)[i].second.push_back(make_pair(start,land));
+        }
+    }
 
 }
