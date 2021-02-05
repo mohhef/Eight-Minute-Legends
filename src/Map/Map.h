@@ -38,6 +38,7 @@ public:
     void addRegion(Region *region);
     //use true if path is land, else false
     void addPath(Region *start, Region *destination,bool land);
+    void displayMap();
 };
 
 

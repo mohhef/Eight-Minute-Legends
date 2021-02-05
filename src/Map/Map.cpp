@@ -5,6 +5,7 @@
 #include "Map.h"
 #include <list>
 #include <iomanip>
+#include <iostream>
 
 Map::Map(){
     regions = new vector< pair <Region*, vector<pair<Region*, bool>>>>;
@@ -46,3 +47,21 @@ void Map::addPath(Region *start, Region *destination, bool land) {
     }
 
 }
+
+void Map::displayMap(){
+    printf ("\n%20s %s  \n\n","","********* Map Details *********");
+    for(int i = 0 ; i < (*regions).size(); i++){
+        string regionName = *((*regions)[i].first->name);
+        string continentName = *((*regions)[i].first->continent->name);
+        vector<pair<Region*, bool>> adjacentRegions = (*regions)[i].second;
+//        vector<string> adjacentRegionsNames;
+        printf("Region Name: %s %10s || Continent Name: %s %15s || Adjacent regions: %5s",
+               "",regionName.c_str(),"", continentName.c_str(),"");
+        for(int i=0 ; i<adjacentRegions.size(); i++){
+            string connectionType = (adjacentRegions[i].second ==1)? "Land":"Water";
+            cout << "{" <<*(adjacentRegions[i].first->name) << ": " << connectionType << "}" ;
+//            adjacentRegionsNames.push_back(*(adjacentRegions[i].first->name));
+        }
+        cout << endl;
+    }
+};
