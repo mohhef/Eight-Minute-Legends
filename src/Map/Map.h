@@ -14,6 +14,7 @@ struct Continent {
     string *name;
     Continent(string name) {
         this -> name = new string(name);
+
     }
 };
 
@@ -35,10 +36,16 @@ public:
     // a vector that has all the continents and its regions
     vector< pair <Continent*, vector<Region*>>> *continents;
 
+    vector<pair<Region *, bool>>* getNeighbourList(Region *region);
+
     void addRegion(Region *region);
+    void addContinent(Continent *continent);
     //use true if path is land, else false
     void addPath(Region *start, Region *destination,bool land);
     void displayMap();
+    bool isValid();
+    bool areRegionsConnected();
+    bool areContinentsConnected();
 };
 
 
