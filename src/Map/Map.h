@@ -44,8 +44,7 @@ public:
     void addPath(Region *start, Region *destination,bool land);
     void displayMap();
     bool isValid();
-    bool areRegionsConnected();
-    bool areContinentsConnected();
+    bool areContinentsAndRegionsConnected();
 };
 
 

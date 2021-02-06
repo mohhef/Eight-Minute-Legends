@@ -46,50 +46,11 @@ void Map::addPath(Region *start, Region *destination, bool land) {
 }
 
 bool Map::isValid() {
-    bool valid = areRegionsConnected() && areContinentsConnected();
+    bool valid = areContinentsAndRegionsConnected();
     return valid;
 }
 
-bool Map::areRegionsConnected() {
-    bool isConnected = true;
-    // initialize all regions to not visited (false)
-    auto visitedRegions =  new vector<pair<Region *, bool>>;
-    for (auto region: *(regions)) {
-        visitedRegions->push_back(make_pair(region.first,false));
-    }
-
-    //uses a stack to iterate through the graph
-    stack<Region*> stack;
-    stack.push((*regions)[0].first);
-    (*visitedRegions)[0].second = true;
-
-    while(!stack.empty()){
-        Region *region = stack.top();
-        stack.pop();
-
-        vector<pair<Region*, bool>> *neighbourList = getNeighbourList(region);
-        for(pair<Region*, bool> region: *neighbourList){
-            for(int i=0; i<visitedRegions->size(); i++){
-                if((*visitedRegions)[i].first == region.first && !(*visitedRegions)[i].second){
-                    stack.push(region.first);
-                    (*visitedRegions)[i].second = 1;
-                    break;
-                }
-            }
-        }
-    }
-    //Check if all regions are visited
-    for(pair<Region *, bool> visitedRegion: *visitedRegions){
-        if(!visitedRegion.second){
-            isConnected= false;
-        }
-    }
-//    cout << isConnected << endl;
-    return isConnected;
-}
-
-bool Map::areContinentsConnected(){
-    bool isConnected = true;
+bool Map::areContinentsAndRegionsConnected(){
     // initialize all regions to not visited (false)
     auto visitedRegions =  new vector<pair<Region *, bool>>;
     for (auto region: *(regions)) {
@@ -125,13 +86,21 @@ bool Map::areContinentsConnected(){
         }
     }
     //Check if all regions are visited
+    bool isContinentsConnected = true;
     for(pair<Continent *, bool> visitedContinent: *visitedContinents){
         if(!visitedContinent.second){
-            isConnected= false;
+            isContinentsConnected= false;
         }
     }
-    cout << isConnected << endl;
-    return isConnected;
+    bool isRegionsConnected = true;
+    for(pair<Region *, bool> visitedRegion: *visitedRegions){
+        if(!visitedRegion.second){
+            isRegionsConnected= false;
+        }
+    }
+    cout << "Continents are " << ((isContinentsConnected)?"connected":"not connected") << endl;
+    cout << "Regions are " << ((isRegionsConnected)?"connected":"not connected") << endl;
+    return isContinentsConnected && isRegionsConnected;
 }
 
 vector<pair<Region *, bool>>* Map::getNeighbourList(Region *region){
@@ -144,7 +113,6 @@ vector<pair<Region *, bool>>* Map::getNeighbourList(Region *region){
     }
     return neighbourList;
 }
-
 
 void Map::displayMap() {
     printf("\n%20s %s  \n\n", "", "********* Map Details *********");
