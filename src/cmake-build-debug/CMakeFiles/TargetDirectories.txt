@@ -1,3 +1,0 @@
-D:/Courses/Winter 2021/COMP 345/Project/Eight-Minute-Legends/src/cmake-build-debug/CMakeFiles/src.dir
-D:/Courses/Winter 2021/COMP 345/Project/Eight-Minute-Legends/src/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/Courses/Winter 2021/COMP 345/Project/Eight-Minute-Legends/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir
