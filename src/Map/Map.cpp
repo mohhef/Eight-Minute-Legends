@@ -70,14 +70,12 @@ bool Map::areRegionsConnected() {
         vector<pair<Region*, bool>> *neighbourList = getNeighbourList(region);
         for(pair<Region*, bool> region: *neighbourList){
             for(int i=0; i<visitedRegions->size(); i++){
-//            for(pair<Region *, bool> visitedRegion: visitedRegions){
                 if((*visitedRegions)[i].first == region.first && !(*visitedRegions)[i].second){
                     stack.push(region.first);
                     (*visitedRegions)[i].second = 1;
                     break;
                 }
             }
-//            }
         }
     }
     //Check if all regions are visited
