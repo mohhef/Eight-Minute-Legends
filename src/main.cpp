@@ -4,21 +4,20 @@
 int main() {
     Map *map = new Map();
 
-    auto *north = new Continent("North America");
+    auto *na = new Continent("North America");
     auto *europe = new Continent("Europe");
 
-    map->addContinent(north);
-    map->addContinent(europe);
+    map->addContinent(na);
+//    map->addContinent(europe);
 
-    auto *usa = new Region("USA", north);
-    auto *can = new Region("Canada", north);
-//    auto *portugal = new Region("Portugal", europe);
-//    auto *spain = new Region("Spain", europe);
-//    auto *italy = new Region("Italy", europe);
+    auto *usa = new Region("USA", na);
+    auto *can = new Region("Canada", na);
+//    auto *germany = new Region("Germany", europe);
+//    auto *france = new Region("France", europe);
 
     map->addRegion(usa);
     map->addRegion(can);
-//    map->addRegion(portugal);
+//    map->addRegion(germany);
 //    map->addRegion(spain);
 //    map->addRegion(italy);
 
@@ -26,9 +25,8 @@ int main() {
     map->displayMap();
 
     map->addPath(usa, can, 1);
-//    map->addPath(can, portugal,1);
-//    map->addPath(spain, portugal,0);
-//    map->addPath(spain, italy,1);
+//    map->addPath(can, germany,0);
+//    map->addPath(germany, france,1);
 
     // display with countries and adjacencies
     map->displayMap();
