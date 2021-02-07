@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Map/Map.h"
+#include "Map.h"
 
 int main() {
     Map *map = new Map();
