@@ -2,19 +2,22 @@
 #include "Cards.h"
 
 int main(){
-    Cards *testCard = new Cards("FLYING", "PLACE_ARMIES,4", "Dire Eye");
-    Cards *testCard2 = new Cards(*testCard);
+    Deck *deck = new Deck();
+    Hand *myHand = new Hand();
 
-    cout << *testCard << endl;
-    cout << *testCard2 << endl;
+    cout << "Top Board: " << endl;
+    deck->showTopBoard();
 
-    string test = "Changed";
-    testCard->setAbility(test);
+    myHand->exchange(2, *deck);
 
-    cout << *testCard << endl;
-    cout << *testCard2 << endl;
+    cout << "\nMy Hand after exchange: " << endl;
+    cout << *myHand << endl;
+    
+    cout << "\nTop Board after exchange: " << endl;
+    deck->showTopBoard();
 
-    delete testCard;
-    delete testCard2;
+    delete deck;
+    delete myHand;
+    
     return 0;
 }

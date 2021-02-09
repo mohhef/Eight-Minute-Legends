@@ -19,12 +19,12 @@
         {
             "name": "Dire Eye",
             "ability": "FLYING",
-            "action": "PLACE_ARMIES,4"
+            "action": "PLACE_ARMIES|4"
         },
         {
             "name": "Noble Unicorn",
             "ability": "MOVE",
-            "action": "MOVE_ARMIES_AND_PLACE_ARMIES,4,1"
+            "action": "MOVE_ARMIES_AND_PLACE_ARMIES|4|1"
         },
         {
             "name": "Stronghold",
@@ -33,13 +33,13 @@
         },
         {
             "name": "Ancient Tree Spirit",
-            "ability": "ELIXIR,3",
-            "action": "PLACE_ARMIES,4"
+            "ability": "ELIXIR|3",
+            "action": "PLACE_ARMIES|4"
         },
         {
             "name": "Cursed Banshee",
-            "ability": "ELIXIR,2",
-            "action": "MOVE_ARMIES,6"
+            "ability": "ELIXIR|2",
+            "action": "MOVE_ARMIES|6"
         },
         {
             "name": "Cursed Tower",
@@ -49,102 +49,102 @@
         {
             "name": "Dire Ogre",
             "ability": "VP_PER_3_COINS",
-            "action": "MOVE_ARMIES,2"
+            "action": "MOVE_ARMIES|2"
         },
         {
             "name": "Mountain Treasury",
-            "ability": "ELIXIR_AND_COIN,1,2",
-            "action": "MOVE_ARMIES,3"
+            "ability": "ELIXIR_AND_COIN|1|2",
+            "action": "MOVE_ARMIES|3"
         },
         {
             "name": "Arcane Manticore",
             "ability": "MOVE",
-            "action": "PLACE_ARMIES_AND_DESTROY_ARMIES,4,1",
+            "action": "PLACE_ARMIES_AND_DESTROY_ARMIES|4|1",
             "number": 3
         },
         {
             "name": "Lake",
             "ability": "VP_PER_FOREST",
-            "action": "PLACE_ARMIES_OR_MOVE_ARMIES,2,3"
+            "action": "PLACE_ARMIES_OR_MOVE_ARMIES|2|3"
         },
         {
             "name": "Ancient Sage",
             "ability": "VP_PER_ANCIENT",
-            "action": "MOVE_ARMIES,3"
+            "action": "MOVE_ARMIES|3"
         },
         {
             "name": "Cursed King",
-            "ability": "ELIXIR,1",
-            "action": "PLACE_ARMIES_OR_MOVE_ARMIES,3,4"
+            "ability": "ELIXIR|1",
+            "action": "PLACE_ARMIES_OR_MOVE_ARMIES|3|4"
         },
         {
             "name": "Night Hydra",
-            "ability": "PLACE,1",
-            "action": "MOVE_ARMIES_AND_DESTROY_ARMIES,5,1"
+            "ability": "PLACE|1",
+            "action": "MOVE_ARMIES_AND_DESTROY_ARMIES|5|1"
         },
         {
             "name": "Dire Goblin",
-            "ability": "ELIXIR,1",
-            "action": "MOVE_ARMIES,5"
+            "ability": "ELIXIR|1",
+            "action": "MOVE_ARMIES|5"
         },
         {
             "name": "Mountain Dwarf",
             "ability": "VP_MOUNTAIN",
-            "action": "PLACE_ARMIES_AND_DESTROY_ARMIES,2,1",
+            "action": "PLACE_ARMIES_AND_DESTROY_ARMIES|2|1",
             "number": 3
         },
         {
             "name": "Arcane Sphinx",
             "ability": "FLYING",
-            "action": "PLACE_ARMIES_OR_MOVE_ARMIES,3,4",
+            "action": "PLACE_ARMIES_OR_MOVE_ARMIES|3|4",
             "number": 3
         },
         {
             "name": "Forest Pixie",
             "ability": "MOVE",
-            "action": "MOVE_ARMIES,4"
+            "action": "MOVE_ARMIES|4"
         },
         {
             "name": "Ancient Woods",
             "ability": "PLACE",
-            "action": "BUILD_CITY_AND_PLACE_ARMIES,1"
+            "action": "BUILD_CITY_AND_PLACE_ARMIES|1"
         },
         {
             "name": "Cursed Gargoyles",
             "ability": "FLYING",
-            "action": "MOVE_ARMIES,5"
+            "action": "MOVE_ARMIES|5"
         },
         {
             "name": "Graveyard",
             "ability": "VP_PER_CURSED",
-            "action": "PLACE_ARMIES,2"
+            "action": "PLACE_ARMIES|2"
         },
         {
             "name": "Noble Hills",
             "ability": "VP_NOBLE",
-            "action": "PLACE_ARMIES,3"
+            "action": "PLACE_ARMIES|3"
         },
         {
             "name": "Castle",
-            "ability": "ELIXIR,1",
-            "action": "PLACE_ARMIES_OR_BUILD_CITY,3",
+            "ability": "ELIXIR|1",
+            "action": "PLACE_ARMIES_OR_BUILD_CITY|3",
             "number": 4
         },
         {
             "name": "Arcane Temple",
             "ability": "VP_PER_ARCANE",
-            "action": "MOVE_ARMIES,3",
+            "action": "MOVE_ARMIES|3",
             "number": 3
         },
         {
             "name": "Forest Elf",
             "ability": "PLACE",
-            "action": "PLACE_ARMIES_OR_MOVE_ARMIES,3,2"
+            "action": "PLACE_ARMIES_OR_MOVE_ARMIES|3|2"
         },
         {
             "name": "Dire Dragon",
             "ability": "FLYING",
-            "action": "PLACE_ARMIES_AND_DESTROY_ARMIES,3,1"
+            "action": "PLACE_ARMIES_AND_DESTROY_ARMIES|3|1"
         },
         {
             "name": "Cursed Mausoleum",
@@ -159,28 +159,28 @@
         {
             "name": "Noble Knight",
             "ability": "MOVE",
-            "action": "PLACE_ARMIES_AND_DESTROY_ARMIES,4,1"
+            "action": "PLACE_ARMIES_AND_DESTROY_ARMIES|4|1"
         },
         {
             "name": "Castle",
-            "ability": "ELIXIR,1",
-            "action": "MOVE_ARMIES_AND_BUILD_CITY,3",
+            "ability": "ELIXIR|1",
+            "action": "MOVE_ARMIES_AND_BUILD_CITY|3",
             "number": 4
         },
         {
             "name": "Ancient Phoenix",
             "ability": "FLYING",
-            "action": "MOVE_ARMIES,5"
+            "action": "MOVE_ARMIES|5"
         },
         {
             "name": "Forest Gnome",
-            "ability": "ELIXIR,3",
-            "action": "MOVE_ARMIES,2"
+            "ability": "ELIXIR|3",
+            "action": "MOVE_ARMIES|2"
         },
         {
             "name": "Dire Giant",
             "ability": "IMMUNE",
-            "action": "PLACE_ARMIES_AND_DESTROY_ARMIES,3,1"
+            "action": "PLACE_ARMIES_AND_DESTROY_ARMIES|3|1"
         },
         {
             "name": "Forest Tree Town",
@@ -190,7 +190,7 @@
         {
             "name": "Night Wizard",
             "ability": "VP_PER_NIGHT",
-            "action": "MOVE_ARMIES_AND_DESTROY_ARMIES,3,1"
+            "action": "MOVE_ARMIES_AND_DESTROY_ARMIES|3|1"
         }
     ]
 }
