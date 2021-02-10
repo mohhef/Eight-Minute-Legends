@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Map/Map.h"
+#include "Map.h"
 
 int main() {
     Map *map = new Map();
@@ -13,6 +13,7 @@ int main() {
     auto *usa = new Region("USA", na);
     auto *can = new Region("Canada", na);
     auto *germany = new Region("Germany", europe);
+    auto *usa2 = new Region("USA", europe);
     auto *france = new Region("France", europe);
 
     map->addRegion(usa);
@@ -21,11 +22,11 @@ int main() {
     map->addRegion(france);
 
     map->displayMap();
-
     map->addPath(usa, can, 1);
     map->addPath(can, germany,0);
     map->addPath(germany, france,1);
-
     map->displayMap();
+
+
     map->isValid();
 }

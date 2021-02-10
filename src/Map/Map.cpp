@@ -5,10 +5,16 @@
 #include <list>
 #include <stack>
 #include <iostream>
+#include <unordered_map>
 
 Map::Map() {
     regions = new vector<pair<Region *, vector<pair<Region *, bool>>>>;
     continents = new vector<pair<Continent *, vector<Region *>>>;
+}
+
+Map::~Map(){
+    delete regions;
+    delete continents;
 }
 
 void Map::addContinent(Continent *continent) {
@@ -34,9 +40,7 @@ void Map::addRegion(Region *region) {
 }
 
 void Map::addPath(Region *start, Region *destination, bool land) {
-
     for (int i = 0; i < (*regions).size(); i++) {
-
         if ((*regions)[i].first == start) {
             (*regions)[i].second.push_back(make_pair(destination, land));
         } else if ((*regions)[i].first == destination) {
@@ -47,7 +51,27 @@ void Map::addPath(Region *start, Region *destination, bool land) {
 
 bool Map::isValid() {
     bool valid = areContinentsAndRegionsConnected();
-    return valid;
+    bool valid2 = eachRegionBelongsToOneContinent();
+    return valid && valid2;
+}
+
+bool Map::eachRegionBelongsToOneContinent() {
+    bool eachCountryBelongsToOneRegion = true;
+    unordered_map<string, bool> uMap;
+    for (int i = 0; i < (*regions).size(); i++) {
+        string regionName = *((*regions)[i].first->name);
+        if(uMap.find(regionName)==uMap.end()){
+            uMap[regionName] = true;
+        } else{
+            uMap[regionName] = false;
+        }
+    }
+    for (auto it = uMap.begin(); it != uMap.end(); ++it){
+        if (it->second == false){
+         cout << it->first << " has been added twice" << endl;
+        }
+    }
+    return eachCountryBelongsToOneRegion;
 }
 
 bool Map::areContinentsAndRegionsConnected(){
@@ -84,6 +108,7 @@ bool Map::areContinentsAndRegionsConnected(){
                 }
             }
         }
+        delete neighbourList;
     }
     //Check if all regions are visited
     bool isContinentsConnected = true;
