@@ -13,6 +13,7 @@ int main() {
     auto *usa = new Region("USA", na);
     auto *can = new Region("Canada", na);
     auto *germany = new Region("Germany", europe);
+    auto *usa2 = new Region("USA", europe);
     auto *france = new Region("France", europe);
 
     map->addRegion(usa);
@@ -28,4 +29,5 @@ int main() {
 
     map->displayMap();
     map->isValid();
+    map->eachRegionBelongsToOneContinent();
 }

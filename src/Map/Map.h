@@ -45,6 +45,7 @@ public:
     void displayMap();
     bool isValid();
     bool areContinentsAndRegionsConnected();
+    bool eachRegionBelongsToOneContinent();
 };
 
 

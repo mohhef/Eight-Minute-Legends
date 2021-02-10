@@ -5,6 +5,7 @@
 #include <list>
 #include <stack>
 #include <iostream>
+#include <unordered_map>
 
 Map::Map() {
     regions = new vector<pair<Region *, vector<pair<Region *, bool>>>>;
@@ -48,6 +49,25 @@ void Map::addPath(Region *start, Region *destination, bool land) {
 bool Map::isValid() {
     bool valid = areContinentsAndRegionsConnected();
     return valid;
+}
+
+bool Map::eachRegionBelongsToOneContinent() {
+    bool eachCountryBelongsToOneRegion = true;
+    unordered_map<string, bool> uMap;
+    for (int i = 0; i < (*regions).size(); i++) {
+        string regionName = *((*regions)[i].first->name);
+        if(uMap.find(regionName)==uMap.end()){
+            uMap[regionName] = true;
+        } else{
+            uMap[regionName] = false;
+        }
+    }
+    for (auto it = uMap.begin(); it != uMap.end(); ++it){
+        if (it->second == false){
+         cout << it->first << " has been added twice" << endl;
+        }
+    }
+    return eachCountryBelongsToOneRegion;
 }
 
 bool Map::areContinentsAndRegionsConnected(){
