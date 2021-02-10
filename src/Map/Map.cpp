@@ -48,7 +48,8 @@ void Map::addPath(Region *start, Region *destination, bool land) {
 
 bool Map::isValid() {
     bool valid = areContinentsAndRegionsConnected();
-    return valid;
+    bool valid2 = eachRegionBelongsToOneContinent();
+    return valid && valid2;
 }
 
 bool Map::eachRegionBelongsToOneContinent() {
