@@ -12,6 +12,11 @@ Map::Map() {
     continents = new vector<pair<Continent *, vector<Region *>>>;
 }
 
+Map::~Map(){
+    delete regions;
+    delete continents;
+}
+
 void Map::addContinent(Continent *continent) {
     continents -> push_back(make_pair(continent,vector<Region*>()));
 }
@@ -35,9 +40,7 @@ void Map::addRegion(Region *region) {
 }
 
 void Map::addPath(Region *start, Region *destination, bool land) {
-
     for (int i = 0; i < (*regions).size(); i++) {
-
         if ((*regions)[i].first == start) {
             (*regions)[i].second.push_back(make_pair(destination, land));
         } else if ((*regions)[i].first == destination) {
@@ -105,6 +108,7 @@ bool Map::areContinentsAndRegionsConnected(){
                 }
             }
         }
+        delete neighbourList;
     }
     //Check if all regions are visited
     bool isContinentsConnected = true;

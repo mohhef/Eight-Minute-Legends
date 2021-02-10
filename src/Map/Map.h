@@ -2,8 +2,7 @@
 // Created by Mohamed Ashraf on 2021-02-04.
 //
 
-#ifndef SRC_MAP_H
-#define SRC_MAP_H
+#pragma once
 
 #include <vector>
 #include <string>
@@ -14,7 +13,9 @@ struct Continent {
     string *name;
     Continent(string name) {
         this -> name = new string(name);
-
+    }
+    ~Continent() {
+        delete name;
     }
 };
 
@@ -25,11 +26,16 @@ struct Region {
         this->name = new string(name);
         this->continent = c;
     }
+    ~Region() {
+        delete name;
+        delete continent;
+    }
 };
 
 class Map {
 public:
     Map();
+    ~Map();
     // a vector that has a pair of region and all of its adjacent regions
     vector< pair <Region*, vector<pair<Region*, bool>>>> *regions;
 
@@ -47,6 +53,3 @@ public:
     bool areContinentsAndRegionsConnected();
     bool eachRegionBelongsToOneContinent();
 };
-
-
-#endif //SRC_MAP_H
