@@ -21,6 +21,7 @@ int main() {
     map->addRegion(germany);
     map->addRegion(france);
 
+
     map->displayMap();
     map->addPath(usa, can, 1);
     map->addPath(can, germany,0);

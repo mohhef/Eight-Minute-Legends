@@ -6,19 +6,20 @@
 #include <stack>
 #include <iostream>
 #include <unordered_map>
+#include <algorithm>
 
 Map::Map() {
     regions = new vector<pair<Region *, vector<pair<Region *, bool>>>>;
     continents = new vector<pair<Continent *, vector<Region *>>>;
 }
 
-Map::~Map(){
+Map::~Map() {
     delete regions;
     delete continents;
 }
 
 void Map::addContinent(Continent *continent) {
-    continents -> push_back(make_pair(continent,vector<Region*>()));
+    continents->push_back(make_pair(continent, vector<Region *>()));
 }
 
 void Map::addRegion(Region *region) {
@@ -50,9 +51,10 @@ void Map::addPath(Region *start, Region *destination, bool land) {
 }
 
 bool Map::isValid() {
-    bool valid = areContinentsAndRegionsConnected();
-    bool valid2 = eachRegionBelongsToOneContinent();
-    return valid && valid2;
+    bool valid1 = areRegionsConnected();
+    bool valid2 = areContinentsConnected();
+    bool valid3 = eachRegionBelongsToOneContinent();
+    return valid1 && valid2 && valid3;
 }
 
 bool Map::eachRegionBelongsToOneContinent() {
@@ -60,78 +62,132 @@ bool Map::eachRegionBelongsToOneContinent() {
     unordered_map<string, bool> uMap;
     for (int i = 0; i < (*regions).size(); i++) {
         string regionName = *((*regions)[i].first->name);
-        if(uMap.find(regionName)==uMap.end()){
+        if (uMap.find(regionName) == uMap.end()) {
             uMap[regionName] = true;
-        } else{
+        } else {
             uMap[regionName] = false;
         }
     }
-    for (auto it = uMap.begin(); it != uMap.end(); ++it){
-        if (it->second == false){
-         cout << it->first << " has been added twice" << endl;
+    for (auto it = uMap.begin(); it != uMap.end(); ++it) {
+        if (it->second == false) {
+            cout << it->first << " has been added more than once" << endl;
         }
     }
     return eachCountryBelongsToOneRegion;
 }
 
-bool Map::areContinentsAndRegionsConnected(){
-    // initialize all regions to not visited (false)
-    auto visitedRegions =  new vector<pair<Region *, bool>>;
-    for (auto region: *(regions)) {
-        visitedRegions->push_back(make_pair(region.first,false));
-    }
+bool Map::areContinentsConnected() {
+
     auto visitedContinents = new vector<pair<Continent *, bool>>;
     for (auto continent: *(continents)) {
-        visitedContinents->push_back(make_pair(continent.first,false));
+        visitedContinents->push_back(make_pair(continent.first, false));
     }
+
+    // initialize all regions to not visited (false)
+    auto visitedRegions = new vector<pair<Region *, bool>>;
+    for (auto region: *(regions)) {
+        visitedRegions->push_back(make_pair(region.first, false));
+    }
+
+    stack<Region *> stack;
+    vector<Region *> continentRegions = (*continents)[0].second;
+    (*visitedContinents)[0].second = true;
+    for (int i = 0; i < continentRegions.size(); i++) {
+        stack.push(continentRegions[i]);
+        for (int i = 0; i < visitedRegions->size(); i++) {
+            if ((*visitedRegions)[i].first == continentRegions[i] && !(*visitedRegions)[i].second) {
+                stack.push(continentRegions[i]);
+                (*visitedRegions)[i].second = true;
+                break;
+            }
+        }
+    }
+
+    while (!stack.empty()) {
+        Region *region = stack.top();
+        stack.pop();
+        for (int i = 0; i < visitedRegions->size(); i++) {
+            if ((*visitedRegions)[i].first == region && !(*visitedRegions)[i].second) {
+                stack.push(region);
+                (*visitedRegions)[i].second = true;
+                break;
+            }
+        }
+        vector<pair<Region *, bool>> *neighbourList = getNeighbourList(region);
+        for (pair<Region *, bool> region: *neighbourList) {
+            for (int i = 0; i < visitedRegions->size(); i++) {
+                if ((*visitedRegions)[i].first == region.first && !(*visitedRegions)[i].second) {
+                    for (int i = 0; i < visitedContinents->size(); i++) {
+                        if ((*visitedContinents)[i].first == region.first->continent &&
+                            !(*visitedContinents)[i].second) {
+                            (*visitedContinents)[i].second = true;
+                            break;
+                        }
+                    }
+                    stack.push(region.first);
+                    (*visitedRegions)[i].second = true;
+                    break;
+                }
+            }
+        }
+    }
+    //Check if all continents are visited
+    bool isContinentsConnected = true;
+    for (pair<Continent *, bool> visitedContinent: *visitedContinents) {
+        if (!visitedContinent.second) {
+            isContinentsConnected = false;
+        }
+    }
+    cout << "Continents are " << ((isContinentsConnected) ? "connected" : "not connected") << endl;
+    delete visitedContinents;
+    delete visitedRegions;
+    return isContinentsConnected;
+}
+
+bool Map::areRegionsConnected() {
+    // initialize all regions to not visited (false)
+    auto visitedRegions = new vector<pair<Region *, bool>>;
+    for (auto region: *(regions)) {
+        visitedRegions->push_back(make_pair(region.first, false));
+    }
+
     //uses a stack to iterate through the graph
-    stack<Region*> stack;
+    stack<Region *> stack;
     stack.push((*regions)[0].first);
     (*visitedRegions)[0].second = true;
 
-    while(!stack.empty()){
+    while (!stack.empty()) {
         Region *region = stack.top();
         stack.pop();
-        for(int i=0; i<visitedContinents->size(); i++){
-            if((*visitedContinents)[i].first == region->continent){
-                (*visitedContinents)[i].second = 1;
 
-            }
-        }
-        vector<pair<Region*, bool>> *neighbourList = getNeighbourList(region);
-        for(pair<Region*, bool> region: *neighbourList){
-            for(int i=0; i<visitedRegions->size(); i++){
-                if((*visitedRegions)[i].first == region.first && !(*visitedRegions)[i].second){
+        vector<pair<Region *, bool>> *neighbourList = getNeighbourList(region);
+        for (pair<Region *, bool> region: *neighbourList) {
+            for (int i = 0; i < visitedRegions->size(); i++) {
+                if ((*visitedRegions)[i].first == region.first && !(*visitedRegions)[i].second) {
                     stack.push(region.first);
-                    (*visitedRegions)[i].second = 1;
+                    (*visitedRegions)[i].second = true;
                     break;
                 }
             }
         }
         delete neighbourList;
     }
-    //Check if all regions are visited
-    bool isContinentsConnected = true;
-    for(pair<Continent *, bool> visitedContinent: *visitedContinents){
-        if(!visitedContinent.second){
-            isContinentsConnected= false;
-        }
-    }
+
     bool isRegionsConnected = true;
-    for(pair<Region *, bool> visitedRegion: *visitedRegions){
-        if(!visitedRegion.second){
-            isRegionsConnected= false;
+    for (pair<Region *, bool> visitedRegion: *visitedRegions) {
+        if (!visitedRegion.second) {
+            isRegionsConnected = false;
         }
     }
-    cout << "Continents are " << ((isContinentsConnected)?"connected":"not connected") << endl;
-    cout << "Regions are " << ((isRegionsConnected)?"connected":"not connected") << endl;
-    return isContinentsConnected && isRegionsConnected;
+    delete visitedRegions;
+    cout << "Regions are " << ((isRegionsConnected) ? "connected" : "not connected") << endl;
+    return isRegionsConnected;
 }
 
-vector<pair<Region *, bool>>* Map::getNeighbourList(Region *region){
+vector<pair<Region *, bool>> *Map::getNeighbourList(Region *region) {
     auto *neighbourList = new vector<pair<Region *, bool>>;
     for (int i = 0; i < regions->size(); i++) {
-        if((*regions)[i].first == region){
+        if ((*regions)[i].first == region) {
             *neighbourList = (*regions)[i].second;
             break;
         }

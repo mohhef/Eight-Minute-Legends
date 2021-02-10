@@ -41,7 +41,7 @@ public:
 
     // a vector that has all the continents and its regions
     vector< pair <Continent*, vector<Region*>>> *continents;
-
+    vector<Continent*> *getContinentList(Continent *continent);
     vector<pair<Region *, bool>>* getNeighbourList(Region *region);
 
     void addRegion(Region *region);
@@ -50,6 +50,7 @@ public:
     void addPath(Region *start, Region *destination,bool land);
     void displayMap();
     bool isValid();
-    bool areContinentsAndRegionsConnected();
+    bool areRegionsConnected();
+    bool areContinentsConnected();
     bool eachRegionBelongsToOneContinent();
 };
