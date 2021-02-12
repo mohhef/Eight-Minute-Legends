@@ -16,8 +16,8 @@ int main() {
     auto *usa2 = new Region("USA", europe);
     auto *france = new Region("France", europe);
 
-    map->addRegion(usa,true);
-    map->addRegion(can);
+    map->addRegion(usa);
+    map->addRegion(can,true);
     map->addRegion(germany);
     map->addRegion(france);
 
