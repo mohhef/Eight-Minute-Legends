@@ -11,6 +11,7 @@
 Map::Map() {
     regions = new vector<pair<Region *, vector<pair<Region *, bool>>>>;
     continents = new vector<pair<Continent *, vector<Region *>>>;
+    startingRegion = nullptr;
 }
 
 Map::~Map() {
@@ -22,7 +23,11 @@ void Map::addContinent(Continent *continent) {
     continents->push_back(make_pair(continent, vector<Region *>()));
 }
 
-void Map::addRegion(Region *region) {
+//starting region is false by default, if want to set starting set true
+void Map::addRegion(Region *region, bool setStartingRegion) {
+    if (setStartingRegion) {
+        startingRegion = region;
+    }
     vector<pair<Region *, bool>> intiAdjacency;
     regions->push_back(make_pair(region, intiAdjacency));
     string regionContinent = *(region->continent->name);
@@ -35,9 +40,6 @@ void Map::addRegion(Region *region) {
             return;
         }
     }
-    // if the continent doesnt exist create the continent and add it
-//    vector<Region *> oneRegion = {region};
-//    continents->push_back(make_pair(region->continent, oneRegion));
 }
 
 void Map::addPath(Region *start, Region *destination, bool land) {
