@@ -52,6 +52,24 @@ void Map::addPath(Region *start, Region *destination, bool land) {
     }
 }
 
+// checks if two regions are adjacent: 1 = land, 0 = water, -1 not adjacent
+int Map::isAdjacent(Region* start, Region* end){
+    for(int i=0; i<regions->size(); i++){
+        if((*regions)[i].first == start){
+            vector<pair<Region*, bool>> adjacentRegions = (*regions)[i].second;
+            for(i=0; i<adjacentRegions.size(); i++){
+                if(adjacentRegions[i].first == end && adjacentRegions[i].second == 1){
+                    return 1;
+                }
+                if (adjacentRegions[i].first == end && adjacentRegions[i].second == 0){
+                    return 0;
+                }
+            }
+        }
+    }
+    return -1;
+}
+
 bool Map::isValid() {
     bool valid1 = areRegionsConnected();
     bool valid2 = areContinentsConnected();

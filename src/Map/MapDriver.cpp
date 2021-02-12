@@ -26,8 +26,7 @@ int main() {
     map->addPath(usa, can, 1);
     map->addPath(can, germany,0);
     map->addPath(germany, france,1);
+
     map->displayMap();
-
-
     map->isValid();
 }

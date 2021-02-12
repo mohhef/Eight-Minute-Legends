@@ -49,6 +49,7 @@ public:
     void addPath(Region *start, Region *destination,bool land);
     void displayMap();
     bool isValid();
+    int isAdjacent(Region* start, Region* end);
     bool areRegionsConnected();
     bool areContinentsConnected();
     bool eachRegionBelongsToOneContinent();
