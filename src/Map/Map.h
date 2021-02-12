@@ -38,13 +38,12 @@ public:
     ~Map();
     // a vector that has a pair of region and all of its adjacent regions
     vector< pair <Region*, vector<pair<Region*, bool>>>> *regions;
-
     // a vector that has all the continents and its regions
     vector< pair <Continent*, vector<Region*>>> *continents;
-    vector<Continent*> *getContinentList(Continent *continent);
     vector<pair<Region *, bool>>* getNeighbourList(Region *region);
+    Region *startingRegion;
 
-    void addRegion(Region *region);
+    void addRegion(Region *region, bool setStartingRegion=false);
     void addContinent(Continent *continent);
     //use true if path is land, else false
     void addPath(Region *start, Region *destination,bool land);
