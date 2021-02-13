@@ -65,15 +65,16 @@ bool Player::PlaceNewArmies(int armies_num, Region* region) {
     return false;
   }
   pair<Region*, int>* cities_in_region = GetCitiesInRegion(region);
-  if (cities_in_region->second <= 0) {
+  if (cities_in_region->second > 0 || region == map->startingRegion) {
+    pair<Region*, int>* armies_in_region = GetArmiesInRegion(region);
+    armies_in_region->second += armies_num;
+    cout << *name << " has placed " << armies_num << " new armies in " << *region->name
+         << "." << endl;
+    return true;
+  } else {
     cout << "Unable to place armies in a region where player has no city." << endl;
     return false;
   }
-  pair<Region*, int>* armies_in_region = GetArmiesInRegion(region);
-  armies_in_region->second += armies_num;
-  cout << *name << " has placed " << armies_num << " new armies in " << *region->name
-       << "." << endl;
-  return true;
 }
 
 bool Player::BuildCity(Region* region) {
