@@ -20,6 +20,40 @@ Map::~Map() {
     delete startingRegion;
 }
 
+Map &Map::operator = (const Map &rhs){
+    if (this != &rhs) {
+        this->~Map();
+        new (this) Map(rhs);
+    }
+    return *this;
+}
+
+Map::Map(const Map &obj) {
+    startingRegion = new Region(*(obj.startingRegion));
+    regions = new vector<pair<Region *, vector<pair<Region *, bool>>>>;
+    continents = new vector<pair<Continent *, vector<Region *>>>;
+
+    for (int i = 0; i < obj.regions->size(); i++) {
+        auto *region = new Region(*((*obj.regions)[i].first));
+        vector<pair<Region *, bool>> intiAdjacency;
+        regions->push_back(make_pair(region, intiAdjacency));
+        for (int j = 0; j < (*obj.regions)[i].second.size(); j++) {
+            auto *adjacent = new Region(*((*obj.regions)[i].second[j].first));
+            bool type = (*obj.regions)[i].second[j].second;
+            (*regions)[i].second.push_back(make_pair(adjacent, type));
+        }
+    }
+    for (int i = 0; i < obj.continents->size(); i++) {
+        auto *continent = new Continent(*((*obj.continents)[i].first));
+        vector<Region *> continentRegion;
+        continents->push_back(make_pair(continent, continentRegion));
+        for (int j = 0; j < (*obj.continents)[i].second.size(); j++) {
+            auto *region = new Region(*((*obj.continents)[i].second[j]));
+            (*continents)[i].second.push_back(region);
+        }
+    }
+}
+
 void Map::addContinent(Continent *continent) {
     continents->push_back(make_pair(continent, vector<Region *>()));
 }
@@ -54,15 +88,15 @@ void Map::addPath(Region *start, Region *destination, bool land) {
 }
 
 // checks if two regions are adjacent: 1 = land, 0 = water, -1 not adjacent
-int Map::isAdjacent(Region* start, Region* end){
-    for(int i=0; i<regions->size(); i++){
-        if((*regions)[i].first == start){
-            vector<pair<Region*, bool>> adjacentRegions = (*regions)[i].second;
-            for(i=0; i<adjacentRegions.size(); i++){
-                if(adjacentRegions[i].first == end && adjacentRegions[i].second == 1){
+int Map::isAdjacent(Region *start, Region *end) {
+    for (int i = 0; i < regions->size(); i++) {
+        if ((*regions)[i].first == start) {
+            vector<pair<Region *, bool>> adjacentRegions = (*regions)[i].second;
+            for (i = 0; i < adjacentRegions.size(); i++) {
+                if (adjacentRegions[i].first == end && adjacentRegions[i].second == 1) {
                     return 1;
                 }
-                if (adjacentRegions[i].first == end && adjacentRegions[i].second == 0){
+                if (adjacentRegions[i].first == end && adjacentRegions[i].second == 0) {
                     return 0;
                 }
             }
