@@ -17,6 +17,7 @@ Map::Map() {
 Map::~Map() {
     delete regions;
     delete continents;
+    delete startingRegion;
 }
 
 void Map::addContinent(Continent *continent) {
