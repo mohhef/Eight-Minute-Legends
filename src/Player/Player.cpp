@@ -30,11 +30,11 @@ Player::~Player() {
 
 bool Player::PayCoin(int coins) {
   if (*this->coins < coins) {
-    cout << "Not enough coins." << endl;
+    cout << "Player::PayCoin(): Not enough coins." << endl;
     return false;
   } else {
     *this->coins -= coins;
-    cout << "Player payed." << endl;
+    cout << *name << " has payed " << coins << " coins." << endl;
     return true;
   }
 }
@@ -61,7 +61,7 @@ pair<Region*, int>* Player::GetCitiesInRegion(Region* region) {
 
 bool Player::PlaceNewArmies(int armies_num, Region* region) {
   if (*cubes < armies_num) {
-    cout << "Not enough armies." << endl;
+    cout << "Player::PlaceNewArmies(): Not enough armies." << endl;
     return false;
   }
   pair<Region*, int>* cities_in_region = GetCitiesInRegion(region);
@@ -72,14 +72,16 @@ bool Player::PlaceNewArmies(int armies_num, Region* region) {
          << "." << endl;
     return true;
   } else {
-    cout << "Unable to place armies in a region where player has no city." << endl;
+    cout << "Player::PlaceNewArmies(): Cannot place armies in a region in which the "
+            "player has no city."
+         << endl;
     return false;
   }
 }
 
 bool Player::BuildCity(Region* region) {
   if (*discs < 1) {
-    cout << "Not enough discs." << endl;
+    cout << "Player::BuildCity(): Not enough discs." << endl;
     return false;
   }
   pair<Region*, int>* armies_in_region = GetArmiesInRegion(region);
@@ -90,7 +92,9 @@ bool Player::BuildCity(Region* region) {
     cout << *name << " has built a city in " << *region->name << "." << endl;
     return true;
   } else {
-    cout << "Unable to build a city in a region where player has no armies." << endl;
+    cout << "Player::BuildCity(): Cannot build a city in a region in which the player "
+            "has no armies."
+         << endl;
     return false;
   }
 }
@@ -105,11 +109,12 @@ bool Player::DestroyArmy(Player* player, Region* region) {
            << *region->name << "." << endl;
       return true;
     } else {
-      cout << *player->name << " has no armies in " << *region->name << "." << endl;
+      cout << "Player::DestroyArmy(): " << *player->name << " has no armies in "
+           << *region->name << "." << endl;
       return false;
     }
   } else {
-    cout << "Not enough armies to destroy enemy's army." << endl;
+    cout << "Player::DestroyArmy(): Not enough armies to destroy enemy's army." << endl;
     return false;
   }
 }
