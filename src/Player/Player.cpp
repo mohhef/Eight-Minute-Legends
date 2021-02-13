@@ -101,8 +101,9 @@ bool Player::DestroyArmy(Player* player, Region* region) {
     pair<Region*, int>* enemy_armies_in_region = player->GetArmiesInRegion(region);
     if (enemy_armies_in_region->second > 0) {
       enemy_armies_in_region->second -= 1;
-      cout << *name << "has destroyed " << *player->name << "'s army in " << *region->name
-           << "." << endl;
+      cout << *name << " has destroyed " << *player->name << "'s army in "
+           << *region->name << "." << endl;
+      return true;
     } else {
       cout << *player->name << " has no armies in " << *region->name << "." << endl;
       return false;
@@ -111,5 +112,43 @@ bool Player::DestroyArmy(Player* player, Region* region) {
     cout << "Not enough armies to destroy enemy's army." << endl;
     return false;
   }
-  return false;
+}
+
+bool Player::MoveOverLand(int armies_num, Region* origin, Region* destination) {
+  pair<Region*, int>* armies_in_origin = GetArmiesInRegion(origin);
+  pair<Region*, int>* armies_in_destination = GetArmiesInRegion(destination);
+  armies_in_origin->second -= armies_num;
+  armies_in_destination->second += armies_num;
+  cout << *name << " has moved " << armies_num << " armies from " << *origin->name
+       << " to " << *destination->name << " by land." << endl;
+  return true;
+}
+
+bool Player::MoveOverWater(int armies_num, Region* origin, Region* destination) {
+  pair<Region*, int>* armies_in_origin = GetArmiesInRegion(origin);
+  pair<Region*, int>* armies_in_destination = GetArmiesInRegion(destination);
+  armies_in_origin->second -= armies_num;
+  armies_in_destination->second += armies_num;
+  cout << *name << " has moved " << armies_num << " armies from " << *origin->name
+       << " to " << *destination->name << " by water." << endl;
+  return true;
+}
+
+bool Player::MoveArmies(int armies_num, Region* origin, Region* destination) {
+  pair<Region*, int>* armies_in_origin = GetArmiesInRegion(origin);
+  if (armies_in_origin->second >= armies_num) {
+    int adjacency = map->isAdjacent(origin, destination);
+    if (adjacency == 1) {
+      return MoveOverLand(armies_num, origin, destination);
+    } else if (adjacency == 0) {
+      return MoveOverWater(armies_num, origin, destination);
+    } else {
+      cout << "Player::MoviesArmies(): Origin and destination regions are not adjacent."
+           << endl;
+      return false;
+    }
+  } else {
+    cout << "Player::MoviesArmies(): Not enough armies in the origin region." << endl;
+    return false;
+  }
 }
