@@ -11,92 +11,92 @@
 using namespace std;
 
 struct Continent {
-    string *name;
+  string *name;
 
-    Continent(string name) {
-        this->name = new string(name);
-    }
+  Continent(string name) {
+    this->name = new string(name);
+  }
 
-    Continent(const Continent &obj) {
-        name = new string;
-        *name = *obj.name;
-    }
+  Continent(const Continent &obj) {
+    name = new string;
+    *name = *obj.name;
+  }
 
-    Continent &operator=(const Continent &rhs) {
-        if (this != &rhs)
-            *name = *rhs.name;
-        return *this;
-    }
+  Continent &operator=(const Continent &rhs) {
+    if (this != &rhs)
+      *name = *rhs.name;
+    return *this;
+  }
 
-    ~Continent() {
-        delete name;
-    }
+  ~Continent() {
+    delete name;
+  }
 };
 
 struct Region {
-    string *name;
-    Continent *continent;
+  string *name;
+  Continent *continent;
 
-    Region(string name, Continent *c) {
-        this->name = new string(name);
-        this->continent = c;
-    }
+  Region(string name, Continent *c) {
+    this->name = new string(name);
+    this->continent = c;
+  }
 
-    Region(const Region &obj) {
-        name = new string;
-        continent = new Continent(*(obj.continent));
-        *name = *obj.name;
-    }
+  Region(const Region &obj) {
+    name = new string;
+    continent = new Continent(*(obj.continent));
+    *name = *obj.name;
+  }
 
-    Region &operator=(const Region &rhs) {
-        if (this != &rhs) {
-            *continent = *(rhs.continent);
-            *name = *rhs.name;
-        }
-        return *this;
+  Region &operator=(const Region &rhs) {
+    if (this != &rhs) {
+      *continent = *(rhs.continent);
+      *name = *rhs.name;
     }
+    return *this;
+  }
 
-    ~Region() {
-        delete name;
-        delete continent;
-    }
+  ~Region() {
+    delete name;
+    delete continent;
+  }
 };
 
 class Map {
-public:
+ public:
 
-    // a vector that has a pair of region and all of its adjacent regions
-    vector<pair<Region *, vector<pair<Region *, bool>>>> *regions;
-    // a vector that has all the continents and its regions
-    vector<pair<Continent *, vector<Region *>>> *continents;
-    Region *startingRegion;
+  // a vector that has a pair of region and all of its adjacent regions
+  vector<pair<Region *, vector<pair<Region *, bool>>>> *regions;
+  // a vector that has all the continents and its regions
+  vector<pair<Continent *, vector<Region *>>> *continents;
+  Region *startingRegion;
 
-    Map();
+  Map();
 
-    ~Map();
+  ~Map();
 
-    Map &operator = (const Map &rhs);
+  Map &operator=(const Map &rhs);
 
-    Map(const Map &obj);
+  Map(const Map &obj);
 
-    vector<pair<Region *, bool>> *getNeighbourList(Region *region);
+  vector<pair<Region *, bool>> *getNeighbourList(Region *region);
 
-    void addRegion(Region *region, bool setStartingRegion = false);
+  void addRegion(Region *region, bool setStartingRegion = false);
 
-    void addContinent(Continent *continent);
+  void addContinent(Continent *continent);
 
-    //use true if path is land, else false
-    void addPath(Region *start, Region *destination, bool land);
+  //use true if path is land, else false
+  void addPath(Region *start, Region *destination, bool land);
 
-    void displayMap();
+  void displayMap();
 
-    bool isValid();
+  bool isValid();
 
-    int isAdjacent(Region *start, Region *end);
+  int isAdjacent(Region *start, Region *end);
 
-    bool areRegionsConnected();
+  bool areRegionsConnected();
 
-    bool areContinentsConnected();
+  bool areContinentsConnected();
 
-    bool eachRegionBelongsToOneContinent();
+  bool eachRegionBelongsToOneContinent();
 };
