@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -14,6 +15,17 @@ struct Continent {
     Continent(string name) {
         this -> name = new string(name);
     }
+    Continent(const Continent &obj){
+        name = new string;
+        *name = *obj.name;
+    }
+
+    Continent& operator =(const Continent &rhs){
+        if(this != &rhs)
+            *name = *rhs.name;
+        return *this;
+    }
+
     ~Continent() {
         delete name;
     }
@@ -25,6 +37,18 @@ struct Region {
     Region(string name, Continent *c){
         this->name = new string(name);
         this->continent = c;
+    }
+    Region(const Region &obj){
+        name = new string;
+        continent = new Continent(*(obj.continent));
+        *name = *obj.name;
+    }
+    Region& operator = (const Region &rhs){
+        if(this != &rhs){
+            *continent = *(rhs.continent);
+            *name = *rhs.name;
+        }
+        return *this;
     }
     ~Region() {
         delete name;
@@ -49,6 +73,7 @@ public:
     void addPath(Region *start, Region *destination,bool land);
     void displayMap();
     bool isValid();
+    int isAdjacent(Region* start, Region* end);
     bool areRegionsConnected();
     bool areContinentsConnected();
     bool eachRegionBelongsToOneContinent();
