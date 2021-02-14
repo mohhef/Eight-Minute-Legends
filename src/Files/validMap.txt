@@ -1,0 +1,11 @@
+[Region]
+USA,North America
+Canada,North America
+
+Germany,europe
+France,europe
+
+[Path]
+USA,Canada:1
+Canada,Germany:0
+Germany,France:1

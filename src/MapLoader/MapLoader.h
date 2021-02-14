@@ -3,8 +3,7 @@
 //
 
 
-#ifndef EIGHT_MINUTE_EMPIRE_MAPLOADER_H
-#define EIGHT_MINUTE_EMPIRE_MAPLOADER_H
+#pragma once
 
 #include "../Map/Map.h"
 
@@ -14,5 +13,3 @@ class MapLoader {
 public:
     static Map* loadmap(string fileName);
 };
-
-#endif //EIGHT_MINUTE_EMPIRE_MAPLOADER_H

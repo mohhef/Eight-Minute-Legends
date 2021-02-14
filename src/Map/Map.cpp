@@ -242,6 +242,6 @@ void Map::displayMap() {
       cout << endl;
     }
   } else {
-    cout << "This map is empty";
+    cout << "There was nothing added to the map";
   }
 };

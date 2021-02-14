@@ -5,7 +5,7 @@
 #include "../Map/Map.h"
 #include "MapLoader.h"
 int main(){
-  Map* map = MapLoader::loadmap("../valid.txt");
+  Map* map = MapLoader::loadmap("../Files/invalidMap.txt");
   map->displayMap();
 
 }
