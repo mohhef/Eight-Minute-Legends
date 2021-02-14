@@ -69,6 +69,7 @@ public:
 
     void addRegion(Region *region, bool setStartingRegion=false);
     void addContinent(Continent *continent);
+    Continent* findContinent(string continent);
     //use true if path is land, else false
     void addPath(Region *start, Region *destination,bool land);
     void displayMap();

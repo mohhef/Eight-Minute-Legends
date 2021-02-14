@@ -1,35 +1,35 @@
 #include <iostream>
 #include "Map.h"
+#include "../MapLoader/MapLoader.h"
 
 int main() {
-//    Map *map = new Map();
+   Map *map = new Map();
 //
     auto *na = new Continent("North America");
     auto *europe = new Continent("Europe");
 
-    Region usa("USA", na);
-    Region usa2 = usa;
 //
-//    map->addContinent(na);
-//    map->addContinent(europe);
+    map->addContinent(na);
+    map->addContinent(europe);
 //
-//    auto *usa = new Region("USA", na);
-//    auto *can = new Region("Canada", na);
-//    auto *germany = new Region("Germany", europe);
+    auto *usa = new Region("USA", na);
+    auto *can = new Region("Canada", na);
+    auto *germany = new Region("Germany", europe);
 //    auto *usa2 = new Region("USA", europe);
-//    auto *france = new Region("France", europe);
+    auto *france = new Region("France", europe);
 //
-//    map->addRegion(usa);
-//    map->addRegion(can,true);
-//    map->addRegion(germany);
-//    map->addRegion(france);
+    map->addRegion(usa);
+    map->addRegion(can,true);
+    map->addRegion(germany);
+    map->addRegion(france);
 //
-//
-//    map->displayMap();
-//    map->addPath(usa, can, 1);
-//    map->addPath(can, germany,0);
-//    map->addPath(germany, france,1);
 //
 //    map->displayMap();
-//    map->isValid();
+    map->addPath(usa, can, 1);
+    map->addPath(can, germany,0);
+    map->addPath(germany, france,1);
+//
+//    map->displayMap();
+    map->isValid();
+
 }

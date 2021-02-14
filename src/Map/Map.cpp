@@ -216,6 +216,16 @@ vector<pair<Region *, bool>> *Map::getNeighbourList(Region *region) {
     return neighbourList;
 }
 
+Continent *Map::findContinent(string continent){
+  vector<Continent>::iterator i;
+  for (auto it = continents->begin(); it != continents->end(); it++) {
+    if (it->first->name->compare(continent) == 0) {
+        return it->first;
+    }
+  }
+  return nullptr;
+}
+
 void Map::displayMap() {
     printf("\n%20s %s  \n\n", "", "********* Map Details *********");
     for (int i = 0; i < regions->size(); i++) {
