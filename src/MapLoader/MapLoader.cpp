@@ -35,7 +35,7 @@ Map* MapLoader::loadmap(string fileName)
             }
             string first = line.substr(0, line.find(","));// part before ;
             string second = line.substr(line.find(",") + 1, line.length());//part that after ;
-            assert(first != line);
+            assert(first != line && "Incorrect file format, check the delimiter");
             if (reading_regions) {
                 //read region info, add region to the map
                 try {
@@ -80,8 +80,8 @@ Map* MapLoader::loadmap(string fileName)
                         }
                     }
                     // ensure countries have path
-                    assert(start);
-                    assert(end);
+                    assert(start && "The regions is non existent");
+                    assert(end && "The region is non existent");
                     // add the vector of Neighbour
                     map->addPath(start, end, type == "1");
                 }
