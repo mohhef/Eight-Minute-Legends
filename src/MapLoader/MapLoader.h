@@ -10,6 +10,6 @@
 using namespace std;
 
 class MapLoader {
-public:
-    static Map* loadmap(string fileName);
+ public:
+  static Map *loadmap(string fileName);
 };

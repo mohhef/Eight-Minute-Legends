@@ -46,7 +46,7 @@ Map::Map(const Map &obj) {
     regions->push_back(make_pair(region, intiAdjacency));
 
   }
-  for (int i = 0; i<regions->size(); i++) {
+  for (int i = 0; i < regions->size(); i++) {
     for (int j = 0; j < (*obj.regions)[i].second.size(); j++) {
       auto *adjacent = findRegion(*((*obj.regions)[i].second[j].first->name));
       bool type = (*obj.regions)[i].second[j].second;
@@ -54,7 +54,7 @@ Map::Map(const Map &obj) {
     }
   }
 
-  for (int i = 0; i<continents->size(); i++) {
+  for (int i = 0; i < continents->size(); i++) {
     for (int j = 0; j < (*obj.continents)[i].second.size(); j++) {
       auto *region = findRegion(*((*obj.continents)[i].second[j])->name);
       (*continents)[i].second.push_back(region);
@@ -62,7 +62,7 @@ Map::Map(const Map &obj) {
   }
 }
 
-std::ostream& operator << (ostream& output, Map& map){
+std::ostream &operator<<(ostream &output, Map &map) {
   map.displayMap();
   return output;
 }
