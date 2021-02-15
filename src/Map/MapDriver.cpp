@@ -4,6 +4,9 @@
 int main() {
   Map *map = new Map();
 
+  Map *map1 = new Map();
+
+
   auto *na = new Continent("North America");
   auto *europe = new Continent("Europe");
 
@@ -21,11 +24,14 @@ int main() {
   map->addRegion(germany);
   map->addRegion(france);
 
-  map->displayMap();
+//  map->displayMap();
   map->addPath(usa, can, 1);
   map->addPath(can, germany, 0);
   map->addPath(germany, france, 1);
 
+  Map map2 = *map;
+  map2.displayMap();
+  map2.isValid();
   map->displayMap();
   map->isValid();
 }
