@@ -76,6 +76,8 @@ class Map {
  public:
   Map();
   ~Map();
+  Map(const Map &obj);
+  Map &operator=(const Map &rhs);
   friend ostream &operator<<(ostream &output, Map &region);
   // a vector that has a pair of region and all of its adjacent regions
   vector<pair<Region *, vector<pair<Region *, bool>>>> *regions;
@@ -87,6 +89,7 @@ class Map {
   void addRegion(Region *region, bool setStartingRegion = false);
   void addContinent(Continent *continent);
   Continent *findContinent(string continent);
+  Region *findRegion(string region);
   //use true if path is land, else false
   void addPath(Region *start, Region *destination, bool land);
   void displayMap();

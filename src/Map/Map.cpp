@@ -33,22 +33,30 @@ Map::Map(const Map &obj) {
   regions = new vector<pair<Region *, vector<pair<Region *, bool>>>>;
   continents = new vector<pair<Continent *, vector<Region *>>>;
 
-  for (int i = 0; i < obj.regions->size(); i++) {
-    auto *region = new Region(*((*obj.regions)[i].first));
-    vector<pair<Region *, bool>> intiAdjacency;
-    regions->push_back(make_pair(region, intiAdjacency));
-    for (int j = 0; j < (*obj.regions)[i].second.size(); j++) {
-      auto *adjacent = new Region(*((*obj.regions)[i].second[j].first));
-      bool type = (*obj.regions)[i].second[j].second;
-      (*regions)[i].second.push_back(make_pair(adjacent, type));
-    }
-  }
   for (int i = 0; i < obj.continents->size(); i++) {
     auto *continent = new Continent(*((*obj.continents)[i].first));
     vector<Region *> continentRegion;
     continents->push_back(make_pair(continent, continentRegion));
+  }
+
+  for (int i = 0; i < obj.regions->size(); i++) {
+    auto *continent = findContinent(*((*obj.regions)[i].first->continent->name));
+    auto *region = new Region(*((*obj.regions)[i].first->name), continent);
+    vector<pair<Region *, bool>> intiAdjacency;
+    regions->push_back(make_pair(region, intiAdjacency));
+
+  }
+  for (int i = 0; i<regions->size(); i++) {
+    for (int j = 0; j < (*obj.regions)[i].second.size(); j++) {
+      auto *adjacent = findRegion(*((*obj.regions)[i].second[j].first->name));
+      bool type = (*obj.regions)[i].second[j].second;
+      (*regions)[i].second.push_back(make_pair(adjacent, type));
+    }
+  }
+
+  for (int i = 0; i<continents->size(); i++) {
     for (int j = 0; j < (*obj.continents)[i].second.size(); j++) {
-      auto *region = new Region(*((*obj.continents)[i].second[j]));
+      auto *region = findRegion(*((*obj.continents)[i].second[j])->name);
       (*continents)[i].second.push_back(region);
     }
   }
@@ -259,6 +267,16 @@ Continent *Map::findContinent(string continent) {
   vector<Continent>::iterator i;
   for (auto it = continents->begin(); it != continents->end(); it++) {
     if (it->first->name->compare(continent) == 0) {
+      return it->first;
+    }
+  }
+  return nullptr;
+}
+
+Region *Map::findRegion(string region) {
+  vector<Continent>::iterator i;
+  for (auto it = regions->begin(); it != regions->end(); it++) {
+    if (it->first->name->compare(region) == 0) {
       return it->first;
     }
   }

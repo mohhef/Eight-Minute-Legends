@@ -3,10 +3,8 @@
 #include "../MapLoader/MapLoader.h"
 
 int main() {
+  //Valid Map
   Map *map = new Map();
-
-  Map *map1 = new Map();
-
 
   auto *na = new Continent("North America");
   auto *europe = new Continent("Europe");
@@ -17,7 +15,6 @@ int main() {
   auto *usa = new Region("USA", na);
   auto *can = new Region("Canada", na);
   auto *germany = new Region("Germany", europe);
-  auto *usa2 = new Region("USA", europe);
   auto *france = new Region("France", europe);
 
   map->addRegion(usa);
@@ -25,14 +22,20 @@ int main() {
   map->addRegion(germany);
   map->addRegion(france);
 
-//  map->displayMap();
   map->addPath(usa, can, 1);
   map->addPath(can, germany, 0);
   map->addPath(germany, france, 1);
 
-  Map map2 = *map;
-  map2.displayMap();
-  map2.isValid();
   map->displayMap();
   map->isValid();
+
+  //Invalid map, Copy constructor, Stream insertion operator
+  Map map2 = *map;
+  auto *africa = new Continent("Africa");
+  auto *egypt = new Region("Egypt", africa);
+  map2.addContinent(africa);
+  map2.addRegion(egypt);
+  map2.displayMap();
+  map2.isValid();
+
 }
