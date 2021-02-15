@@ -20,6 +20,11 @@ Map::~Map() {
   delete startingRegion;
 }
 
+std::ostream& operator << (ostream& output, Map& map){
+  map.displayMap();
+  return output;
+}
+
 void Map::addContinent(Continent *continent) {
   continents->push_back(make_pair(continent, vector<Region *>()));
 }
