@@ -15,6 +15,7 @@ struct Continent {
     Continent(string name) {
         this -> name = new string(name);
     }
+
     Continent(const Continent &obj){
         name = new string;
         *name = *obj.name;
@@ -29,7 +30,14 @@ struct Continent {
     ~Continent() {
         delete name;
     }
+
+    friend ostream& operator << (ostream& output, Continent& continent){
+      output << "Continent's Name: " + *(continent.name) << endl;
+      return output;
+    }
 };
+
+
 
 struct Region {
     string *name;
@@ -54,12 +62,18 @@ struct Region {
         delete name;
         delete continent;
     }
+  friend ostream& operator << (ostream& output, Region& region){
+    output << *(region.continent);
+    output << "Region's Name: " + *(region.name) << endl;
+    return output;
+  }
 };
 
 class Map {
 public:
     Map();
     ~Map();
+    friend ostream& operator << (ostream& output, Map& region);
     // a vector that has a pair of region and all of its adjacent regions
     vector< pair <Region*, vector<pair<Region*, bool>>>> *regions;
     // a vector that has all the continents and its regions
@@ -69,6 +83,7 @@ public:
 
     void addRegion(Region *region, bool setStartingRegion=false);
     void addContinent(Continent *continent);
+    Continent* findContinent(string continent);
     //use true if path is land, else false
     void addPath(Region *start, Region *destination,bool land);
     void displayMap();
