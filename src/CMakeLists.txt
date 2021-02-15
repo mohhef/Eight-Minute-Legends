@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD 17)
 #add_executable(src Player/PlayerDriver.cpp Player/Player.cpp Player/Player.h Map/Map.cpp Map/Map.h)
 
 #Cards Part4(Kosta)
-add_executable(src Cards/CardsDriver.cpp Cards/Cards.cpp Cards/Cards.h)
+#add_executable(src Cards/CardsDriver.cpp Cards/Cards.cpp Cards/Cards.h)
 
 #Bidding Part5(Dominic)
+add_executable(src BiddingFacility/BiddingFacility.cpp BiddingFacility/BiddingFacility.h BiddingFacility/BiddingFacilityDriver.cpp)
