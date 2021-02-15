@@ -131,24 +131,24 @@ Deck::Deck(){
         // Constructor order is: Ability, Action, Name, Number
         // Card order is:      Name, Ability, Action, Number
         if(cardStrings[3] != ""){
-            deckCards.push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0], std::stoi(cardStrings[3])));
+            deckCards->push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0], std::stoi(cardStrings[3])));
         }
         else if(cardStrings[2] != ""){
-            deckCards.push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0]));
+            deckCards->push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0]));
         }
         else if (cardStrings[0] != ""){
-            deckCards.push_back(new Cards(cardStrings[1], cardStrings[0]));
+            deckCards->push_back(new Cards(cardStrings[1], cardStrings[0]));
         }
     }
     std::random_device rng;
     std::mt19937 urng(rng());
-    std::shuffle(deckCards.begin(), deckCards.end(), urng);
+    std::shuffle(deckCards->begin(), deckCards->end(), urng);
 
     boardCosts = new int[HAND_SIZE] {0,1,1,2,2,3};
-    deckSize = new int(deckCards.size());
+    deckSize = new int(deckCards->size());
 
     for(int i = 0; i < TOP_BOARD_SIZE; i++){
-        topBoard.push_back(this->draw());
+        topBoard->push_back(this->draw());
     }
 }
 
@@ -160,21 +160,21 @@ Deck::Deck(const Deck &deck){
         this->boardCosts[i] = deck.getBoardCosts()[i];
     }
     for(int i = 0; i < deck.getDeckSize(); i++){
-        deckCards.push_back(new Cards(*deck.getCard(i)));
+        deckCards->push_back(new Cards(*deck.getCard(i)));
     }
     for(int i = 0; i < TOP_BOARD_SIZE; i++){
-        topBoard.push_back(new Cards(*deck.getTopBoardCard(i)));
+        topBoard->push_back(new Cards(*deck.getTopBoardCard(i)));
     }
 }
 
 Deck::~Deck(){
     for(int i = 0; i < *deckSize; i++){
-        delete deckCards[i];
+        delete deckCards->at(i);
     }
     for(int i = 0; i < TOP_BOARD_SIZE; i++){
-        delete topBoard[i];
+        delete topBoard->at(i);
     }
-    deckCards.clear();
+    deckCards->clear();
     delete deckSize;
     delete boardCosts;
 }
@@ -207,7 +207,7 @@ int* Deck::getBoardCosts() const{
     return this->boardCosts;
 }
 
-vector<Cards*> Deck::getDeckCards() const{
+vector<Cards*>* Deck::getDeckCards() const{
     return deckCards;
 }
 
@@ -216,16 +216,16 @@ int Deck::getBoardPositionCost(int position) const{
 }
 
 Cards* Deck::getCard(int position) const{
-    return deckCards[position];
+    return deckCards->at(position);
 }
 
 Cards* Deck::getTopBoardCard(int position) const{
-    return topBoard[position];
+    return topBoard->at(position);
 }
 
 Cards* Deck::draw(){
-    Cards* card = deckCards.back();
-    deckCards.pop_back();
+    Cards* card = deckCards->back();
+    deckCards->pop_back();
     *this->deckSize = *this->deckSize - 1;
     return card;
 }
@@ -237,8 +237,8 @@ void Deck::showTopBoard(){
 }
 
 void Deck::removeFromTopBoard(int position){
-    topBoard.erase(topBoard.begin() + position);
-    topBoard.push_back(this->draw());
+    topBoard->erase(topBoard->begin() + position);
+    topBoard->push_back(this->draw());
 }
 // ==========================================
 // End of Deck class function implementations
@@ -257,12 +257,12 @@ Hand::Hand(const int maxHandSize){
 Hand::Hand(const Hand &hand){
     this->maxHandSize = new int(hand.getMaxHandSize());
     for(int i = 0; i < hand.getCurrentHandSize(); i++){
-        this->handCards.push_back(new Cards(*hand.getCard(i)));
+        this->handCards->push_back(new Cards(*hand.getCard(i)));
     }
 }
 Hand::~Hand(){
     for(int i = 0; i < this->getCurrentHandSize(); i++){
-        delete handCards[i];
+        delete handCards->at(i);
     }
     delete maxHandSize;
 }
@@ -276,14 +276,14 @@ ostream &operator<<(ostream &os, const Hand &hand) {
 
 Hand& Hand::operator=(const Hand& hand){
     for(int i = 0; i < hand.getCurrentHandSize(); i++){
-        this->handCards[i] = hand.getCard(i);
+        this->handCards->at(i) = hand.getCard(i);
     }
     *this->maxHandSize = hand.getMaxHandSize();
     return *this;
 }
 
 int Hand::getCurrentHandSize() const{
-    return this->handCards.size();
+    return this->handCards->size();
 }
 
 int Hand::getMaxHandSize() const{
@@ -291,19 +291,19 @@ int Hand::getMaxHandSize() const{
 }
 
 Cards* Hand::getCard(int position) const{
-    return handCards[position];
+    return handCards->at(position);
 }
 
 void Hand::exchange(int position, Deck &deck){
     // TODO: Change to check available coins and wait for y/n decision. Also change hand size depending on players
-    if(this->handCards.size() < *maxHandSize - 1){
-        this->handCards.push_back(new Cards(*deck.getTopBoardCard(position)));
+    if(this->handCards->size() < *maxHandSize - 1){
+        this->handCards->push_back(new Cards(*deck.getTopBoardCard(position)));
         deck.removeFromTopBoard(position);
     }
 }
 
 void Hand::addCard(Cards* card){
-    this->handCards.push_back(card);
+    this->handCards->push_back(card);
 }
 // ==========================================
 // End of Hand class function implementations

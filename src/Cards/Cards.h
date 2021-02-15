@@ -40,8 +40,8 @@ class Deck{
 private:
     int* boardCosts;
     int* deckSize;
-    vector<Cards*> deckCards;
-    vector<Cards*> topBoard;
+    vector<Cards*> *deckCards;
+    vector<Cards*> *topBoard;
 
 public:
     Deck();
@@ -53,7 +53,7 @@ public:
 
     int getDeckSize() const; 
     int* getBoardCosts() const;
-    vector<Cards*> getDeckCards() const;
+    vector<Cards*>* getDeckCards() const;
     int getBoardPositionCost(int position) const;
     Cards* getCard(int position) const;
     Cards* getTopBoardCard(int position) const;
@@ -67,7 +67,7 @@ class Hand{
 
 private:
     int* maxHandSize;
-    vector<Cards*> handCards;
+    vector<Cards*> *handCards;
 
 public:
     Hand();
