@@ -119,7 +119,7 @@ void Cards::setNumber(int number){
 // ============================================
 Deck::Deck(){
     string myText;
-    ifstream MyReadFile("cards.txt");
+    ifstream MyReadFile("../Files/cards.txt");
     while(getline (MyReadFile, myText)){
         stringstream s_stream(myText);
         vector<string> cardStrings;
