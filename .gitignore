@@ -85,6 +85,8 @@
 .idea/gradle.xml
 .idea/libraries
 
+.idea
+
 # Mongo Explorer plugin:
 .idea/mongoSettings.xml
 
@@ -218,3 +220,6 @@ fabric.properties
 .idea/codestream.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/clion
+
+# Visual Studio Code
+.vscode/
