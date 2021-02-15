@@ -1,23 +1,23 @@
 #include <iostream>
 #include "Cards.h"
 
-int main(){
-    Deck *deck = new Deck();
-    Hand *myHand = new Hand();
+int main() {
+  Deck *deck = new Deck();
+  Hand *myHand = new Hand();
 
-    cout << "Top Board: " << endl;
-    deck->showTopBoard();
+  cout << "Top Board: " << endl;
+  deck->showTopBoard();
 
-    myHand->exchange(2, *deck);
+  myHand->exchange(2, *deck);
 
-    cout << "\nMy Hand after exchange: " << endl;
-    cout << *myHand << endl;
-    
-    cout << "\nTop Board after exchange: " << endl;
-    deck->showTopBoard();
+  cout << "\nMy Hand after exchange: " << endl;
+  cout << *myHand << endl;
 
-    delete deck;
-    delete myHand;
-    
-    return 0;
+  cout << "\nTop Board after exchange: " << endl;
+  deck->showTopBoard();
+
+  delete deck;
+  delete myHand;
+
+  return 0;
 }
