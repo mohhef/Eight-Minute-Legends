@@ -28,6 +28,9 @@ class Player {
   int GetCubes() const;
   int GetDiscs() const;
   int GetCoins() const;
+  vector<pair<Region *, int>> *GetCities() const;
+  vector<pair<Region *, int>> *GetArmies() const;
+  Player &operator=(const Player &player);
   bool PayCoin(int coins);
   bool PlaceNewArmies(int armies_num, Region *region);
   bool BuildCity(Region *region);

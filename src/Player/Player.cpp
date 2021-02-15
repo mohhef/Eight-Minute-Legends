@@ -52,6 +52,23 @@ int Player::GetDiscs() const { return *discs; }
 
 int Player::GetCoins() const { return *coins; }
 
+vector<pair<Region *, int>> *Player::GetCities() const { return cities; }
+
+vector<pair<Region *, int>> *Player::GetArmies() const { return armies; }
+
+Player &Player::operator=(const Player &player) {
+  if (this != &player) {
+    map = player.GetMap();
+    *name = player.GetName();
+    *cubes = player.GetCubes();
+    *discs = player.GetDiscs();
+    *coins = player.GetCoins();
+    cities = player.GetCities();
+    armies = player.GetArmies();
+  }
+  return *this;
+}
+
 bool Player::PayCoin(int coins) {
   if (*this->coins < coins) {
     cout << "Player::PayCoin(): Not enough coins." << endl;
