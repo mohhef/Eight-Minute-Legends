@@ -19,6 +19,20 @@ Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_nu
   }
 }
 
+Player::Player(const Player &player) {
+  map = player.GetMap();
+  name = new string(player.GetName());
+  cubes = new int(player.GetCubes());
+  discs = new int(player.GetDiscs());
+  coins = new int(player.GetCoins());
+  cities = new vector<pair<Region *, int>>;
+  armies = new vector<pair<Region *, int>>;
+  for (auto region : *(map->regions)) {
+    cities->push_back(make_pair(region.first, 0));
+    armies->push_back(make_pair(region.first, 0));
+  }
+}
+
 Player::~Player() {
   delete name;
   delete cubes;
@@ -27,6 +41,16 @@ Player::~Player() {
   delete cities;
   delete armies;
 }
+
+Map *Player::GetMap() const { return map; }
+
+string Player::GetName() const { return *name; }
+
+int Player::GetCubes() const { return *cubes; }
+
+int Player::GetDiscs() const { return *discs; }
+
+int Player::GetCoins() const { return *coins; }
 
 bool Player::PayCoin(int coins) {
   if (*this->coins < coins) {

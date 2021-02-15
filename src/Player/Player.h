@@ -21,7 +21,13 @@ class Player {
 
  public:
   Player(Map *map, string name, int cubes_num, int discs_num, int coins_num);
+  Player(const Player &player);
   ~Player();
+  Map *GetMap() const;
+  string GetName() const;
+  int GetCubes() const;
+  int GetDiscs() const;
+  int GetCoins() const;
   bool PayCoin(int coins);
   bool PlaceNewArmies(int armies_num, Region *region);
   bool BuildCity(Region *region);
