@@ -46,7 +46,7 @@ pair<Region *, int> *Player::GetArmiesInRegion(Region *region) {
       return &(*i);
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 pair<Region *, int> *Player::GetCitiesInRegion(Region *region) {
@@ -56,7 +56,7 @@ pair<Region *, int> *Player::GetCitiesInRegion(Region *region) {
       return &(*i);
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 bool Player::PlaceNewArmies(int armies_num, Region *region) {
