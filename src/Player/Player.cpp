@@ -69,6 +69,25 @@ Player &Player::operator=(const Player &player) {
   return *this;
 }
 
+ostream &operator<<(ostream &os, const Player &player) {
+  os << "### " << player.GetName() << " ###" << endl;
+  os << "Cubes: " << player.GetCubes() << endl;
+  os << "Discs: " << player.GetDiscs() << endl;
+  os << "Coins: " << player.GetCoins() << endl;
+  os << "Cities: ";
+  for (auto region : *(player.GetCities())) {
+    os << *((region.first)->name) << "->" << region.second << " ";
+  }
+  os << endl;
+  os << "Armies: ";
+  for (auto region : *(player.GetArmies())) {
+    os << *((region.first)->name) << "->" << region.second << " ";
+  }
+  os << endl;
+  os << endl;
+  return os;
+}
+
 bool Player::PayCoin(int coins) {
   if (*this->coins < coins) {
     cout << "Player::PayCoin(): Not enough coins." << endl;
@@ -109,6 +128,7 @@ bool Player::PlaceNewArmies(int armies_num, Region *region) {
   if (cities_in_region->second > 0 || region == map->startingRegion) {
     pair<Region *, int> *armies_in_region = GetArmiesInRegion(region);
     armies_in_region->second += armies_num;
+    *cubes -= armies_num;
     cout << *name << " has placed " << armies_num << " new armies in " << *region->name
          << "." << endl;
     return true;
