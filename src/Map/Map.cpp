@@ -54,6 +54,11 @@ Map::Map(const Map &obj) {
   }
 }
 
+std::ostream& operator << (ostream& output, Map& map){
+  map.displayMap();
+  return output;
+}
+
 void Map::addContinent(Continent *continent) {
   continents->push_back(make_pair(continent, vector<Region *>()));
 }
@@ -250,18 +255,32 @@ vector<pair<Region *, bool>> *Map::getNeighbourList(Region *region) {
   return neighbourList;
 }
 
-void Map::displayMap() {
-  printf("\n%20s %s  \n\n", "", "********* Map Details *********");
-  for (int i = 0; i < regions->size(); i++) {
-    string regionName = *((*regions)[i].first->name);
-    string continentName = *((*regions)[i].first->continent->name);
-    vector<pair<Region *, bool>> adjacentRegions = (*regions)[i].second;
-    printf("Region Name: %s %10s || Continent Name: %s %15s || Adjacent regions: %5s",
-           "", regionName.c_str(), "", continentName.c_str(), "");
-    for (int i = 0; i < adjacentRegions.size(); i++) {
-      string connectionType = (adjacentRegions[i].second == 1) ? "Land" : "Water";
-      cout << "{" << *(adjacentRegions[i].first->name) << ": " << connectionType << "}";
+Continent *Map::findContinent(string continent) {
+  vector<Continent>::iterator i;
+  for (auto it = continents->begin(); it != continents->end(); it++) {
+    if (it->first->name->compare(continent) == 0) {
+      return it->first;
     }
-    cout << endl;
+  }
+  return nullptr;
+}
+
+void Map::displayMap() {
+  if (this != NULL) {
+    printf("\n%20s %s  \n\n", "", "********* Map Details *********");
+    for (int i = 0; i < regions->size(); i++) {
+      string regionName = *((*regions)[i].first->name);
+      string continentName = *((*regions)[i].first->continent->name);
+      vector<pair<Region *, bool>> adjacentRegions = (*regions)[i].second;
+      printf("Region Name: %s %10s || Continent Name: %s %15s || Adjacent regions: %5s",
+             "", regionName.c_str(), "", continentName.c_str(), "");
+      for (int i = 0; i < adjacentRegions.size(); i++) {
+        string connectionType = (adjacentRegions[i].second == 1) ? "Land" : "Water";
+        cout << "{" << *(adjacentRegions[i].first->name) << ": " << connectionType << "}";
+      }
+      cout << endl;
+    }
+  } else {
+    cout << "There was nothing added to the map";
   }
 };

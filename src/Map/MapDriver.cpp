@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Map.h"
+#include "../MapLoader/MapLoader.h"
 
 int main() {
   Map *map = new Map();
