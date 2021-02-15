@@ -12,6 +12,10 @@ private:
 
 public:
 	BiddingFacility(int numTokens, string lastName);
+	~BiddingFacility();
+    BiddingFacility(const BiddingFacility &obj);
+    BiddingFacility &operator=(const BiddingFacility &rhs);
+    friend ostream &operator<<(ostream &output, BiddingFacility &region);
 	int* getAmountBid();
 	string* getLastName();
 	int* getPlayerCoins();
