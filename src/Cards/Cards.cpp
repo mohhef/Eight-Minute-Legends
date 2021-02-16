@@ -136,8 +136,9 @@ void Cards::setNumber(int number) {
 Default deck constructor
 It loads all the cards from a file located at Files folder
 It shuffles all the cards
-It initializ
-*/
+It initializes the card costs
+It puts the cards to be chosen from on the board
+ */
 Deck::Deck() {
   string myText;
   ifstream MyReadFile("../Files/cards.txt");
