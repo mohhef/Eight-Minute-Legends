@@ -1,11 +1,12 @@
-#include <iostream>
 #include "BiddingFacility.h"
+
+#include <iostream>
+#include <limits>
 
 BiddingFacility::BiddingFacility(int numTokens, string lastName) {
   this->amountBid = new int(0);
   this->playerCoins = new int(numTokens);
   this->lastName = new string(lastName);
-
 }
 BiddingFacility::~BiddingFacility() {
   delete amountBid;
@@ -33,26 +34,19 @@ BiddingFacility &BiddingFacility::operator=(const BiddingFacility &rhs) {
 }
 
 std::ostream &operator<<(ostream &output, BiddingFacility &bidding_facility) {
-  output << "Amount Bid: " << *(bidding_facility.amountBid) << ", " << "Player Coins: "
-         << *(bidding_facility.playerCoins) << ", " << "Last Name: " << *(bidding_facility.lastName) << endl;
+  output << "Amount Bid: " << *(bidding_facility.amountBid) << ", "
+         << "Player Coins: " << *(bidding_facility.playerCoins) << ", "
+         << "Last Name: " << *(bidding_facility.lastName) << endl;
   return output;
 }
 
-int *BiddingFacility::getAmountBid() {
-  return amountBid;
-}
+int *BiddingFacility::getAmountBid() { return amountBid; }
 
-string *BiddingFacility::getLastName() {
-  return this->lastName;
-}
+string *BiddingFacility::getLastName() { return this->lastName; }
 
-void BiddingFacility::setAmountBid(int *amountBid) {
-  this->amountBid = amountBid;
-}
+void BiddingFacility::setAmountBid(int *amountBid) { this->amountBid = amountBid; }
 
-int *BiddingFacility::getPlayerCoins() {
-  return playerCoins;
-}
+int *BiddingFacility::getPlayerCoins() { return playerCoins; }
 
 void BiddingFacility::bid() {
   int bid;
@@ -70,10 +64,9 @@ void BiddingFacility::bid() {
   *amountBid = bid;
 }
 
-//Returns true if current players bid is higher than the previous highest bidder.
+// Returns true if current players bid is higher than the previous highest bidder.
 bool BiddingFacility::higherBid(BiddingFacility *previousBidder) {
-
-  //If "previousBidder" is a nullptr
+  // If "previousBidder" is a nullptr
   if (previousBidder == nullptr) {
     return true;
   }
@@ -81,7 +74,7 @@ bool BiddingFacility::higherBid(BiddingFacility *previousBidder) {
   if (*amountBid > *previousBidder->getAmountBid()) {
     return true;
   } else if (*amountBid == *previousBidder->getAmountBid()) {
-    //Select bidder with higher last name in alphabetical order
+    // Select bidder with higher last name in alphabetical order
     int i = 0;
     string previousBidderLastName = *previousBidder->getLastName();
     string currentBidderLastName = this->lastName[0];
@@ -106,7 +99,4 @@ bool BiddingFacility::higherBid(BiddingFacility *previousBidder) {
   return false;
 }
 
-void BiddingFacility::subtractBid() {
-
-  *playerCoins -= *amountBid;
-}
+void BiddingFacility::subtractBid() { *playerCoins -= *amountBid; }

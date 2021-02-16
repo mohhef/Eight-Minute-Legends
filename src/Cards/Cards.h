@@ -1,12 +1,12 @@
-#include <string>
-#include <ostream>
+#pragma once
 #include <iostream>
+#include <ostream>
+#include <string>
 #include <vector>
 
 using namespace std;
 
 class Cards {
-
  private:
   string *ability;
   string *action;
@@ -36,7 +36,6 @@ class Cards {
 };
 
 class Deck {
-
  private:
   int *boardCosts;
   int *deckSize;
@@ -64,7 +63,6 @@ class Deck {
 };
 
 class Hand {
-
  private:
   int *maxHandSize;
   vector<Cards *> handCards;

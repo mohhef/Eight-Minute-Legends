@@ -1,8 +1,4 @@
 #include "Player.h"
-
-#include <iostream>
-
-#include "../Map/Map.h"
 using namespace std;
 
 Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_num) {
@@ -13,6 +9,8 @@ Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_nu
   coins = new int(coins_num);
   cities = new vector<pair<Region *, int>>;
   armies = new vector<pair<Region *, int>>;
+  bidding_facility = new BiddingFacility(coins_num, name);
+  hand = new Hand();
   for (auto region : *(this->map->regions)) {
     cities->push_back(make_pair(region.first, 0));
     armies->push_back(make_pair(region.first, 0));
@@ -27,6 +25,8 @@ Player::Player(const Player &player) {
   coins = new int(player.GetCoins());
   cities = new vector<pair<Region *, int>>;
   armies = new vector<pair<Region *, int>>;
+  bidding_facility = new BiddingFacility(*player.GetBiddingFacility());
+  hand = new Hand(*player.GetHand());
   for (auto region : *(map->regions)) {
     cities->push_back(make_pair(region.first, 0));
     armies->push_back(make_pair(region.first, 0));
@@ -56,6 +56,10 @@ vector<pair<Region *, int>> *Player::GetCities() const { return cities; }
 
 vector<pair<Region *, int>> *Player::GetArmies() const { return armies; }
 
+BiddingFacility *Player::GetBiddingFacility() const { return bidding_facility; }
+
+Hand *Player::GetHand() const { return hand; }
+
 Player &Player::operator=(const Player &player) {
   if (this != &player) {
     map = player.GetMap();
@@ -65,6 +69,8 @@ Player &Player::operator=(const Player &player) {
     *coins = player.GetCoins();
     cities = player.GetCities();
     armies = player.GetArmies();
+    bidding_facility = player.GetBiddingFacility();
+    hand = player.GetHand();
   }
   return *this;
 }
