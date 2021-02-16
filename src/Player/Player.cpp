@@ -26,7 +26,7 @@ Player::Player(const Player &player) {
   cities = new vector<pair<Region *, int>>;
   armies = new vector<pair<Region *, int>>;
   bidding_facility = new BiddingFacility(*player.GetBiddingFacility());
-  hand = new Hand(*player.GetHand());
+  hand = player.GetHand();
   for (auto region : *(map->regions)) {
     cities->push_back(make_pair(region.first, 0));
     armies->push_back(make_pair(region.first, 0));
