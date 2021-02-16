@@ -141,6 +141,8 @@ It initializ
 Deck::Deck() {
   string myText;
   ifstream MyReadFile("../Files/cards.txt");
+  deckCards = new vector<Cards *>;
+  topBoard = new vector<Cards *>;
   while (getline(MyReadFile, myText)) {
     stringstream s_stream(myText);
     vector<string> cardStrings;
@@ -152,22 +154,22 @@ Deck::Deck() {
     // Constructor order is: Ability, Action, Name, Number
     // Card order is:      Name, Ability, Action, Number
     if (cardStrings[3] != "") {
-      deckCards.push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0], std::stoi(cardStrings[3])));
+      deckCards->push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0], std::stoi(cardStrings[3])));
     } else if (cardStrings[2] != "") {
-      deckCards.push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0]));
+      deckCards->push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0]));
     } else if (cardStrings[0] != "") {
-      deckCards.push_back(new Cards(cardStrings[1], cardStrings[0]));
+      deckCards->push_back(new Cards(cardStrings[1], cardStrings[0]));
     }
   }
   std::random_device rng;
   std::mt19937 urng(rng());
-  std::shuffle(deckCards.begin(), deckCards.end(), urng);
+  std::shuffle(deckCards->begin(), deckCards->end(), urng);
 
   boardCosts = new int[HAND_SIZE]{0, 1, 1, 2, 2, 3};
-  deckSize = new int(deckCards.size());
+  deckSize = new int(deckCards->size());
 
   for (int i = 0; i < TOP_BOARD_SIZE; i++) {
-    topBoard.push_back(this->draw());
+    topBoard->push_back(this->draw());
   }
 }
 
@@ -177,15 +179,17 @@ Deck copy constructor
 Deck::Deck(const Deck &deck) {
   this->deckSize = new int;
   *this->deckSize = deck.getDeckSize();
+  deckCards = new vector<Cards *>;
+  topBoard = new vector<Cards *>;
   this->boardCosts = new int[HAND_SIZE];
   for (int i = 0; i < HAND_SIZE; i++) {
     this->boardCosts[i] = deck.getBoardCosts()[i];
   }
   for (int i = 0; i < deck.getDeckSize(); i++) {
-    deckCards.push_back(new Cards(*deck.getCard(i)));
+    deckCards->push_back(new Cards(*deck.getCard(i)));
   }
   for (int i = 0; i < TOP_BOARD_SIZE; i++) {
-    topBoard.push_back(new Cards(*deck.getTopBoardCard(i)));
+    topBoard->push_back(new Cards(*deck.getTopBoardCard(i)));
   }
 }
 
@@ -194,12 +198,15 @@ Deck deconstructor
 */
 Deck::~Deck() {
   for (int i = 0; i < *deckSize; i++) {
-    delete deckCards[i];
+    delete deckCards->at(i);
   }
   for (int i = 0; i < TOP_BOARD_SIZE; i++) {
-    delete topBoard[i];
+    delete topBoard->at(i);
   }
-  deckCards.clear();
+  deckCards->clear();
+  delete deckCards;
+  topBoard->clear();
+  delete topBoard;
   delete deckSize;
   delete boardCosts;
 }
@@ -238,7 +245,7 @@ int *Deck::getBoardCosts() const {
   return this->boardCosts;
 }
 
-vector<Cards *> Deck::getDeckCards() const {
+vector<Cards *>* Deck::getDeckCards() const {
   return deckCards;
 }
 
@@ -247,19 +254,19 @@ int Deck::getBoardPositionCost(int position) const {
 }
 
 Cards *Deck::getCard(int position) const {
-  return deckCards[position];
+  return deckCards->at(position);
 }
 
 Cards *Deck::getTopBoardCard(int position) const {
-  return topBoard[position];
+  return topBoard->at(position);
 }
 
 /*
 Takes a card from a deck of cards
 */
 Cards *Deck::draw() {
-  Cards *card = deckCards.back();
-  deckCards.pop_back();
+  Cards *card = deckCards->back();
+  deckCards->pop_back();
   *this->deckSize = *this->deckSize - 1;
   return card;
 }
@@ -277,8 +284,8 @@ void Deck::showTopBoard() {
 Removes a card by position from the cards available to be picked from
 */
 void Deck::removeFromTopBoard(int position) {
-  topBoard.erase(topBoard.begin() + position);
-  topBoard.push_back(this->draw());
+  topBoard->erase(topBoard->begin() + position);
+  topBoard->push_back(this->draw());
 }
 // ==========================================
 // End of Deck class function implementations
@@ -294,15 +301,18 @@ A hand default constructor
 */
 Hand::Hand() {
   this->maxHandSize = new int(HAND_SIZE);
+  this->handCards = new vector<Cards *>;
 }
 
 Hand::Hand(const int maxHandSize) {
   this->maxHandSize = new int(maxHandSize);
+  this->handCards = new vector<Cards *>;
 }
 Hand::Hand(const Hand &hand) {
   this->maxHandSize = new int(hand.getMaxHandSize());
+  this->handCards = new vector<Cards *>;
   for (int i = 0; i < hand.getCurrentHandSize(); i++) {
-    this->handCards.push_back(new Cards(*hand.getCard(i)));
+    this->handCards->push_back(new Cards(*hand.getCard(i)));
   }
 }
 
@@ -311,8 +321,10 @@ deconstructor for hand
 */
 Hand::~Hand() {
   for (int i = 0; i < this->getCurrentHandSize(); i++) {
-    delete handCards[i];
+    delete handCards->at(i);
   }
+  handCards->clear();
+  delete handCards;
   delete maxHandSize;
 }
 
@@ -331,14 +343,14 @@ Assignment operator for hand class
 */
 Hand &Hand::operator=(const Hand &hand) {
   for (int i = 0; i < hand.getCurrentHandSize(); i++) {
-    this->handCards[i] = hand.getCard(i);
+    this->handCards->at(i) = hand.getCard(i);
   }
   *this->maxHandSize = hand.getMaxHandSize();
   return *this;
 }
 
 int Hand::getCurrentHandSize() const {
-  return this->handCards.size();
+  return this->handCards->size();
 }
 
 int Hand::getMaxHandSize() const {
@@ -349,7 +361,7 @@ int Hand::getMaxHandSize() const {
 gets a card from a hand of cards
 */
 Cards *Hand::getCard(int position) const {
-  return handCards[position];
+  return handCards->at(position);
 }
 
 /*
@@ -357,8 +369,8 @@ Lets a player pick a card by position from the available cards and readjusts the
 */
 void Hand::exchange(int position, Deck &deck) {
   // TODO: Change to check available coins and wait for y/n decision. Also change hand size depending on players
-  if (this->handCards.size() < *maxHandSize - 1) {
-    this->handCards.push_back(new Cards(*deck.getTopBoardCard(position)));
+  if (this->handCards->size() < *maxHandSize - 1) {
+    this->handCards->push_back(new Cards(*deck.getTopBoardCard(position)));
     deck.removeFromTopBoard(position);
   }
 }
@@ -367,7 +379,7 @@ void Hand::exchange(int position, Deck &deck) {
 adds a card to the player's hand of cards
 */
 void Hand::addCard(Cards *card) {
-  this->handCards.push_back(card);
+  this->handCards->push_back(card);
 }
 // ==========================================
 // End of Hand class function implementations
