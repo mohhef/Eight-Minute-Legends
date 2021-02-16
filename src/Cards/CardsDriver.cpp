@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Cards.h"
 
-int main() {
+void part4(){
   Deck *deck = new Deck();
   Hand *myHand = new Hand();
 
@@ -18,6 +18,4 @@ int main() {
 
   delete deck;
   delete myHand;
-
-  return 0;
 }

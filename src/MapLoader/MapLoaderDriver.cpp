@@ -4,8 +4,8 @@
 
 #include "../Map/Map.h"
 #include "MapLoader.h"
-int main() {
+void part2(){
+  //change the file name to load a different map
   Map *map = MapLoader::loadmap("../Files/invalidMap.txt");
   map->displayMap();
-
 }

@@ -5,6 +5,9 @@
 #include <cassert>
 using namespace std;
 
+/*
+loads a map from a from a file
+*/
 Map *MapLoader::loadmap(string fileName) {
   // read file
   bool reading_regions = false;// read region

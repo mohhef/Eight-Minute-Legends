@@ -2,7 +2,7 @@
 #include "Map.h"
 #include "../MapLoader/MapLoader.h"
 
-int main() {
+void part1(){
   //Valid Map
   Map *map = new Map();
 
@@ -31,6 +31,7 @@ int main() {
 
   //Invalid map, Copy constructor, Stream insertion operator
   Map map2 = *map;
+
   auto *africa = new Continent("Africa");
   auto *egypt = new Region("Egypt", africa);
   map2.addContinent(africa);
@@ -39,3 +40,4 @@ int main() {
   map2.isValid();
 
 }
+

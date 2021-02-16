@@ -2,9 +2,10 @@
 
 #include "../Map/Map.h"
 #include "Player.h"
+#include "../mainDriver.h"
 using namespace std;
 
-int main() {
+void part5(){
   // Creating a map
   Map *map = new Map();
   auto *europe = new Continent("Europe");
