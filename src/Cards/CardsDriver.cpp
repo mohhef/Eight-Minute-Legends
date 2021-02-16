@@ -1,7 +1,8 @@
 #include <iostream>
 #include "Cards.h"
+#include "../MainDriver.h"
 
-void part4(){
+void Driver::part4(){
   Deck *deck = new Deck();
   Hand *myHand = new Hand();
 

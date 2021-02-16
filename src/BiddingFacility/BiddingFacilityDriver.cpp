@@ -1,8 +1,8 @@
 #include <iostream>
 #include "BiddingFacility.h"
+#include "../MainDriver.h"
 
-
-void part5(){
+void Driver::part5(){
 
   //each bidding facility belongs to a player
   vector <BiddingFacility> players;
@@ -31,5 +31,4 @@ void part5(){
   winner->subtractBid();
   cout << "Winner with highest bid: " << *winner->getLastName() << endl
        << "Coins remaining: " << *winner->getPlayerCoins() << endl;
-
 }

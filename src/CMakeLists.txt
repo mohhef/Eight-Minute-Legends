@@ -5,13 +5,13 @@ set(CMAKE_CXX_STANDARD 17)
 
 #All parts
 add_executable(
-        src mainDriver.cpp
+        src MainDriver.cpp
         Map/MapDriver.cpp Map/Map.cpp Map/Map.cpp
         MapLoader/MapLoaderDriver.cpp MapLoader/MapLoader.cpp MapLoader/MapLoader.h
         Player/PlayerDriver.cpp Player/Player.cpp Player/Player.h
         Cards/CardsDriver.cpp Cards/Cards.cpp Cards/Cards.h
-        BiddingFacility/BiddingFacilityDriver.cpp BiddingFacility/BiddingFacility.h BiddingFacility/BiddingFacilityDriver.cpp
-            )
+        BiddingFacility/BiddingFacilityDriver.cpp BiddingFacility/BiddingFacility.h BiddingFacility/BiddingFacility.cpp
+)
 
 
 #Map Part1(Mohamed)

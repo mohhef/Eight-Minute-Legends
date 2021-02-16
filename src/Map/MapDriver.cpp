@@ -1,8 +1,8 @@
 #include <iostream>
 #include "Map.h"
-#include "../MapLoader/MapLoader.h"
+#include "../MainDriver.h"
 
-void part1(){
+void Driver::part1(){
   //Valid Map
   Map *map = new Map();
 

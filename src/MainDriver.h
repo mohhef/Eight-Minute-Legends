@@ -3,9 +3,11 @@
 //
 
 #pragma once
-
-void part1();
-void part2();
-void part3();
-void part4();
-void part5();
+class Driver{
+ public:
+  static void part1();
+  static void part2();
+  static void part3();
+  static void part4();
+  static void part5();
+};
