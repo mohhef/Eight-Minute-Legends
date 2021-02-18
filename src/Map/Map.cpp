@@ -21,7 +21,19 @@ Map::Map() {
  * Destructor that deallocates all the pointer
 */
 Map::~Map() {
+  for(auto region: *regions){
+    delete region.first;
+    for(auto adjRegion: region.second){
+      delete adjRegion.first;
+    }
+  }
   delete regions;
+  for(auto continent: *continents){
+    delete continent.first;
+    for(auto region: continent.second){
+      delete region;
+    }
+  }
   delete continents;
   delete startingRegion;
 }
