@@ -41,6 +41,8 @@ Player::Player(const Player &player) {
 
 /*
 Deconstructor to deallocate heap variables
+Here the pointers to region in cities and armies are not deallocated because,
+ that would destroy our map
 */
 Player::~Player() {
   delete name;
