@@ -1,6 +1,9 @@
 #include "Player.h"
 using namespace std;
 
+/*
+Player constructor to initialize player attributes
+*/
 Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_num) {
   this->map = map;
   this->name = new string(name);
@@ -17,6 +20,9 @@ Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_nu
   }
 }
 
+/*
+Copy constructor to copy player
+*/
 Player::Player(const Player &player) {
   map = player.GetMap();
   name = new string(player.GetName());
@@ -33,6 +39,9 @@ Player::Player(const Player &player) {
   }
 }
 
+/*
+Deconstructor to deallocate heap variables
+*/
 Player::~Player() {
   delete name;
   delete cubes;
@@ -60,6 +69,9 @@ BiddingFacility *Player::GetBiddingFacility() const { return bidding_facility; }
 
 Hand *Player::GetHand() const { return hand; }
 
+/*
+Player assignment operator
+*/
 Player &Player::operator=(const Player &player) {
   if (this != &player) {
     map = player.GetMap();
@@ -75,6 +87,9 @@ Player &Player::operator=(const Player &player) {
   return *this;
 }
 
+/*
+Stream insertion operator
+*/
 ostream &operator<<(ostream &os, const Player &player) {
   os << "### " << player.GetName() << " ###" << endl;
   os << "Cubes: " << player.GetCubes() << endl;
@@ -94,6 +109,9 @@ ostream &operator<<(ostream &os, const Player &player) {
   return os;
 }
 
+/*
+Lets a player pay an amount of coins
+*/
 bool Player::PayCoin(int coins) {
   if (*this->coins < coins) {
     cout << "Player::PayCoin(): Not enough coins." << endl;
@@ -105,6 +123,9 @@ bool Player::PayCoin(int coins) {
   }
 }
 
+/*
+Returns a region with the number of armies in it
+*/
 pair<Region *, int> *Player::GetArmiesInRegion(Region *region) {
   vector<pair<Region *, int>>::iterator i;
   for (i = armies->begin(); i != armies->end(); ++i) {
@@ -115,6 +136,9 @@ pair<Region *, int> *Player::GetArmiesInRegion(Region *region) {
   return nullptr;
 }
 
+/*
+Returns a region with the number of cities in it
+*/
 pair<Region *, int> *Player::GetCitiesInRegion(Region *region) {
   vector<pair<Region *, int>>::iterator i;
   for (i = cities->begin(); i != cities->end(); ++i) {
@@ -125,6 +149,9 @@ pair<Region *, int> *Player::GetCitiesInRegion(Region *region) {
   return nullptr;
 }
 
+/*
+Places an amount of armies in a region
+*/
 bool Player::PlaceNewArmies(int armies_num, Region *region) {
   if (*cubes < armies_num) {
     cout << "Player::PlaceNewArmies(): Not enough armies." << endl;
@@ -146,6 +173,9 @@ bool Player::PlaceNewArmies(int armies_num, Region *region) {
   }
 }
 
+/*
+Builds city in a specific region
+*/
 bool Player::BuildCity(Region *region) {
   if (*discs < 1) {
     cout << "Player::BuildCity(): Not enough discs." << endl;
@@ -166,6 +196,9 @@ bool Player::BuildCity(Region *region) {
   }
 }
 
+/*
+Destroy army in a region
+*/
 bool Player::DestroyArmy(Player *player, Region *region) {
   pair<Region *, int> *armies_in_region = GetArmiesInRegion(region);
   if (armies_in_region->second > 0) {
@@ -186,6 +219,9 @@ bool Player::DestroyArmy(Player *player, Region *region) {
   }
 }
 
+/*
+Move number of armies from one region to another, by land
+*/
 bool Player::MoveOverLand(int armies_num, Region *origin, Region *destination) {
   pair<Region *, int> *armies_in_origin = GetArmiesInRegion(origin);
   pair<Region *, int> *armies_in_destination = GetArmiesInRegion(destination);
@@ -196,6 +232,9 @@ bool Player::MoveOverLand(int armies_num, Region *origin, Region *destination) {
   return true;
 }
 
+/*
+Move number of armies from one region to another, by water
+*/
 bool Player::MoveOverWater(int armies_num, Region *origin, Region *destination) {
   pair<Region *, int> *armies_in_origin = GetArmiesInRegion(origin);
   pair<Region *, int> *armies_in_destination = GetArmiesInRegion(destination);
@@ -206,6 +245,9 @@ bool Player::MoveOverWater(int armies_num, Region *origin, Region *destination) 
   return true;
 }
 
+/*
+Move number of armies from one region to another and determine if its by land or water
+*/
 bool Player::MoveArmies(int armies_num, Region *origin, Region *destination) {
   pair<Region *, int> *armies_in_origin = GetArmiesInRegion(origin);
   if (armies_in_origin->second >= armies_num) {
