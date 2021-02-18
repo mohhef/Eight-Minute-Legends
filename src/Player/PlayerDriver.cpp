@@ -28,4 +28,8 @@ void Driver::part3(){
   p1->MoveArmies(1, germany, france);
   p1->BuildCity(france);
   p1->DestroyArmy(p2, germany);
+
+  // Visualize the state of each player
+  cout << *p1;
+  cout << *p2;
 }

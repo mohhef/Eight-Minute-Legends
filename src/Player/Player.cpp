@@ -1,8 +1,4 @@
 #include "Player.h"
-
-#include <iostream>
-
-#include "../Map/Map.h"
 using namespace std;
 
 Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_num) {
@@ -13,7 +9,25 @@ Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_nu
   coins = new int(coins_num);
   cities = new vector<pair<Region *, int>>;
   armies = new vector<pair<Region *, int>>;
+  bidding_facility = new BiddingFacility(coins_num, name);
+  hand = new Hand();
   for (auto region : *(this->map->regions)) {
+    cities->push_back(make_pair(region.first, 0));
+    armies->push_back(make_pair(region.first, 0));
+  }
+}
+
+Player::Player(const Player &player) {
+  map = player.GetMap();
+  name = new string(player.GetName());
+  cubes = new int(player.GetCubes());
+  discs = new int(player.GetDiscs());
+  coins = new int(player.GetCoins());
+  cities = new vector<pair<Region *, int>>;
+  armies = new vector<pair<Region *, int>>;
+  bidding_facility = new BiddingFacility(*player.GetBiddingFacility());
+  hand = player.GetHand();
+  for (auto region : *(map->regions)) {
     cities->push_back(make_pair(region.first, 0));
     armies->push_back(make_pair(region.first, 0));
   }
@@ -26,6 +40,58 @@ Player::~Player() {
   delete coins;
   delete cities;
   delete armies;
+}
+
+Map *Player::GetMap() const { return map; }
+
+string Player::GetName() const { return *name; }
+
+int Player::GetCubes() const { return *cubes; }
+
+int Player::GetDiscs() const { return *discs; }
+
+int Player::GetCoins() const { return *coins; }
+
+vector<pair<Region *, int>> *Player::GetCities() const { return cities; }
+
+vector<pair<Region *, int>> *Player::GetArmies() const { return armies; }
+
+BiddingFacility *Player::GetBiddingFacility() const { return bidding_facility; }
+
+Hand *Player::GetHand() const { return hand; }
+
+Player &Player::operator=(const Player &player) {
+  if (this != &player) {
+    map = player.GetMap();
+    *name = player.GetName();
+    *cubes = player.GetCubes();
+    *discs = player.GetDiscs();
+    *coins = player.GetCoins();
+    cities = player.GetCities();
+    armies = player.GetArmies();
+    bidding_facility = player.GetBiddingFacility();
+    hand = player.GetHand();
+  }
+  return *this;
+}
+
+ostream &operator<<(ostream &os, const Player &player) {
+  os << "### " << player.GetName() << " ###" << endl;
+  os << "Cubes: " << player.GetCubes() << endl;
+  os << "Discs: " << player.GetDiscs() << endl;
+  os << "Coins: " << player.GetCoins() << endl;
+  os << "Cities: ";
+  for (auto region : *(player.GetCities())) {
+    os << *((region.first)->name) << "->" << region.second << " ";
+  }
+  os << endl;
+  os << "Armies: ";
+  for (auto region : *(player.GetArmies())) {
+    os << *((region.first)->name) << "->" << region.second << " ";
+  }
+  os << endl;
+  os << endl;
+  return os;
 }
 
 bool Player::PayCoin(int coins) {
@@ -46,7 +112,7 @@ pair<Region *, int> *Player::GetArmiesInRegion(Region *region) {
       return &(*i);
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 pair<Region *, int> *Player::GetCitiesInRegion(Region *region) {
@@ -56,7 +122,7 @@ pair<Region *, int> *Player::GetCitiesInRegion(Region *region) {
       return &(*i);
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 bool Player::PlaceNewArmies(int armies_num, Region *region) {
@@ -68,6 +134,7 @@ bool Player::PlaceNewArmies(int armies_num, Region *region) {
   if (cities_in_region->second > 0 || region == map->startingRegion) {
     pair<Region *, int> *armies_in_region = GetArmiesInRegion(region);
     armies_in_region->second += armies_num;
+    *cubes -= armies_num;
     cout << *name << " has placed " << armies_num << " new armies in " << *region->name
          << "." << endl;
     return true;
