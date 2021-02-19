@@ -53,6 +53,8 @@ Player::~Player() {
   delete coins;
   delete cities;
   delete armies;
+  delete bidding_facility;
+  delete hand;
 }
 
 Map *Player::GetMap() const { return map; }
@@ -75,17 +77,17 @@ Hand *Player::GetHand() const { return hand; }
 
 /*
 Player assignment operator
+Only deep copy player specific arguments
 */
 Player &Player::operator=(const Player &player) {
   if (this != &player) {
+    this->~Player();
     map = player.GetMap();
     *name = player.GetName();
     *cubes = player.GetCubes();
     *discs = player.GetDiscs();
     *coins = player.GetCoins();
-    delete cities;
     cities = new vector<pair<Region *, int>>;
-    delete armies;
     armies = new vector<pair<Region *, int>>;
     for (auto region : *player.cities) {
       cities->push_back(make_pair(region.first, region.second));
@@ -93,7 +95,6 @@ Player &Player::operator=(const Player &player) {
     for (auto region : *player.armies) {
       armies->push_back(make_pair(region.first, region.second));
     }
-    delete bidding_facility;
     bidding_facility = new BiddingFacility(*player.GetBiddingFacility());
     hand = player.GetHand();
   }
