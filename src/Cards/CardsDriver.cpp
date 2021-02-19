@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Cards.h"
 
-int main(){
+int main() {
   Deck *deck = new Deck();
   Hand *myHand = new Hand();
 
