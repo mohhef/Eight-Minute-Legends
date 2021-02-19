@@ -8,12 +8,12 @@ void Driver::part5(){
   vector <BiddingFacility> players;
 
   //create bidding facilities, with default bid as 0
-  BiddingFacility bf1 = BiddingFacility(11, "johnson");
-  players.push_back(bf1);
-  BiddingFacility bf2 = BiddingFacility(11, "brown");
-  players.push_back(bf2);
-  BiddingFacility bf3 = BiddingFacility(11, "green");
-  players.push_back(bf3);
+  BiddingFacility *bf1 = new BiddingFacility(11, "johnson");
+  BiddingFacility *bf2 = new BiddingFacility(11, "brown");
+  BiddingFacility *bf3 = new BiddingFacility(11, "green");
+  players.push_back(*bf1);
+  players.push_back(*bf2);
+  players.push_back(*bf3);
 
   BiddingFacility *winner = nullptr; //set current bid winner as null
   //Loop enabling each player to enter their bid
@@ -31,4 +31,8 @@ void Driver::part5(){
   winner->subtractBid();
   cout << "Winner with highest bid: " << *winner->getLastName() << endl
        << "Coins remaining: " << *winner->getPlayerCoins() << endl;
+
+  delete bf1;
+  delete bf2;
+  delete bf3;
 }
