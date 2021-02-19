@@ -17,6 +17,7 @@ This C++ applications represents the board game, eight minute empire legends.
 
 Clion specific:
 - Open the repository directory in Clion
-- Navigate to MainDriver.cpp and comment/uncomment the part you want to testRun the application
+- Navigate to MainDriver.cpp and comment/uncomment the part you want to test
+- Run the application
 
 
