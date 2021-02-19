@@ -25,12 +25,14 @@ Player::Player(const Player &player) {
   coins = new int(player.GetCoins());
   cities = new vector<pair<Region *, int>>;
   armies = new vector<pair<Region *, int>>;
+  for (auto region : *player.GetCities()) {
+    cities->push_back(make_pair(region.first, region.second));
+  }
+  for (auto region : *player.GetArmies()) {
+    armies->push_back(make_pair(region.first, region.second));
+  }
   bidding_facility = new BiddingFacility(*player.GetBiddingFacility());
   hand = player.GetHand();
-  for (auto region : *(map->regions)) {
-    cities->push_back(make_pair(region.first, 0));
-    armies->push_back(make_pair(region.first, 0));
-  }
 }
 
 Player::~Player() {
@@ -67,9 +69,18 @@ Player &Player::operator=(const Player &player) {
     *cubes = player.GetCubes();
     *discs = player.GetDiscs();
     *coins = player.GetCoins();
-    cities = player.GetCities();
-    armies = player.GetArmies();
-    bidding_facility = player.GetBiddingFacility();
+    delete cities;
+    cities = new vector<pair<Region *, int>>;
+    delete armies;
+    armies = new vector<pair<Region *, int>>;
+    for (auto region : *player.cities) {
+      cities->push_back(make_pair(region.first, region.second));
+    }
+    for (auto region : *player.armies) {
+      armies->push_back(make_pair(region.first, region.second));
+    }
+    delete bidding_facility;
+    bidding_facility = new BiddingFacility(*player.GetBiddingFacility());
     hand = player.GetHand();
   }
   return *this;
