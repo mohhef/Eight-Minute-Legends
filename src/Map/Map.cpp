@@ -8,37 +8,65 @@
 #include <unordered_map>
 #include <algorithm>
 
+/*
+ * Default constructor that initializes regions, continents and a starting region
+*/
 Map::Map() {
   regions = new vector<pair<Region *, vector<pair<Region *, bool>>>>;
   continents = new vector<pair<Continent *, vector<Region *>>>;
   startingRegion = nullptr;
 }
 
+/*
+ * Destructor that deallocates all the pointer
+ * The starting region and the content in regions vector are not deleted here,
+ * because they are all deleted while looping through the continents
+*/
 Map::~Map() {
+  for (auto continent: *continents) {
+    for (auto region: continent.second) {
+      delete region->name;
+    }
+    delete continent.first;
+  }
   delete regions;
   delete continents;
-  delete startingRegion;
 }
 
+/*
+ * An assignment operator for the map object
+*/
 Map &Map::operator=(const Map &rhs) {
   if (this != &rhs) {
     this->~Map();
-    new(this) Map(rhs);
+    deepCopy(rhs);
   }
   return *this;
 }
 
+/*
+ * A copy constructor for the map object
+*/
 Map::Map(const Map &obj) {
+  deepCopy(obj);
+}
+
+/*
+deep copy
+*/
+void Map::deepCopy(const Map &obj) {
   startingRegion = new Region(*(obj.startingRegion));
   regions = new vector<pair<Region *, vector<pair<Region *, bool>>>>;
   continents = new vector<pair<Continent *, vector<Region *>>>;
 
+  //copy continents
   for (int i = 0; i < obj.continents->size(); i++) {
     auto *continent = new Continent(*((*obj.continents)[i].first));
     vector<Region *> continentRegion;
     continents->push_back(make_pair(continent, continentRegion));
   }
 
+  //copy regions
   for (int i = 0; i < obj.regions->size(); i++) {
     auto *continent = findContinent(*((*obj.regions)[i].first->continent->name));
     auto *region = new Region(*((*obj.regions)[i].first->name), continent);
@@ -46,6 +74,8 @@ Map::Map(const Map &obj) {
     regions->push_back(make_pair(region, intiAdjacency));
 
   }
+
+  //copy regions adjacency
   for (int i = 0; i < regions->size(); i++) {
     for (int j = 0; j < (*obj.regions)[i].second.size(); j++) {
       auto *adjacent = findRegion(*((*obj.regions)[i].second[j].first->name));
@@ -54,6 +84,7 @@ Map::Map(const Map &obj) {
     }
   }
 
+  //copy the regions of the continents array
   for (int i = 0; i < continents->size(); i++) {
     for (int j = 0; j < (*obj.continents)[i].second.size(); j++) {
       auto *region = findRegion(*((*obj.continents)[i].second[j])->name);
@@ -62,16 +93,25 @@ Map::Map(const Map &obj) {
   }
 }
 
+/*
+ * Stream insertion operator
+ */
 std::ostream &operator<<(ostream &output, Map &map) {
   map.displayMap();
   return output;
 }
 
+/*
+ * Adds a continent to the map
+ */
 void Map::addContinent(Continent *continent) {
   continents->push_back(make_pair(continent, vector<Region *>()));
 }
 
-//starting region is false by default, if want to set starting set true
+/*
+ * Adds a region to the map
+ * Starting region is false by default, if want to set starting set true
+ */
 void Map::addRegion(Region *region, bool setStartingRegion) {
   if (setStartingRegion) {
     startingRegion = region;
@@ -90,6 +130,10 @@ void Map::addRegion(Region *region, bool setStartingRegion) {
   }
 }
 
+/*
+ * Add a path between a starting and destination region
+ * 1 for land, 0 for water
+ */
 void Map::addPath(Region *start, Region *destination, bool land) {
   for (int i = 0; i < (*regions).size(); i++) {
     if ((*regions)[i].first == start) {
@@ -100,7 +144,9 @@ void Map::addPath(Region *start, Region *destination, bool land) {
   }
 }
 
-// checks if two regions are adjacent: 1 = land, 0 = water, -1 not adjacent
+/*
+ * Checks if two regions are adjacent: 1 = land, 0 = water, -1 not adjacent
+*/
 int Map::isAdjacent(Region *start, Region *end) {
   for (int i = 0; i < regions->size(); i++) {
     if ((*regions)[i].first == start) {
@@ -118,6 +164,9 @@ int Map::isAdjacent(Region *start, Region *end) {
   return -1;
 }
 
+/*
+Check if a map is valid by calling three functions
+*/
 bool Map::isValid() {
   bool valid1 = areRegionsConnected();
   bool valid2 = areContinentsConnected();
@@ -125,6 +174,9 @@ bool Map::isValid() {
   return valid1 && valid2 && valid3;
 }
 
+/*
+ * Check if each region belongs to exactly one continent
+*/
 bool Map::eachRegionBelongsToOneContinent() {
   bool eachCountryBelongsToOneRegion = true;
   unordered_map<string, bool> uMap;
@@ -139,13 +191,19 @@ bool Map::eachRegionBelongsToOneContinent() {
   for (auto it = uMap.begin(); it != uMap.end(); ++it) {
     if (it->second == false) {
       cout << it->first << " has been added more than once" << endl;
+      eachCountryBelongsToOneRegion = false;
+      return eachCountryBelongsToOneRegion;
     }
   }
   return eachCountryBelongsToOneRegion;
 }
 
+/*
+ * Check if the continents are connected
+*/
 bool Map::areContinentsConnected() {
 
+  // initialize all continents to not visited (false)
   auto visitedContinents = new vector<pair<Continent *, bool>>;
   for (auto continent: *(continents)) {
     visitedContinents->push_back(make_pair(continent.first, false));
@@ -157,6 +215,7 @@ bool Map::areContinentsConnected() {
     visitedRegions->push_back(make_pair(region.first, false));
   }
 
+  // get the regions in the first continent and set them as visited
   stack<Region *> stack;
   vector<Region *> continentRegions = (*continents)[0].second;
   (*visitedContinents)[0].second = true;
@@ -171,6 +230,7 @@ bool Map::areContinentsConnected() {
     }
   }
 
+  // look through all the other regions and see if it connected to the first initial continent
   while (!stack.empty()) {
     Region *region = stack.top();
     stack.pop();
@@ -199,6 +259,7 @@ bool Map::areContinentsConnected() {
       }
     }
   }
+
   //Check if all continents are visited
   bool isContinentsConnected = true;
   for (pair<Continent *, bool> visitedContinent: *visitedContinents) {
@@ -212,18 +273,22 @@ bool Map::areContinentsConnected() {
   return isContinentsConnected;
 }
 
+/*
+ * Check if regions are connected
+*/
 bool Map::areRegionsConnected() {
+
   // initialize all regions to not visited (false)
   auto visitedRegions = new vector<pair<Region *, bool>>;
   for (auto region: *(regions)) {
     visitedRegions->push_back(make_pair(region.first, false));
   }
 
-  //uses a stack to iterate through the graph
   stack<Region *> stack;
   stack.push((*regions)[0].first);
   (*visitedRegions)[0].second = true;
 
+  //Loop through the whole graph to check if regions are connected using a stack
   while (!stack.empty()) {
     Region *region = stack.top();
     stack.pop();
@@ -242,6 +307,7 @@ bool Map::areRegionsConnected() {
   }
 
   bool isRegionsConnected = true;
+  //Check if regions are all visited
   for (pair<Region *, bool> visitedRegion: *visitedRegions) {
     if (!visitedRegion.second) {
       isRegionsConnected = false;
@@ -252,6 +318,9 @@ bool Map::areRegionsConnected() {
   return isRegionsConnected;
 }
 
+/*
+Get the adjacent regions of a region
+*/
 vector<pair<Region *, bool>> *Map::getNeighbourList(Region *region) {
   auto *neighbourList = new vector<pair<Region *, bool>>;
   for (int i = 0; i < regions->size(); i++) {
@@ -263,6 +332,9 @@ vector<pair<Region *, bool>> *Map::getNeighbourList(Region *region) {
   return neighbourList;
 }
 
+/*
+ * Returns a pointer to a continent after it searches for it
+*/
 Continent *Map::findContinent(string continent) {
   vector<Continent>::iterator i;
   for (auto it = continents->begin(); it != continents->end(); it++) {
@@ -273,6 +345,9 @@ Continent *Map::findContinent(string continent) {
   return nullptr;
 }
 
+/*
+ * Returns a pointer to a region after it searches for it
+*/
 Region *Map::findRegion(string region) {
   vector<Continent>::iterator i;
   for (auto it = regions->begin(); it != regions->end(); it++) {
@@ -283,6 +358,7 @@ Region *Map::findRegion(string region) {
   return nullptr;
 }
 
+/*Displays the map object*/
 void Map::displayMap() {
   if (this != NULL) {
     printf("\n%20s %s  \n\n", "", "********* Map Details *********");

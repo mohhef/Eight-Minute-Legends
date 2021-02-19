@@ -4,8 +4,10 @@
 
 #include "../Map/Map.h"
 #include "MapLoader.h"
-int main() {
-  Map *map = MapLoader::loadmap("../Files/invalidMap.txt");
-  map->displayMap();
+#include "../MainDriver.h"
 
+void Driver::part2(){
+  //change the file name to load a different map
+  Map *map = MapLoader::loadmap("../Files/invalidMap.txt");
+  cout << *map;
 }

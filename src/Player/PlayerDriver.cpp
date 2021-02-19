@@ -2,9 +2,10 @@
 
 #include "../Map/Map.h"
 #include "Player.h"
+#include "../MainDriver.h"
 using namespace std;
 
-int main() {
+void Driver::part3(){
   // Creating a map
   Map *map = new Map();
   auto *europe = new Continent("Europe");
@@ -27,4 +28,10 @@ int main() {
   p1->MoveArmies(1, germany, france);
   p1->BuildCity(france);
   p1->DestroyArmy(p2, germany);
+
+  // Visualize the state of each player
+  cout << *p1;
+  cout << *p2;
+  delete p1;
+  delete p2;
 }

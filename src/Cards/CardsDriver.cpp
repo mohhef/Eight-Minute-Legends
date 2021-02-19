@@ -1,7 +1,8 @@
 #include <iostream>
 #include "Cards.h"
+#include "../MainDriver.h"
 
-int main() {
+void Driver::part4() {
   Deck *deck = new Deck();
   Hand *myHand = new Hand();
 
@@ -18,6 +19,4 @@ int main() {
 
   delete deck;
   delete myHand;
-  
-  return 0;
 }
