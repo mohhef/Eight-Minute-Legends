@@ -5,6 +5,9 @@
 #include <cassert>
 using namespace std;
 
+/*
+loads a map from a from a file
+*/
 Map *MapLoader::loadmap(string fileName) {
   // read file
   bool reading_regions = false;// read region
@@ -94,6 +97,7 @@ Map *MapLoader::loadmap(string fileName) {
       // make sure if the map is valid
       return map;
     }
+    cout << "The game's map is not valid, will not add the map" << endl;
     return nullptr;
   } catch (const exception &e) {
     cout << "Invalid map format" << e.what() << endl;

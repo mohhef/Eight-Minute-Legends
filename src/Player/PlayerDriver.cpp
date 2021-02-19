@@ -2,9 +2,10 @@
 
 #include "../Map/Map.h"
 #include "Player.h"
+#include "../MainDriver.h"
 using namespace std;
 
-int main() {
+void Driver::part3(){
   // Creating a map
   Map *map = new Map();
   auto *europe = new Continent("Europe");
@@ -31,4 +32,6 @@ int main() {
   // Visualize the state of each player
   cout << *p1;
   cout << *p2;
+  delete p1;
+  delete p2;
 }

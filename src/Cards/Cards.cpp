@@ -13,6 +13,10 @@ int TOP_BOARD_SIZE = 6;
 // =============================================
 // Start of Cards class function implementations
 // =============================================
+/*
+Cards default constructor
+ note: ability = goods
+*/
 Cards::Cards() {
   this->ability = nullptr;
   this->action = nullptr;
@@ -41,7 +45,9 @@ Cards::Cards(string ability, string action, string name, int number) {
   this->number = new int(number);
 }
 
-// Copy constructor
+/*
+Cards copy constructor
+*/
 Cards::Cards(const Cards &card) {
   this->ability = new string;
   this->action = new string;
@@ -54,6 +60,9 @@ Cards::Cards(const Cards &card) {
   *this->number = card.getNumber();
 }
 
+/*
+Cards deconstructor
+*/
 Cards::~Cards() {
   delete ability;
   delete action;
@@ -61,6 +70,9 @@ Cards::~Cards() {
   delete number;
 }
 
+/*
+Stream insertion operator for cards
+*/
 ostream &operator<<(ostream &os, const Cards &cards) {
   os << "Name: " << cards.getName() << " Ability: " << cards.getAbility() << " Action: " << cards.getAction();
   if (cards.getNumber() != 0) {
@@ -69,6 +81,9 @@ ostream &operator<<(ostream &os, const Cards &cards) {
   return os;
 }
 
+/*
+Assignment operator for cards
+*/
 Cards &Cards::operator=(const Cards &cards) {
   *this->ability = cards.getAbility();
   *this->action = cards.getAction();
@@ -117,6 +132,13 @@ void Cards::setNumber(int number) {
 // ============================================
 // Start of Deck class function implementations
 // ============================================
+/*
+Default deck constructor
+It loads all the cards from a file located at Files folder
+It shuffles all the cards
+It initializes the card costs
+It puts the cards to be chosen from on the board
+ */
 Deck::Deck() {
   string myText;
   ifstream MyReadFile("../Files/cards.txt");
@@ -152,6 +174,9 @@ Deck::Deck() {
   }
 }
 
+/*
+Deck copy constructor
+*/
 Deck::Deck(const Deck &deck) {
   this->deckSize = new int;
   *this->deckSize = deck.getDeckSize();
@@ -169,6 +194,9 @@ Deck::Deck(const Deck &deck) {
   }
 }
 
+/*
+Deck deconstructor
+*/
 Deck::~Deck() {
   for (int i = 0; i < *deckSize; i++) {
     delete deckCards->at(i);
@@ -184,6 +212,9 @@ Deck::~Deck() {
   delete boardCosts;
 }
 
+/*
+Deck stream insertion operator
+*/
 ostream &operator<<(ostream &os, const Deck &deck) {
   os << "Deck: " << endl;
   for (int i = 0; i < deck.getDeckSize(); i++) {
@@ -197,6 +228,9 @@ ostream &operator<<(ostream &os, const Deck &deck) {
   return os;
 }
 
+/*
+Deck assignment operator
+*/
 Deck &Deck::operator=(const Deck &deck) {
   this->boardCosts = deck.getBoardCosts();
   this->deckCards = deck.getDeckCards();
@@ -228,6 +262,9 @@ Cards *Deck::getTopBoardCard(int position) const {
   return topBoard->at(position);
 }
 
+/*
+Takes a card from a deck of cards
+*/
 Cards *Deck::draw() {
   Cards *card = deckCards->back();
   deckCards->pop_back();
@@ -235,12 +272,18 @@ Cards *Deck::draw() {
   return card;
 }
 
+/*
+Shows the cards that can be picked from with their costs
+*/
 void Deck::showTopBoard() {
   for (int i = 0; i < TOP_BOARD_SIZE; i++) {
     cout << *this->getTopBoardCard(i) << " Cost: " << boardCosts[i] << endl;
   }
 }
 
+/*
+Removes a card by position from the cards available to be picked from
+*/
 void Deck::removeFromTopBoard(int position) {
   topBoard->erase(topBoard->begin() + position);
   topBoard->push_back(this->draw());
@@ -251,7 +294,12 @@ void Deck::removeFromTopBoard(int position) {
 
 // ============================================
 // Start of Hand class function implementations
+// This class represents a hand of a player
 // ============================================
+
+/*
+A hand default constructor
+*/
 Hand::Hand() {
   this->maxHandSize = new int(HAND_SIZE);
   this->handCards = new vector<Cards *>;
@@ -268,6 +316,10 @@ Hand::Hand(const Hand &hand) {
     this->handCards->push_back(new Cards(*hand.getCard(i)));
   }
 }
+
+/*
+deconstructor for hand
+*/
 Hand::~Hand() {
   for (int i = 0; i < this->getCurrentHandSize(); i++) {
     delete handCards->at(i);
@@ -277,6 +329,9 @@ Hand::~Hand() {
   delete maxHandSize;
 }
 
+/*
+stream insertion operator for hand class
+*/
 ostream &operator<<(ostream &os, const Hand &hand) {
   for (int i = 0; i < hand.getCurrentHandSize(); i++) {
     os << *hand.getCard(i) << endl;
@@ -284,6 +339,9 @@ ostream &operator<<(ostream &os, const Hand &hand) {
   return os;
 }
 
+/*
+Assignment operator for hand class
+*/
 Hand &Hand::operator=(const Hand &hand) {
   for (int i = 0; i < hand.getCurrentHandSize(); i++) {
     this->handCards->at(i) = hand.getCard(i);
@@ -300,10 +358,16 @@ int Hand::getMaxHandSize() const {
   return *this->maxHandSize;
 }
 
+/*
+gets a card from a hand of cards
+*/
 Cards *Hand::getCard(int position) const {
   return handCards->at(position);
 }
 
+/*
+Lets a player pick a card by position from the available cards and readjusts the available cards and the deck of cards
+*/
 void Hand::exchange(int position, Deck &deck) {
   // TODO: Change to check available coins and wait for y/n decision. Also change hand size depending on players
   if (this->handCards->size() < *maxHandSize - 1) {
@@ -312,6 +376,9 @@ void Hand::exchange(int position, Deck &deck) {
   }
 }
 
+/*
+adds a card to the player's hand of cards
+*/
 void Hand::addCard(Cards *card) {
   this->handCards->push_back(card);
 }

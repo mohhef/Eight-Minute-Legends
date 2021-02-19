@@ -30,6 +30,7 @@ struct Continent {
 
   ~Continent() {
     delete name;
+    name = NULL;
   }
 
   friend ostream &operator<<(ostream &output, Continent &continent) {
@@ -63,7 +64,10 @@ struct Region {
 
   ~Region() {
     delete name;
+    name = NULL;
     delete continent;
+    continent = NULL;
+
   }
   friend ostream &operator<<(ostream &output, Region &region) {
     output << *(region.continent);
@@ -78,6 +82,7 @@ class Map {
   ~Map();
   Map(const Map &obj);
   Map &operator=(const Map &rhs);
+  void deepCopy(const Map &obj);
   friend ostream &operator<<(ostream &output, Map &region);
   // a vector that has a pair of region and all of its adjacent regions
   vector<pair<Region *, vector<pair<Region *, bool>>>> *regions;
