@@ -32,4 +32,6 @@ void Driver::part3(){
   // Visualize the state of each player
   cout << *p1;
   cout << *p2;
+  delete p1;
+  delete p2;
 }
