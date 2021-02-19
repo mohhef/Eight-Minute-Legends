@@ -5,8 +5,8 @@
 
 int main(){
 //  Driver::part1();
-//  Driver::part2();
-  Driver::part3();
+  Driver::part2();
+//  Driver::part3();
 //  Driver::part4();
 //  Driver::part5();
 }

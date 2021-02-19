@@ -36,7 +36,7 @@ void Driver::part1() {
   map->addPath(france, india, 0);
   map->addPath(india, pakistan, 1);
 
-  map->displayMap();
+  cout<<*map;
   map->isValid();
 
   //Invalid map, Copy constructor, Stream insertion operator
@@ -46,7 +46,7 @@ void Driver::part1() {
   auto *egypt = new Region("Egypt", africa);
   map2.addContinent(africa);
   map2.addRegion(egypt);
-  map2.displayMap();
+  cout<<map2;
   map2.isValid();
 
   delete map;

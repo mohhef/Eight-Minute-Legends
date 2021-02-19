@@ -5,6 +5,9 @@ Canada,North America
 Germany,europe
 France,europe
 
+India,asia
+Pakistan,asia
+
 [Path]
 USA,Canada:1
 Germany,France:1
