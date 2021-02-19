@@ -61,15 +61,8 @@ ostream &operator<<(ostream &os, const Cards &cards) {
   return os;
 }
 
-Cards &Cards::operator=(const Cards &cards) {
-  if(this != &cards) {
-    delete ability;
-    delete action;
-    delete name;
-    delete number;
-
-    deepCopy(cards);
-  }
+Cards &Cards::operator=(Cards cards) {
+  swap(*this,cards);
   return *this;
 }
 
@@ -110,6 +103,15 @@ void Cards::setName(string name) {
 
 void Cards::setNumber(int number) {
   *this->number = number;
+}
+
+void swap(Cards& first, Cards& second) {
+  using std::swap;
+    
+  swap(first.ability, second.ability);
+  swap(first.action, second.action);
+  swap(first.name, second.name);
+  swap(first.number, second.number);
 }
 // ===========================================
 // End of Cards class function implementations
@@ -185,23 +187,8 @@ ostream &operator<<(ostream &os, const Deck &deck) {
   return os;
 }
 
-Deck& Deck::operator=(const Deck &deck) {
-  if(this != &deck) {
-    for (int i = 0; i < *deckSize; i++) {
-      delete (*deckCards)[i];
-    }
-    for (int i = 0; i < TOP_BOARD_SIZE; i++) {
-      delete (*topBoard)[i];
-    }
-    deckCards->clear();
-    delete deckCards;
-    topBoard->clear();
-    delete topBoard;
-    delete deckSize;
-    delete boardCosts;
-
-    deepCopy(deck);
-  }
+Deck& Deck::operator=(Deck deck) {
+  swap(*this, deck);
   return *this;
 }
 
@@ -262,6 +249,15 @@ void Deck::removeFromTopBoard(int position) {
   topBoard->erase(topBoard->begin() + position);
   topBoard->push_back(this->draw());
 }
+
+void swap(Deck& first, Deck& second) {
+  using std::swap;
+  
+  swap(first.boardCosts, second.boardCosts);
+  swap(first.deckSize, second.deckSize);
+  swap(first.deckCards, second.deckCards);
+  swap(first.topBoard, second.topBoard);
+}
 // ==========================================
 // End of Deck class function implementations
 // ==========================================
@@ -299,17 +295,8 @@ ostream &operator<<(ostream &os, const Hand &hand) {
   return os;
 }
 
-Hand &Hand::operator=(const Hand &hand) {
-  if(this != &hand) {
-    for (int i = 0; i < this->getCurrentHandSize(); i++) {
-      delete (*handCards)[i];
-    }
-    handCards->clear();
-    delete handCards;
-    delete maxHandSize;
-
-    deepCopy(hand);
-  }
+Hand &Hand::operator=(Hand hand) {
+  swap(*this, hand);
   return *this;
 }
 
@@ -343,6 +330,13 @@ void Hand::exchange(int position, Deck &deck) {
 
 void Hand::addCard(Cards *card) {
   this->handCards->push_back(card);
+}
+
+void swap(Hand& first, Hand& second) {
+  using std::swap;
+    
+  swap(first.maxHandSize, second.maxHandSize);
+  swap(first.handCards, second.handCards);
 }
 // ==========================================
 // End of Hand class function implementations
