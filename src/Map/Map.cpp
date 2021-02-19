@@ -19,23 +19,18 @@ Map::Map() {
 
 /*
  * Destructor that deallocates all the pointer
+ * The starting region and the content in regions vector are not delete here,
+ * because they are all deleted while looping through the continents
 */
 Map::~Map() {
-  for(auto region: *regions){
-    delete region.first;
-    for(auto adjRegion: region.second){
-      delete adjRegion.first;
+  for(auto continent: *continents){
+    for(auto region: continent.second){
+      delete region->name;
     }
+    delete continent.first;
   }
   delete regions;
-  for(auto continent: *continents){
-    delete continent.first;
-    for(auto region: continent.second){
-      delete region;
-    }
-  }
   delete continents;
-  delete startingRegion;
 }
 
 /*
@@ -189,6 +184,8 @@ bool Map::eachRegionBelongsToOneContinent() {
   for (auto it = uMap.begin(); it != uMap.end(); ++it) {
     if (it->second == false) {
       cout << it->first << " has been added more than once" << endl;
+      eachCountryBelongsToOneRegion = false;
+      return eachCountryBelongsToOneRegion;
     }
   }
   return eachCountryBelongsToOneRegion;
