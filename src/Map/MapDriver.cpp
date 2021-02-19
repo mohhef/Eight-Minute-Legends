@@ -40,7 +40,8 @@ void Driver::part1() {
   map->isValid();
 
   //Invalid map, Copy constructor, Stream insertion operator
-  Map map2 = *map;
+  Map map2;
+  map2 = *map;
 
   auto *africa = new Continent("Africa");
   auto *egypt = new Region("Egypt", africa);

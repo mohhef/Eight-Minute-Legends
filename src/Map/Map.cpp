@@ -19,12 +19,12 @@ Map::Map() {
 
 /*
  * Destructor that deallocates all the pointer
- * The starting region and the content in regions vector are not delete here,
+ * The starting region and the content in regions vector are not deleted here,
  * because they are all deleted while looping through the continents
 */
 Map::~Map() {
-  for(auto continent: *continents){
-    for(auto region: continent.second){
+  for (auto continent: *continents) {
+    for (auto region: continent.second) {
       delete region->name;
     }
     delete continent.first;
@@ -39,7 +39,7 @@ Map::~Map() {
 Map &Map::operator=(const Map &rhs) {
   if (this != &rhs) {
     this->~Map();
-    new(this) Map(rhs);
+    deepCopy(rhs);
   }
   return *this;
 }
@@ -48,6 +48,13 @@ Map &Map::operator=(const Map &rhs) {
  * A copy constructor for the map object
 */
 Map::Map(const Map &obj) {
+  deepCopy(obj);
+}
+
+/*
+deep copy
+*/
+void Map::deepCopy(const Map &obj) {
   startingRegion = new Region(*(obj.startingRegion));
   regions = new vector<pair<Region *, vector<pair<Region *, bool>>>>;
   continents = new vector<pair<Continent *, vector<Region *>>>;
