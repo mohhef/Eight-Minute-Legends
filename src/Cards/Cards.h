@@ -24,6 +24,8 @@ class Cards {
   friend ostream &operator<<(ostream &os, const Cards &cards);
   Cards &operator=(const Cards &card);
 
+  void deepCopy(const Cards &card);
+
   string getAction() const;
   string getAbility() const;
   string getName() const;
@@ -51,6 +53,8 @@ class Deck {
   friend ostream &operator<<(ostream &os, const Deck &deck);
   Deck &operator=(const Deck &deck);
 
+  void deepCopy(const Deck &deck);
+
   int getDeckSize() const;
   int *getBoardCosts() const;
   vector<Cards *>* getDeckCards() const;
@@ -77,6 +81,8 @@ class Hand {
 
   friend ostream &operator<<(ostream &os, const Hand &hand);
   Hand &operator=(const Hand &hand);
+
+  void deepCopy(const Hand &hand);
 
   int getCurrentHandSize() const;
   int getMaxHandSize() const;

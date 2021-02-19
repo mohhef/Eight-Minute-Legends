@@ -43,15 +43,7 @@ Cards::Cards(string ability, string action, string name, int number) {
 
 // Copy constructor
 Cards::Cards(const Cards &card) {
-  this->ability = new string;
-  this->action = new string;
-  this->name = new string;
-  this->number = new int;
-
-  *this->ability = card.getAbility();
-  *this->action = card.getAction();
-  *this->name = card.getName();
-  *this->number = card.getNumber();
+  deepCopy(card);
 }
 
 Cards::~Cards() {
@@ -70,13 +62,22 @@ ostream &operator<<(ostream &os, const Cards &cards) {
 }
 
 Cards &Cards::operator=(const Cards &cards) {
-  *this->ability = cards.getAbility();
-  *this->action = cards.getAction();
-  *this->name = cards.getName();
-  if (cards.getNumber() != 0) {
-    *this->number = cards.getNumber();
+  if(this != &cards){
+    delete ability;
+    delete action;
+    delete name;
+    delete number;
+
+    deepCopy(cards);
   }
   return *this;
+}
+
+void Cards::deepCopy(const Cards &cards){
+  this->ability = new string(cards.getAbility());
+  this->action = new string(cards.getAction());
+  this->name =  new string(cards.getName());
+  this->number = new int(cards.getNumber());
 }
 
 string Cards::getAbility() const {
@@ -153,28 +154,15 @@ Deck::Deck() {
 }
 
 Deck::Deck(const Deck &deck) {
-  this->deckSize = new int;
-  *this->deckSize = deck.getDeckSize();
-  deckCards = new vector<Cards *>;
-  topBoard = new vector<Cards *>;
-  this->boardCosts = new int[HAND_SIZE];
-  for (int i = 0; i < HAND_SIZE; i++) {
-    this->boardCosts[i] = deck.getBoardCosts()[i];
-  }
-  for (int i = 0; i < deck.getDeckSize(); i++) {
-    deckCards->push_back(new Cards(*deck.getCard(i)));
-  }
-  for (int i = 0; i < TOP_BOARD_SIZE; i++) {
-    topBoard->push_back(new Cards(*deck.getTopBoardCard(i)));
-  }
+  deepCopy(deck);
 }
 
 Deck::~Deck() {
   for (int i = 0; i < *deckSize; i++) {
-    delete deckCards->at(i);
+    delete (*deckCards)[i];
   }
   for (int i = 0; i < TOP_BOARD_SIZE; i++) {
-    delete topBoard->at(i);
+    delete (*topBoard)[i];
   }
   deckCards->clear();
   delete deckCards;
@@ -197,11 +185,40 @@ ostream &operator<<(ostream &os, const Deck &deck) {
   return os;
 }
 
-Deck &Deck::operator=(const Deck &deck) {
-  this->boardCosts = deck.getBoardCosts();
-  this->deckCards = deck.getDeckCards();
-  *this->deckSize = deck.getDeckSize();
+Deck& Deck::operator=(const Deck &deck) {
+  if(this != &deck){
+    for (int i = 0; i < *deckSize; i++) {
+      delete (*deckCards)[i];
+    }
+    for (int i = 0; i < TOP_BOARD_SIZE; i++) {
+      delete (*topBoard)[i];
+    }
+    deckCards->clear();
+    delete deckCards;
+    topBoard->clear();
+    delete topBoard;
+    delete deckSize;
+    delete boardCosts;
+
+    deepCopy(deck);
+  }
   return *this;
+}
+
+void Deck::deepCopy(const Deck &deck){
+  this->deckSize = new int(deck.getDeckSize());
+  this->deckCards = new vector<Cards *>;
+  this->topBoard = new vector<Cards *>;
+  this->boardCosts = new int[HAND_SIZE];
+  for (int i = 0; i < HAND_SIZE; i++) {
+    this->boardCosts[i] = deck.getBoardCosts()[i];
+  }
+  for (int i = 0; i < deck.getDeckSize(); i++) {
+    this->deckCards->push_back(new Cards(*deck.getCard(i)));
+  }
+  for (int i = 0; i < TOP_BOARD_SIZE; i++) {
+    this->topBoard->push_back(new Cards(*deck.getTopBoardCard(i)));
+  }
 }
 
 int Deck::getDeckSize() const {
@@ -221,11 +238,11 @@ int Deck::getBoardPositionCost(int position) const {
 }
 
 Cards *Deck::getCard(int position) const {
-  return deckCards->at(position);
+  return (*deckCards)[position];
 }
 
 Cards *Deck::getTopBoardCard(int position) const {
-  return topBoard->at(position);
+  return (*topBoard)[position];
 }
 
 Cards *Deck::draw() {
@@ -261,16 +278,14 @@ Hand::Hand(const int maxHandSize) {
   this->maxHandSize = new int(maxHandSize);
   this->handCards = new vector<Cards *>;
 }
+
 Hand::Hand(const Hand &hand) {
-  this->maxHandSize = new int(hand.getMaxHandSize());
-  this->handCards = new vector<Cards *>;
-  for (int i = 0; i < hand.getCurrentHandSize(); i++) {
-    this->handCards->push_back(new Cards(*hand.getCard(i)));
-  }
+  deepCopy(hand);
 }
+
 Hand::~Hand() {
   for (int i = 0; i < this->getCurrentHandSize(); i++) {
-    delete handCards->at(i);
+    delete (*handCards)[i];
   }
   handCards->clear();
   delete handCards;
@@ -285,11 +300,23 @@ ostream &operator<<(ostream &os, const Hand &hand) {
 }
 
 Hand &Hand::operator=(const Hand &hand) {
-  for (int i = 0; i < hand.getCurrentHandSize(); i++) {
-    this->handCards->at(i) = hand.getCard(i);
+  for (int i = 0; i < this->getCurrentHandSize(); i++) {
+    delete (*handCards)[i];
   }
-  *this->maxHandSize = hand.getMaxHandSize();
+  handCards->clear();
+  delete handCards;
+  delete maxHandSize;
+
+  deepCopy(hand);
   return *this;
+}
+
+void Hand::deepCopy(const Hand &hand){
+  this->maxHandSize = new int(hand.getMaxHandSize());
+  this->handCards = new vector<Cards *>;
+  for (int i = 0; i < hand.getCurrentHandSize(); i++) {
+    this->handCards->push_back(new Cards(*hand.getCard(i)));
+  }
 }
 
 int Hand::getCurrentHandSize() const {
@@ -301,7 +328,7 @@ int Hand::getMaxHandSize() const {
 }
 
 Cards *Hand::getCard(int position) const {
-  return handCards->at(position);
+  return (*handCards)[position];
 }
 
 void Hand::exchange(int position, Deck &deck) {
