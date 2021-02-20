@@ -53,6 +53,8 @@ Player::~Player() {
   delete coins;
   delete cities;
   delete armies;
+  delete bidding_facility;
+  delete hand;
 }
 
 Map *Player::GetMap() const { return map; }
@@ -75,6 +77,8 @@ Hand *Player::GetHand() const { return hand; }
 
 /*
 Player assignment operator
+Only deep copy player specific arguments
+Avoid memory leak by only delete non-deeply copied arguments
 */
 Player &Player::operator=(const Player &player) {
   if (this != &player) {
