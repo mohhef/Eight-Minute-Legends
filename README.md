@@ -2,7 +2,7 @@
 This C++ applications represents the board game, eight minute empire legends.
 
 **Contributors**:
-- Maxim 
+- Maxim Pobudzey
 - Kosta 24390849
 - Mohamed Hefny 40033382
 - Dominic Hart 40068282
