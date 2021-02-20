@@ -22,7 +22,9 @@ class Cards {
   virtual ~Cards();
 
   friend ostream &operator<<(ostream &os, const Cards &cards);
-  Cards &operator=(const Cards &card);
+  Cards &operator=(Cards card);
+
+  void deepCopy(const Cards &card);
 
   string getAction() const;
   string getAbility() const;
@@ -33,6 +35,8 @@ class Cards {
   void setAbility(string ability);
   void setName(string name);
   void setNumber(int number);
+
+  friend void swap(Cards& first, Cards& second);
 };
 
 class Deck {
@@ -48,7 +52,9 @@ class Deck {
   virtual ~Deck();
 
   friend ostream &operator<<(ostream &os, const Deck &deck);
-  Deck &operator=(const Deck &deck);
+  Deck &operator=(Deck deck);
+
+  void deepCopy(const Deck &deck);
 
   int getDeckSize() const;
   int *getBoardCosts() const;
@@ -60,6 +66,8 @@ class Deck {
 
   void showTopBoard();
   void removeFromTopBoard(int position);
+
+  friend void swap(Deck& first, Deck& second);
 };
 
 class Hand {
@@ -74,7 +82,9 @@ class Hand {
   virtual ~Hand();
 
   friend ostream &operator<<(ostream &os, const Hand &hand);
-  Hand &operator=(const Hand &hand);
+  Hand &operator=(Hand hand);
+
+  void deepCopy(const Hand &hand);
 
   int getCurrentHandSize() const;
   int getMaxHandSize() const;
@@ -82,4 +92,6 @@ class Hand {
   Cards *getCard(int position) const;
   void exchange(int position, Deck &deck);
   void addCard(Cards *card);
+
+  friend void swap(Hand& first, Hand& second);
 };

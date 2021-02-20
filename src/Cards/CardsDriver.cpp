@@ -2,7 +2,7 @@
 #include "Cards.h"
 #include "../MainDriver.h"
 
-void Driver::part4(){
+void Driver::part4() {
   Deck *deck = new Deck();
   Hand *myHand = new Hand();
 
@@ -13,7 +13,7 @@ void Driver::part4(){
 
   cout << "\nMy Hand after exchange: " << endl;
   cout << *myHand << endl;
-
+  
   cout << "\nTop Board after exchange: " << endl;
   deck->showTopBoard();
 
