@@ -25,6 +25,7 @@ class Player {
 
  public:
   Player(Map *map, string name, int cubes_num, int discs_num, int coins_num);
+  Player(int coins, string name);
   Player(const Player &player);
   ~Player();
   Map *GetMap() const;

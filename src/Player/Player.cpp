@@ -20,6 +20,17 @@ Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_nu
   }
 }
 
+Player::Player(int coins, string name){
+  this->map = new Map();
+  this->cubes= new int(0);
+  this->discs = new int(0);
+  this->name = new string(name);
+  this->coins = new int(coins);
+  cities = new vector<pair<Region *, int>>;
+  armies = new vector<pair<Region *, int>>;
+  bidding_facility = new BiddingFacility(coins, name);
+  this->hand = new Hand();
+}
 /*
 Copy constructor to copy player
 */
@@ -54,7 +65,6 @@ Player::~Player() {
   delete cities;
   delete armies;
   delete bidding_facility;
-  delete hand;
 }
 
 Map *Player::GetMap() const { return map; }
