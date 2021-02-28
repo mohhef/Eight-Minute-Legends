@@ -18,6 +18,7 @@ public:
     friend ostream &operator<<(ostream &output, BiddingFacility &region);
 	int* getAmountBid();
 	string* getLastName();
+	void setLastName(string* name);
 	int* getPlayerCoins();
 	void setAmountBid(int* amountBid);
 	void bid();

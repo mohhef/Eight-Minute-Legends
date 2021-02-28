@@ -12,4 +12,5 @@ using namespace std;
 class MapLoader {
  public:
   static Map *loadmap(string fileName);
+  Map* chooseMap();
 };
