@@ -391,7 +391,11 @@ void Hand::exchange(int position, Deck &deck, int *totalPlayerCoin) {
         if (this->handCards->size() < *maxHandSize - 1) {
             this->handCards->push_back(new Cards(*deck.getTopBoardCard(position)));
             deck.removeFromTopBoard(position);
+        }else{
+            cout << "You already have the maximum amount of cards";
         }
+    }else{
+        cout << "You dont have enough coins to purchase this card";
     }
 }
 
