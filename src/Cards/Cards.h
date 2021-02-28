@@ -41,7 +41,7 @@ class Cards {
 
 class Deck {
  private:
-  int *boardCosts;
+  static int *boardCosts;
   int *deckSize;
   vector<Cards *> *deckCards;
   vector<Cards *> *topBoard;
@@ -59,7 +59,7 @@ class Deck {
   int getDeckSize() const;
   int *getBoardCosts() const;
   vector<Cards *>* getDeckCards() const;
-  int getBoardPositionCost(int position) const;
+  int static getBoardPositionCost(int position);
   Cards *getCard(int position) const;
   Cards *getTopBoardCard(int position) const;
   Cards *draw();
@@ -90,7 +90,7 @@ class Hand {
   int getMaxHandSize() const;
   // vector<Cards*> getHandCards() const;
   Cards *getCard(int position) const;
-  void exchange(int position, Deck &deck);
+  void exchange(int position, Deck &deck, int *totalPlayerCoin);
   void addCard(Cards *card);
 
   friend void swap(Hand& first, Hand& second);
