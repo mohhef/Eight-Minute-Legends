@@ -14,4 +14,5 @@ public:
     Map* map;
     vector<Player*> *players;
     Deck *deck;
+    Player *startingPlayer;
 };

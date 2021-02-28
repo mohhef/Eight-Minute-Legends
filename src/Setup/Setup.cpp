@@ -45,5 +45,8 @@ int Setup::startGame() {
         }
     }
     winner->GetBiddingFacility()->subtractBid();
+    cout << "Winner with highest bid: " << *winner->GetBiddingFacility()->getLastName() << endl
+         << "Coins remaining: " << *winner->GetBiddingFacility()->getPlayerCoins() << endl;
+    startingPlayer = winner;
     return 0;
 };
