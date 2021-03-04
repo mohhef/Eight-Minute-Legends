@@ -41,7 +41,6 @@ class Cards {
 
 class Deck {
  private:
-  static int *boardCosts;
   int *deckSize;
   vector<Cards *> *deckCards;
   vector<Cards *> *topBoard;

@@ -9,7 +9,7 @@
 
 int HAND_SIZE = 8;
 int TOP_BOARD_SIZE = 6;
-
+int boardCosts[]{0, 1, 1, 2, 2, 3};
 // =============================================
 // Start of Cards class function implementations
 // =============================================
@@ -168,8 +168,6 @@ Deck::Deck() {
   std::random_device rng;
   std::mt19937 urng(rng());
   std::shuffle(deckCards->begin(), deckCards->end(), urng);
-
-  boardCosts = new int[HAND_SIZE]{0, 1, 1, 2, 2, 3};
   deckSize = new int(deckCards->size());
 
   for (int i = 0; i < TOP_BOARD_SIZE; i++) {
@@ -199,7 +197,6 @@ Deck::~Deck() {
   topBoard->clear();
   delete topBoard;
   delete deckSize;
-  delete boardCosts;
 }
 
 /*
@@ -230,10 +227,6 @@ void Deck::deepCopy(const Deck &deck) {
   this->deckSize = new int(deck.getDeckSize());
   this->deckCards = new vector<Cards *>;
   this->topBoard = new vector<Cards *>;
-  this->boardCosts = new int[HAND_SIZE];
-  for (int i = 0; i < HAND_SIZE; i++) {
-    this->boardCosts[i] = deck.getBoardCosts()[i];
-  }
   for (int i = 0; i < deck.getDeckSize(); i++) {
     this->deckCards->push_back(new Cards(*deck.getCard(i)));
   }
@@ -244,10 +237,6 @@ void Deck::deepCopy(const Deck &deck) {
 
 int Deck::getDeckSize() const {
   return *this->deckSize;
-}
-
-int *Deck::getBoardCosts() const {
-  return this->boardCosts;
 }
 
 vector<Cards *>* Deck::getDeckCards() const {
@@ -295,8 +284,6 @@ void Deck::removeFromTopBoard(int position) {
 
 void swap(Deck& first, Deck& second) {
   using std::swap;
-  
-  swap(first.boardCosts, second.boardCosts);
   swap(first.deckSize, second.deckSize);
   swap(first.deckCards, second.deckCards);
   swap(first.topBoard, second.topBoard);
