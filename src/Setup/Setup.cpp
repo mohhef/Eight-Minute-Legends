@@ -172,6 +172,11 @@ void Setup::moveOverLand(Player &player, int *count) {
       cin >> regionFrom;
       from = map->findRegion(regionFrom);
     }
+    while (!to) {
+      cout << "Name country to move armies to: ";
+      cin >> regionTo;
+      to = map->findRegion(regionTo);
+    }
     while (true) {
       cout << "Enter the number of armies you wish to add";
       cin >> armiesNum;
@@ -207,6 +212,12 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
     while (true) {
       cout << "Enter the number of armies you wish to add";
       cin >> armiesNum;
+      int adjacency = map->isAdjacent(from, to);
+      if (adjacency == 1) {
+        *count -= armiesNum;
+      } else if (adjacency == 0) {
+        *count -= 3 * armiesNum;
+      }
       if (armiesNum > *count || armiesNum <= 0) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
