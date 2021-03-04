@@ -66,7 +66,14 @@ int Setup::startGame() {
 };
 
 bool Setup::andOrAction(Player &player, Cards &card) {
+  string choice;
   cout << "Selected Card: " << card << endl;
+
+  cout << "To skip your turn enter: 0, or anything else to proceed" << endl;
+  if(choice == "0"){
+    return false;
+  }
+
   string cardAbility = card.getAbility();
   string abilityName;
   int *firstAbilityCount = new int(0);
