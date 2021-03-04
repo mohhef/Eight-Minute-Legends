@@ -8,8 +8,9 @@ void Driver::part4() {
 
   cout << "Top Board: " << endl;
   deck->showTopBoard();
-  int *coins  = new int(12);
-  myHand->exchange(2, *deck, coins);
+
+  int *coinsAvailable = new int(18);
+  myHand->exchange(2, *deck, coinsAvailable);
 
   cout << "\nMy Hand after exchange: " << endl;
   cout << *myHand << endl;

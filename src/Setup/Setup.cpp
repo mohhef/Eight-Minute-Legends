@@ -2,7 +2,21 @@
 // Created by Mohamed Ashraf on 2021-02-27.
 //
 
+#include <string.h>
+#include <stdio.h>
+#include <sstream>
 #include "Setup.h"
+
+void tokenize(std::string const &str, const char delim,
+              std::vector<std::string> &out) {
+  // construct a stream from the string
+  std::stringstream ss(str);
+
+  std::string s;
+  while (std::getline(ss, s, delim)) {
+    out.push_back(s);
+  }
+}
 
 int Setup::startGame() {
   //Prompt to let user select the file
@@ -51,124 +65,201 @@ int Setup::startGame() {
   return 0;
 };
 
-void Setup::addArmy(Player &player, int *count) {
-  string regionName;
-  int armiesNum;
-  Region *region = nullptr;
+bool Setup::andOrAction(Player &player, Cards &card) {
+  cout << "Selected Card: " << card << endl;
+  string cardAbility = card.getAbility();
+  string abilityName;
+  int *firstAbilityCount = new int(0);
+  int *secondAbilityCount = new int(0);
+  const char delim = '|';
+  vector<string> tokenizedCardAbility;
+  tokenize(cardAbility, delim, tokenizedCardAbility);
 
-  while (!region) {
-    cout << "Which region do you want to add armies in?: " << endl;
-    cin >> regionName;
-    region = map->findRegion(regionName);
+  abilityName = tokenizedCardAbility.at(0);
+  if (tokenizedCardAbility.size() == 2) {
+    *firstAbilityCount = stoi(tokenizedCardAbility.at(1));
+  } else if (tokenizedCardAbility.size() == 3) {
+    *secondAbilityCount = stoi(tokenizedCardAbility.at(2));
   }
-  while (true) {
-    cout << "Enter the number of armies you wish to add";
-    cin >> armiesNum;
-    if (armiesNum > *count || armiesNum <= 0) {
-      cin.clear();
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-      cout << "Please enter a valid number." << endl;
-    } else {
-      break;
+
+  if (abilityName == "BUILD_CITY") {
+    buildCity(player, new int(1));
+  } else if (abilityName == "MOVE_ARMIES") {
+    moverOverLandOrWater(player, firstAbilityCount);
+  } else if (abilityName == "PLACE_ARMIES") {
+    addArmy(player, firstAbilityCount);
+  } else if (abilityName == "MOVE_ARMIES_AND_BUILD_CITY") {
+    moverOverLandOrWater(player, firstAbilityCount);
+    buildCity(player, new int(1));
+  } else if (abilityName == "BUILD_CITY_AND_PLACE_ARMIES") {
+    buildCity(player, new int(1));
+    addArmy(player, firstAbilityCount);
+  } else if (abilityName == "MOVE_ARMIES_AND_PLACE_ARMIES") {
+    moverOverLandOrWater(player, firstAbilityCount);
+    addArmy(player, secondAbilityCount);
+  } else if (abilityName == "MOVE_ARMIES_AND_DESTROY_ARMIES") {
+    addArmy(player, firstAbilityCount);
+    destroyArmy(player, secondAbilityCount);
+  } else if (abilityName == "PLACE_ARMIES_AND_DESTROY_ARMIES") {
+    addArmy(player, firstAbilityCount);
+    destroyArmy(player, secondAbilityCount);
+  } else {
+
+    int actionChoiceIndex;
+    while (true) {
+      cout << "Which action would you like to choose, 1 for the first, 2 for the second: " << cardAbility << endl;
+      cin >> actionChoiceIndex;
+      if (actionChoiceIndex > 2 || actionChoiceIndex < 0) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Please enter a valid number." << endl;
+      } else {
+        break;
+      }
+    }
+
+    if (abilityName == "PLACE_ARMIES_OR_BUILD_CITY") {
+      if (actionChoiceIndex == 1) addArmy(player, firstAbilityCount);
+      else buildCity(player, new int(1));
+    }
+    if (abilityName == "PLACE_ARMIES_OR_MOVE_ARMIES") {
+      if (actionChoiceIndex == 1) addArmy(player, firstAbilityCount);
+      else moverOverLandOrWater(player, secondAbilityCount);
     }
   }
-  bool executed = player.PlaceNewArmies(armiesNum, region);
-  if (executed) {
-    *count -= armiesNum;
+  return true;
+}
+
+void Setup::addArmy(Player &player, int *count) {
+  while (*count > 0) {
+    string regionName;
+    int armiesNum;
+    Region *region = nullptr;
+
+    while (!region) {
+      cout << "Which region do you want to add armies in?: " << endl;
+      cin >> regionName;
+      region = map->findRegion(regionName);
+    }
+    while (true) {
+      cout << "Enter the number of armies you wish to add";
+      cin >> armiesNum;
+      if (armiesNum > *count || armiesNum <= 0) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Please enter a valid number." << endl;
+      } else {
+        break;
+      }
+    }
+    bool executed = player.PlaceNewArmies(armiesNum, region);
+    if (executed) {
+      *count -= armiesNum;
+    }
   }
 }
 
 void Setup::moveOverLand(Player &player, int *count) {
-  string regionFrom;
-  string regionTo;
-  int armiesNum;
-  Region *from = nullptr;
-  Region *to = nullptr;
+  while (*count > 0) {
+    string regionFrom;
+    string regionTo;
+    int armiesNum;
+    Region *from = nullptr;
+    Region *to = nullptr;
 
-  while (!from) {
-    cout << "Enter region to move from: ";
-    cin >> regionFrom;
-    from = map->findRegion(regionFrom);
-  }
-  while (true) {
-    cout << "Enter the number of armies you wish to add";
-    cin >> armiesNum;
-    if (armiesNum > *count || armiesNum <= 0) {
-      cin.clear();
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-      cout << "Please enter a valid number." << endl;
-    } else {
-      break;
+    while (!from) {
+      cout << "Enter region to move from: ";
+      cin >> regionFrom;
+      from = map->findRegion(regionFrom);
     }
-  }
-  bool executed = player.MoveOverLand(armiesNum, from, to);
-  if (executed) {
-    *count -= armiesNum;
+    while (true) {
+      cout << "Enter the number of armies you wish to add";
+      cin >> armiesNum;
+      if (armiesNum > *count || armiesNum <= 0) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Please enter a valid number." << endl;
+      } else {
+        break;
+      }
+    }
+    bool executed = player.MoveOverLand(armiesNum, from, to);
+    if (executed) {
+      *count -= armiesNum;
+    }
   }
 }
 
 void Setup::moverOverLandOrWater(Player &player, int *count) {
-  string regionFrom;
-  string regionTo;
-  int armiesNum;
-  Region *from = nullptr;
-  Region *to = nullptr;
+  while (*count > 0) {
 
-  while (!from) {
-    cout << "Enter region to move from: ";
-    cin >> regionFrom;
-    from = map->findRegion(regionFrom);
-  }
-  while (true) {
-    cout << "Enter the number of armies you wish to add";
-    cin >> armiesNum;
-    if (armiesNum > *count || armiesNum <= 0) {
-      cin.clear();
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-      cout << "Please enter a valid number." << endl;
-    } else {
-      break;
+    string regionFrom;
+    string regionTo;
+    int armiesNum;
+    Region *from = nullptr;
+    Region *to = nullptr;
+
+    while (!from) {
+      cout << "Enter region to move from: ";
+      cin >> regionFrom;
+      from = map->findRegion(regionFrom);
     }
-  }
-  bool executed = player.MoveArmies(armiesNum, from, to);
-  if (executed) {
-    *count -= armiesNum;
+    while (true) {
+      cout << "Enter the number of armies you wish to add";
+      cin >> armiesNum;
+      if (armiesNum > *count || armiesNum <= 0) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Please enter a valid number." << endl;
+      } else {
+        break;
+      }
+    }
+    bool executed = player.MoveArmies(armiesNum, from, to);
+    if (executed) {
+      *count -= armiesNum;
+    }
   }
 }
 
 void Setup::buildCity(Player &player, int *count) {
-  string regionName;
-  Region *region = nullptr;
-  while (!region) {
-    cout << "Which region do you want to add armies in?:";
-    cin >> regionName;
-    region = map->findRegion(regionName);
-  }
-  bool executed = player.BuildCity(region);
-  if (executed) {
-    *count -= 1;
+  while (*count > 0) {
+
+    string regionName;
+    Region *region = nullptr;
+    while (!region) {
+      cout << "Which region do you want to add armies in?:";
+      cin >> regionName;
+      region = map->findRegion(regionName);
+    }
+    bool executed = player.BuildCity(region);
+    if (executed) {
+      *count -= 1;
+    }
   }
 }
 
 void Setup::destroyArmy(Player &player, int *count) {
-  Player *targetPlayer = nullptr;
-  string targetPlayerName;
-  Region *region = nullptr;
-  string targetCountry;
-  while (!targetPlayer) {
-    cout << "Which player do you wish to destroy their army?: ";
-    cin >> targetPlayerName;
-    targetPlayer = findPlayer(targetPlayerName);
-  }
-  while (!region) {
-    cout << "Which region do you want to destroy the player's army";
-    cin >> targetCountry;
-    region = map->findRegion(targetCountry);
-  }
+  while (*count > 0) {
+    Player *targetPlayer = nullptr;
+    string targetPlayerName;
+    Region *region = nullptr;
+    string targetCountry;
+    while (!targetPlayer) {
+      cout << "Which player do you wish to destroy their army?: ";
+      cin >> targetPlayerName;
+      targetPlayer = findPlayer(targetPlayerName);
+    }
+    while (!region) {
+      cout << "Which region do you want to destroy the player's army";
+      cin >> targetCountry;
+      region = map->findRegion(targetCountry);
+    }
 
-  bool executed = player.DestroyArmy(targetPlayer, region);
-  if (executed) {
-    count -= 1;
+    bool executed = player.DestroyArmy(targetPlayer, region);
+    if (executed) {
+      count -= 1;
+    }
   }
 }
 
