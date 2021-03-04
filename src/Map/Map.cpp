@@ -6,7 +6,6 @@
 #include <stack>
 #include <iostream>
 #include <unordered_map>
-#include <algorithm>
 
 /*
  * Default constructor that initializes regions, continents and a starting region

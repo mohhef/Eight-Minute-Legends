@@ -10,6 +10,6 @@ void Driver::part6() {
 
     Setup *setup = new Setup();
 
-    setup->startGame();
-
+    //setup->startGame();
+    setup->And
 }
