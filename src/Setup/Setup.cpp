@@ -208,6 +208,7 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
     string regionFrom;
     string regionTo;
     int armiesNum;
+    int remainingCount;
     Region *from = nullptr;
     Region *to = nullptr;
 
@@ -221,13 +222,14 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
       cin >> armiesNum;
       int adjacency = map->isAdjacent(from, to);
       if (adjacency == 1) {
-        *count -= armiesNum;
+         remainingCount = *count - armiesNum;
       } else if (adjacency == 0) {
-        *count -= 3 * armiesNum;
+         remainingCount = *count - 3 * armiesNum;
       }
-      if (armiesNum > *count || armiesNum <= 0) {
+      if (armiesNum > *count || armiesNum <= 0 || remainingCount < 0) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        remainingCount = 0;
         cout << "Please enter a valid number." << endl;
       } else {
         break;
@@ -235,7 +237,7 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
     }
     bool executed = player.MoveArmies(armiesNum, from, to);
     if (executed) {
-      *count -= armiesNum;
+      *count = remainingCount;
     }
   }
 }
