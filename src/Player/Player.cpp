@@ -20,9 +20,9 @@ Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_nu
   }
 }
 
-Player::Player(int coins, string name){
+Player::Player(int coins, string name) {
   this->map = new Map();
-  this->cubes= new int(0);
+  this->cubes = new int(0);
   this->discs = new int(0);
   this->name = new string(name);
   this->coins = new int(coins);

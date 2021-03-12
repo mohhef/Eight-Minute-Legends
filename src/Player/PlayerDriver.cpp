@@ -5,7 +5,7 @@
 #include "../MainDriver.h"
 using namespace std;
 
-void Driver::part3(){
+void Driver::part3() {
   // Creating a map
   Map *map = new Map();
   auto *europe = new Continent("Europe");

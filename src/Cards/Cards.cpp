@@ -9,7 +9,7 @@
 
 int HAND_SIZE = 8;
 int TOP_BOARD_SIZE = 6;
-
+int boardCosts[]{0, 1, 1, 2, 2, 3};
 // =============================================
 // Start of Cards class function implementations
 // =============================================
@@ -168,8 +168,6 @@ Deck::Deck() {
   std::random_device rng;
   std::mt19937 urng(rng());
   std::shuffle(deckCards->begin(), deckCards->end(), urng);
-
-  boardCosts = new int[HAND_SIZE]{0, 1, 1, 2, 2, 3};
   deckSize = new int(deckCards->size());
 
   for (int i = 0; i < TOP_BOARD_SIZE; i++) {
@@ -199,7 +197,6 @@ Deck::~Deck() {
   topBoard->clear();
   delete topBoard;
   delete deckSize;
-  delete boardCosts;
 }
 
 /*
@@ -230,10 +227,6 @@ void Deck::deepCopy(const Deck &deck) {
   this->deckSize = new int(deck.getDeckSize());
   this->deckCards = new vector<Cards *>;
   this->topBoard = new vector<Cards *>;
-  this->boardCosts = new int[HAND_SIZE];
-  for (int i = 0; i < HAND_SIZE; i++) {
-    this->boardCosts[i] = deck.getBoardCosts()[i];
-  }
   for (int i = 0; i < deck.getDeckSize(); i++) {
     this->deckCards->push_back(new Cards(*deck.getCard(i)));
   }
@@ -246,15 +239,11 @@ int Deck::getDeckSize() const {
   return *this->deckSize;
 }
 
-int *Deck::getBoardCosts() const {
-  return this->boardCosts;
-}
-
 vector<Cards *>* Deck::getDeckCards() const {
   return deckCards;
 }
 
-int Deck::getBoardPositionCost(int position) const {
+int Deck::getBoardPositionCost(int position) {
   return boardCosts[position];
 }
 
@@ -295,8 +284,6 @@ void Deck::removeFromTopBoard(int position) {
 
 void swap(Deck& first, Deck& second) {
   using std::swap;
-  
-  swap(first.boardCosts, second.boardCosts);
   swap(first.deckSize, second.deckSize);
   swap(first.deckCards, second.deckCards);
   swap(first.topBoard, second.topBoard);
@@ -383,12 +370,20 @@ Cards *Hand::getCard(int position) const {
 /*
 Lets a player pick a card by position from the available cards and readjusts the available cards and the deck of cards
 */
-void Hand::exchange(int position, Deck &deck) {
-  // TODO: Change to check available coins and wait for y/n decision. Also change hand size depending on players
-  if (this->handCards->size() < *maxHandSize - 1) {
-    this->handCards->push_back(new Cards(*deck.getTopBoardCard(position)));
-    deck.removeFromTopBoard(position);
-  }
+void Hand::exchange(int position, Deck &deck, int *totalPlayerCoin) {
+    // TODO: Change to check available coins and wait for y/n decision. Also change hand size depending on players
+    if(*totalPlayerCoin >= Deck::getBoardPositionCost(position)){
+        *totalPlayerCoin = *totalPlayerCoin - Deck::getBoardPositionCost(position);
+
+        if (this->handCards->size() < *maxHandSize - 1) {
+            this->handCards->push_back(new Cards(*deck.getTopBoardCard(position)));
+            deck.removeFromTopBoard(position);
+        }else{
+            cout << "You already have the maximum amount of cards";
+        }
+    }else{
+        cout << "You dont have enough coins to purchase this card";
+    }
 }
 
 /*
