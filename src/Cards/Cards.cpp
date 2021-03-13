@@ -370,10 +370,10 @@ Cards *Hand::getCard(int position) const {
 /*
 Lets a player pick a card by position from the available cards and readjusts the available cards and the deck of cards
 */
-void Hand::exchange(int position, Deck &deck, int *totalPlayerCoin) {
+void Hand::exchange(int position, Deck &deck, int totalPlayerCoin) {
     // TODO: Change to check available coins and wait for y/n decision. Also change hand size depending on players
-    if(*totalPlayerCoin >= Deck::getBoardPositionCost(position)){
-        *totalPlayerCoin = *totalPlayerCoin - Deck::getBoardPositionCost(position);
+    if(totalPlayerCoin >= Deck::getBoardPositionCost(position)){
+        totalPlayerCoin = totalPlayerCoin - Deck::getBoardPositionCost(position);
 
         if (this->handCards->size() < *maxHandSize - 1) {
             this->handCards->push_back(new Cards(*deck.getTopBoardCard(position)));
