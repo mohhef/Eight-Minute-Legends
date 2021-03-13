@@ -23,4 +23,7 @@ class Setup {
   void moverOverLandOrWater(Player &player, int *count);
   void buildCity(Player &player, int *count);
   void destroyArmy(Player &player, int *count);
+
+  int mainLoop();
+  bool checkGameover();
 };

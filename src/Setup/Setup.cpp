@@ -45,8 +45,66 @@ int Setup::startGame() {
         }
     }
     winner->GetBiddingFacility()->subtractBid();
+    // TODO: We currently have two independent trackers for player coins.
+    winner->PayCoin(*winner->GetBiddingFacility()->getAmountBid());
     cout << "Winner with highest bid: " << *winner->GetBiddingFacility()->getLastName() << endl
          << "Coins remaining: " << *winner->GetBiddingFacility()->getPlayerCoins() << endl;
     startingPlayer = winner;
     return 0;
 };
+
+int Setup::mainLoop() {
+  int turn = 1;
+  bool gameover = false;
+  cout << "*********************Game Start*********************" << endl;
+  while(!gameover) {
+    int choiceIndex = 0;
+    cout << "****** Turn #" + to_string(turn) + " ******" << endl;
+    for(int i = 0; i < players->size(); ++i) {
+      cout << "Top Board: " << endl;
+      deck->showTopBoard();
+      cout << "(" + players->at(i)->GetName() + ") Choose a card by entering its index (1-6) or enter any other number to skip:" << endl;
+      cin >> choiceIndex;
+      while(cin.fail()){
+        cout << "Please enter a valid number:";
+        cin.clear();
+        cin.ignore(256,'\n');
+        cin >> choiceIndex;
+      }
+      if(choiceIndex > 0 && choiceIndex <= 6){
+        int cardCost = deck->getBoardPositionCost(choiceIndex - 1);
+        int playerCoins = players->at(i)->GetCoins();
+        if(playerCoins < cardCost){
+          cout << "Insufficient funds to purchase this card. You have " + to_string(playerCoins) + " remaining." << endl;
+          // Temporary hacky way to run same player again, if they chose a card they cannot buy.
+          i--;
+          continue;
+        }
+        else{
+          players->at(i)->GetHand()->exchange(choiceIndex - 1, *deck, players->at(i)->GetCoins());
+          players->at(i)->PayCoin(deck->getBoardPositionCost(choiceIndex - 1));
+          int currentHandSize = players->at(i)->GetHand()->getCurrentHandSize();
+          string playerAction = players->at(i)->GetHand()->getCard(currentHandSize - 1)->getAction();
+          cout << players->at(i)->GetName() + "'s action is: " + playerAction << endl;
+        }
+
+        // Add code/method to take action and after action here
+      }
+    }
+    cout << "Checking for gameover..." << endl;
+    turn++;
+    gameover = checkGameover();
+  }
+
+  // Add code/method to compute game score here
+  return 0;
+}
+
+bool Setup::checkGameover(){
+  for(int i = 0; i < players->size(); ++i) {
+    if(players->at(i)->GetHand()->getCurrentHandSize() == 11) {
+      return true;
+    }
+  }
+  return false;
+}

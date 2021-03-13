@@ -13,3 +13,12 @@ void Driver::part6() {
     setup->startGame();
 
 }
+
+void Driver::part8() {
+
+    Setup *setup = new Setup();
+
+    setup->startGame();
+
+    setup->mainLoop();
+}
