@@ -110,7 +110,7 @@ Map *MapLoader::loadmap(string fileName) {
 Map *MapLoader::chooseMap() {
     Map *loadMap = nullptr;
     while (loadMap == nullptr) {
-        // Changed since the .exe might not run within MapLoader directory, hence ../Files might fail
+        // Changed since the .exe might not run within MapLoader directory, hence ../Files might fail e.g. ../Files/validMap.txt
         cout << "Choose a map, by entering the file path" << endl;
         string fileName;
         cin >> fileName;
