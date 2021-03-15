@@ -7,7 +7,6 @@
 using namespace std;
 
 void Driver::part6() {
-
     Setup *setup = new Setup();
     setup->loadGame();
     setup->initializePlayers();
