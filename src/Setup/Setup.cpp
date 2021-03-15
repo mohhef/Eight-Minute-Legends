@@ -62,7 +62,12 @@ void Setup::initializeBidding() {
   startingPlayer = winner;
 }
 
-void Setup::Startup() {}
+void Setup::Startup() {
+  // Step #2
+  for (auto &player : *players) {
+    player->PlaceNewArmies(4, map->startingRegion);
+  }
+}
 
 int Setup::mainLoop() {
   int turn = 1;
