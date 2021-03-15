@@ -62,6 +62,8 @@ void Setup::initializeBidding() {
   startingPlayer = winner;
 }
 
+void Setup::Startup() {}
+
 int Setup::mainLoop() {
   int turn = 1;
   bool gameOver = false;
