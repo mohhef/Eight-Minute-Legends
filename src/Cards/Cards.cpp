@@ -144,9 +144,9 @@ It puts the cards to be chosen from on the board
  */
 Deck::Deck() {
   string myText;
+  string filePath;
   // Workaround for relative path depending on .exe location.
   cout << "Enter the path to the file containing the cards:" << endl;
-  string filePath;
   cin >> filePath;
   ifstream MyReadFile(filePath);
   deckCards = new vector<Cards *>;

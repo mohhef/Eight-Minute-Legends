@@ -116,6 +116,7 @@ void Setup::takeTurn(Player *player, int turn) {
   }
 
   int cardCost = deck->getBoardPositionCost(choiceIndex - 1);
+  Cards* chosenCard = deck->getTopBoardCard(choiceIndex-1);
   int playerCoins = player->GetCoins();
 
   player->GetHand()->exchange(choiceIndex - 1, *deck, playerCoins);
@@ -124,35 +125,27 @@ void Setup::takeTurn(Player *player, int turn) {
   string playerAction = player->GetHand()->getCard(currentHandSize - 1)->getAction();
   cout << player->GetName() + "'s action is: " + playerAction << endl;
   // Add code/method to take action and after action here
-}
-
-bool Setup::checkGameOver() {
-  for (int i = 0; i < players->size(); ++i) {
-    if (players->at(i)->GetHand()->getCurrentHandSize() == 11) {
-      return true;
-    }
-  }
-  return false;
+  andOrAction(*player, *chosenCard);
 }
 
 bool Setup::andOrAction(Player &player, Cards &card) {
   string choice;
-  cout << "Selected Card: " << card << endl;
-
+  cout << "Selected Card: " << card << endl << "\n";
   cout << "To skip your turn enter: 0, or anything else to proceed" << endl;
   if(choice == "0"){
     return false;
   }
 
-  string cardAbility = card.getAbility();
+  string cardAction = card.getAction();
   string abilityName;
   int *firstAbilityCount = new int(0);
   int *secondAbilityCount = new int(0);
   const char delim = '|';
   vector<string> tokenizedCardAbility;
-  tokenize(cardAbility, delim, tokenizedCardAbility);
+  tokenize(cardAction, delim, tokenizedCardAbility);
 
   abilityName = tokenizedCardAbility.at(0);
+  cout << abilityName;
   if (tokenizedCardAbility.size() == 2) {
     *firstAbilityCount = stoi(tokenizedCardAbility.at(1));
   } else if (tokenizedCardAbility.size() == 3) {
@@ -184,7 +177,7 @@ bool Setup::andOrAction(Player &player, Cards &card) {
 
     int actionChoiceIndex;
     while (true) {
-      cout << "Which action would you like to choose, 1 for the first, 2 for the second: " << cardAbility << endl;
+      cout << "Which action would you like to choose, 1 for the first, 2 for the second: " << cardAction << endl;
       cin >> actionChoiceIndex;
       if (actionChoiceIndex > 2 || actionChoiceIndex < 0) {
         cin.clear();
@@ -283,12 +276,19 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
     Region *to = nullptr;
 
     while (!from) {
-      cout << "Enter region to move from: ";
+      cout << "Enter region to move from: " << endl;
       cin >> regionFrom;
       from = map->findRegion(regionFrom);
     }
+
+    while (!to) {
+      cout << "Enter region to move to: " <<endl;
+      cin >> regionTo;
+      to = map->findRegion(regionTo);
+    }
+
     while (true) {
-      cout << "Enter the number of armies you wish to add";
+      cout << "Enter the number of armies you wish to move: " << endl;
       cin >> armiesNum;
       int adjacency = map->isAdjacent(from, to);
       if (adjacency == 1) {
@@ -318,7 +318,7 @@ void Setup::buildCity(Player &player, int *count) {
     string regionName;
     Region *region = nullptr;
     while (!region) {
-      cout << "Which region do you want to add armies in?:";
+      cout << "Which region do you want to add armies in?: ";
       cin >> regionName;
       region = map->findRegion(regionName);
     }
@@ -341,7 +341,7 @@ void Setup::destroyArmy(Player &player, int *count) {
       targetPlayer = findPlayer(targetPlayerName);
     }
     while (!region) {
-      cout << "Which region do you want to destroy the player's army";
+      cout << "Which region do you want to destroy the player's army: ";
       cin >> targetCountry;
       region = map->findRegion(targetCountry);
     }
@@ -361,4 +361,13 @@ Player *Setup::findPlayer(string playerName) {
     }
   }
   return nullptr;
+}
+
+bool Setup::checkGameOver() {
+  for (int i = 0; i < players->size(); ++i) {
+    if (players->at(i)->GetHand()->getCurrentHandSize() == 11) {
+      return true;
+    }
+  }
+  return false;
 }
