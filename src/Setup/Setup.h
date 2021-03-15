@@ -11,11 +11,13 @@
 
 class Setup {
  public:
-  int startGame();
-  Map *map;
-  vector<Player *> *players;
-  Deck *deck;
-  Player *startingPlayer;
+  void loadGame();
+  void initializePlayers();
+  void initializeDeck();
+  void initializeBidding();
+  int mainLoop();
+  bool checkGameOver();
+  void takeTurn(Player* player, int turn);
 
   Player *findPlayer(string playerName);
   void addArmy(Player &player, int *count);
@@ -23,4 +25,12 @@ class Setup {
   void moverOverLandOrWater(Player &player, int *count);
   void buildCity(Player &player, int *count);
   void destroyArmy(Player &player, int *count);
+
+  Map *map;
+  vector<Player *> *players;
+  Deck *deck;
+  Player *startingPlayer;
+
+
+
 };
