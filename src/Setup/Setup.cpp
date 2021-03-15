@@ -27,7 +27,11 @@ void Setup::initializePlayers() {
     Player *player = new Player(map, playerName, 18, 3, 14);
     players->push_back(player);
   }
-
+  if (players->size() == 2) {
+    non_player = new Player(map, "Non-player", 18, 3, 14);
+  } else {
+    non_player = nullptr;
+  }
   for (auto player : *players) {
     cout << *player << endl;
   }
@@ -63,9 +67,28 @@ void Setup::initializeBidding() {
 }
 
 void Setup::Startup() {
-  // Step #2
   for (auto &player : *players) {
     player->PlaceNewArmies(4, map->startingRegion);
+  }
+  if (players->size() == 2) {
+    cout << "Since there are only two players, each player takes turns placing one army "
+            "at a time of a third non-player in any region on the board until ten armies "
+            "have been placed."
+         << endl;
+    for (int i = 0; i < 10; i++) {
+      int turn = i % 2;
+      string region_name;
+      Region *region = nullptr;
+      while (!region) {
+        cout << "[" << (*players)[turn]->GetName()
+             << "'s turn] Pick a region in which one army for the non-player will be "
+                "placed: "
+             << endl;
+        cin >> region_name;
+        region = map->findRegion(region_name);
+      }
+      non_player->PlaceNewArmies(1, region);
+    }
   }
 }
 

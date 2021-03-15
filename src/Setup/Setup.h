@@ -29,6 +29,7 @@ class Setup {
 
   Map *map;
   vector<Player *> *players;
+  Player *non_player;
   Deck *deck;
   Player *startingPlayer;
 };
