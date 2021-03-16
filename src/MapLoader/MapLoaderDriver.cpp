@@ -8,6 +8,6 @@
 
 void Driver::part2(){
   //change the file name to load a different map
-  Map *map = MapLoader::loadmap("../Files/invalidMap.txt");
+  Map *map = MapLoader::loadmap("../Files/validMap.txt");
   cout << *map;
 }
