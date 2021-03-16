@@ -362,6 +362,7 @@ Region *Map::findRegion(string region) {
 void Map::displayMap() {
   if (this != NULL) {
     printf("\n%20s %s  \n\n", "", "********* Map Details *********");
+    cout << "The starting region is: " << *startingRegion->name <<endl;
     for (int i = 0; i < regions->size(); i++) {
       string regionName = *((*regions)[i].first->name);
       string continentName = *((*regions)[i].first->continent->name);
