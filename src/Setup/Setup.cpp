@@ -67,6 +67,7 @@ void Setup::initializeBidding() {
 }
 
 void Setup::Startup() {
+  cout << "*********************Startup Phase*********************" << endl;
   for (auto &player : *players) {
     player->PlaceNewArmies(4, map->startingRegion);
   }
@@ -82,12 +83,11 @@ void Setup::Startup() {
       while (!region) {
         cout << "[" << (*players)[turn]->GetName()
              << "'s turn] Pick a region in which one army for the non-player will be "
-                "placed: "
-             << endl;
+                "placed: ";
         cin >> region_name;
         region = map->findRegion(region_name);
       }
-      non_player->PlaceNewArmies(1, region);
+      non_player->PlaceNewArmies(1, region, true);
     }
   }
 }
