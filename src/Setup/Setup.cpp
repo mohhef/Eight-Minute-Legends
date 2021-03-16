@@ -86,6 +86,9 @@ void Setup::Startup() {
                 "placed: ";
         cin >> region_name;
         region = map->findRegion(region_name);
+        if (!region) {
+          cout << "\"" << region_name << "\" does not exist. Try again." << endl;
+        }
       }
       non_player->PlaceNewArmies(1, region, true);
     }
