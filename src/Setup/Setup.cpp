@@ -43,32 +43,13 @@ void Setup::initializeDeck() {
   deck->showTopBoard();
 }
 
-void Setup::initializeBidding() {
-  cout << "*********************Bidding Setup*********************" << endl;
-  Player *winner = players->at(0);  // set current bid winner as the first player
-  // Loop enabling each player to enter their bid
-  for (int i = 0; i < players->size(); i++) {
-    cout << *players->at(i)->GetBiddingFacility()->getLastName() << ", ";
-    players->at(i)->GetBiddingFacility()->bid();
-    cout << "\n";
-  }
-  for (int i = 0; i < players->size(); i++) {
-    if (players->at(i)->GetBiddingFacility()->higherBid(winner->GetBiddingFacility())) {
-      winner = players->at(i);
-    }
-  }
-  winner->PayCoin(*winner->GetBiddingFacility()->getAmountBid(), true);
-  cout << "Winner with highest bid: " << *winner->GetBiddingFacility()->getLastName()
-       << endl
-       << "Coins remaining: " << *winner->GetBiddingFacility()->getPlayerCoins() << endl;
-  starting_player = winner;
-}
-
 void Setup::Startup() {
   cout << "*********************Startup Phase*********************" << endl;
+  // Placement of player armies
   for (auto &player : *players) {
     player->PlaceNewArmies(4, map->startingRegion);
   }
+  // Placement of non-player armies
   if (players->size() == 2) {
     cout << "Since there are only two players, each player takes turns placing one army "
             "at a time of a third non-player in any region on the board until ten armies "
@@ -91,6 +72,21 @@ void Setup::Startup() {
       non_player->PlaceNewArmies(1, region, true);
     }
   }
+  /// Bidding
+  cout << "Bidding has started..." << endl;
+  Player *winner = players->at(0);
+  for (auto &player : *players) {
+    cout << "[" << player->GetName() << "'s turn] ";
+    player->GetBiddingFacility()->bid();
+  }
+  for (auto &player : *players) {
+    if (player->GetBiddingFacility()->higherBid(winner->GetBiddingFacility())) {
+      winner = player;
+    }
+  }
+  cout << "Winner with highest bid: " << winner->GetName() << endl;
+  winner->PayCoin(*winner->GetBiddingFacility()->getAmountBid(), true);
+  starting_player = winner;
 }
 
 int Setup::mainLoop() {

@@ -11,7 +11,6 @@ void Driver::part6() {
   setup->loadGame();
   setup->initializePlayers();
   setup->initializeDeck();
-  setup->initializeBidding();
   setup->Startup();
-  // setup->mainLoop();
+  setup->mainLoop();
 }

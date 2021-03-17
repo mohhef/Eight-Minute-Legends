@@ -14,7 +14,6 @@ class Setup {
   void loadGame();
   void initializePlayers();
   void initializeDeck();
-  void initializeBidding();
   void Startup();
   int mainLoop();
   bool checkGameOver();
