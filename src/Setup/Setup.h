@@ -31,5 +31,5 @@ class Setup {
   vector<Player *> *players;
   Player *non_player;
   Deck *deck;
-  Player *startingPlayer;
+  Player *starting_player;
 };

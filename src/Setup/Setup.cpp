@@ -57,13 +57,11 @@ void Setup::initializeBidding() {
       winner = players->at(i);
     }
   }
-  winner->GetBiddingFacility()->subtractBid();
-  // TODO: We currently have two independent trackers for player coins.
-  winner->PayCoin(*winner->GetBiddingFacility()->getAmountBid());
+  winner->PayCoin(*winner->GetBiddingFacility()->getAmountBid(), true);
   cout << "Winner with highest bid: " << *winner->GetBiddingFacility()->getLastName()
        << endl
        << "Coins remaining: " << *winner->GetBiddingFacility()->getPlayerCoins() << endl;
-  startingPlayer = winner;
+  starting_player = winner;
 }
 
 void Setup::Startup() {
@@ -102,7 +100,7 @@ int Setup::mainLoop() {
   int playersSize = players->size();
 
   for (auto player : *players) {
-    if (startingPlayer == player) {
+    if (starting_player == player) {
       break;
     } else {
       indexOfCurrentPlayer++;

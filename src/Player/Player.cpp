@@ -139,12 +139,15 @@ ostream &operator<<(ostream &os, const Player &player) {
 /*
 Lets a player pay an amount of coins
 */
-bool Player::PayCoin(int coins) {
+bool Player::PayCoin(int coins, bool won_bid) {
   if (*this->coins < coins) {
     cout << "Player::PayCoin(): Not enough coins." << endl;
     return false;
   } else {
     *this->coins -= coins;
+    if (won_bid) {
+      this->bidding_facility->subtractBid();
+    }
     cout << *name << " has payed " << coins << " coins." << endl;
     return true;
   }
