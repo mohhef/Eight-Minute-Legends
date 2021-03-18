@@ -3,6 +3,16 @@
 //
 
 #include "Setup.h"
+using namespace std;
+
+Setup::Setup()
+{
+  this->players = nullptr;
+  this->map = nullptr;
+  this->deck = nullptr;
+  this->startingPlayer = nullptr;
+}
+
 
 void Setup::loadGame() {
   //Prompt to let user select the file
@@ -26,6 +36,8 @@ void Setup::initializePlayers() {
     cin >> playerName;
     Player *player = new Player(map, playerName, 18, 3, 12);
     players->push_back(player);
+    player_has_region.insert({player,0});
+    player_has_continent.insert({player , 0});
   }
 
   for (auto player : *players) {
@@ -118,4 +130,191 @@ bool Setup::checkGameOver() {
     }
   }
   return false;
+}
+
+int Setup::computeScore(){
+  /*
+  VP_PER_DIRE, --> "Dire..."
+  VP_PER_FLYING, --> ability is FLYING
+  VP_PER_3_COINS, --> 3 coins = 1 vp
+  VP_PER_FOREST,  --> "Forest..."
+  VP_PER_ANCIENT, --> "Ancient..."
+  VP_PER_CURSED, --> "Cursed..."
+  VP_PER_ARCANE, --> "Arcane..."
+  VP_PER_NIGHT--> "Night..."
+  */
+  for (auto player : *this->players) {
+    int VP = 0;
+    vector<Cards*>* handCards = player->GetHand()->getHandCards();
+    for (auto pcard : *handCards) {
+      if (!pcard->getAbility().compare("VP_PER_DIRE")) {
+        VP += player->countHandCardNameStartsWith("Dire");
+      }
+      else if (!pcard->getAbility().compare("VP_PER_FLYING")) {
+        VP += player->countHandCardAbilityEquals("FLYING");
+      }
+      else if (!pcard->getAbility().compare("VP_PER_3_COINS")) {
+        VP += player->GetCoins() / 3;
+      }
+      else if (!pcard->getAbility().compare("VP_PER_FOREST")) {
+        VP += player->countHandCardNameStartsWith("Forest");
+      }
+      else if (!pcard->getAbility().compare("VP_PER_ANCIENT")) {
+        VP += player->countHandCardNameStartsWith("Ancient");
+      }
+      else if (!pcard->getAbility().compare("VP_PER_CURSED")) {
+        VP += player->countHandCardNameStartsWith("Cursed");
+      }
+      else if (!pcard->getAbility().compare("VP_PER_ARCANE")) {
+        VP += player->countHandCardNameStartsWith("Arcane");
+      }
+      else if (!pcard->getAbility().compare("VP_PER_NIGHT")) {
+        VP += player->countHandCardNameStartsWith("Night");
+      }
+    }
+    player->SetScore(VP);
+    delete handCards;
+  }
+
+  /*
+  Regions: A player gains one victory point for each region on the map he controls.
+  A player controls a region if he has more armies there than any other player
+  (cities count as armies when determining control).
+  If players have the same number of armies in a region, no one controls it.
+  */
+  auto continents = map->continents;
+  vector<pair<Region*, Player*>> region_control;
+  for (auto it = continents->begin(); it != continents->end(); it++) {
+    Continent* continent = it->first;
+    auto regions = it->second;
+    for (auto reg : regions) {
+      Player* owner = nullptr;
+      int max_ctrl_power = -1;
+      for (auto player : *this->players) {
+        int armies = player->GetArmiesInRegion(reg)->second;
+        int cities = player->GetCitiesInRegion(reg)->second;
+        //(cities count as armies when determining control).
+        int controls = armies + cities;
+        if (controls > max_ctrl_power) {
+          max_ctrl_power = controls;
+          owner = player;
+        }
+        else if (controls == max_ctrl_power) {
+          // If players have the same number of armies in a region, no one controls it.
+          owner = nullptr;
+        }
+      }
+      region_control.push_back(make_pair(reg, owner));
+      if (owner) {
+        owner->SetScore(owner->GetScore() + 1);
+        player_has_region[owner] += 1;
+      }
+    }
+  }
+  /*
+  Continents: A player gains one victory point for each continent he controls.
+  A player controls a continent if he controls more regions in the continent than anyone else.
+  If players are tied for controlled regions, no one controls the continent.
+  */
+  for (auto it = continents->begin(); it != continents->end(); it++) {
+     auto regions = it->second;
+    int max_ctrl_power = -1;
+    Player* continent_owner = nullptr;
+    std::map<Player*, int> counter;
+    for (auto reg : regions) {
+      Player* reg_owner = nullptr;
+      for (auto ctinfo : region_control) {
+        if (ctinfo.first == reg) {
+          reg_owner = ctinfo.second;
+          break;
+        }
+      }
+      if (reg_owner) {
+        if (counter.count(reg_owner) > 1) {
+          counter[reg_owner] += 1;
+        }
+        else {
+          counter[reg_owner] = 1;
+        }
+        if (counter[reg_owner] > max_ctrl_power) {
+          max_ctrl_power = counter[reg_owner];
+          continent_owner = reg_owner;
+        }
+      }
+    }
+    if (continent_owner) {
+      continent_owner->SetScore(continent_owner->GetScore() + 1);
+      player_has_continent[continent_owner] += 1;
+    }
+  }
+
+  Player* winner = nullptr;
+  int max_score = -1;
+  cout << "PlayerName\tScores" << endl;
+  for (auto player : *this->players) {
+    cout << player->GetName() << "\t" << player->GetScore() << endl;
+    if (player->GetScore() > max_score) {
+      max_score = player->GetScore();
+      winner = player;
+    }
+    else if (player->GetScore() == max_score) {
+      winner = nullptr;
+    }
+  }
+  if (winner) {
+    cout << "Winner:" << winner->GetName() << endl;
+    return winner->GetScore();
+  }
+  max_score = -1;
+  //If players are tied, the player with the most coins wins.
+  for (auto player : *this->players) {
+    cout << player->GetName() << "\t" << player->GetScore() << endl;
+    if (player->GetCoins() > max_score) {
+      max_score = player->GetCoins();
+      winner = player;
+    }
+    else if (player->GetCoins() == max_score) {
+      winner = nullptr;
+    }
+  }
+  if (winner) {
+    cout << "Winner(has most coins):" << winner->GetName() << endl;
+    return winner->GetScore();
+  }
+  max_score = -1;
+  // If still tied, the player with the most armies on the board wins
+  for (auto player : *this->players) {
+    int total_armies = 0;
+    for (auto e : *player->GetArmies()) {
+      total_armies += e.second;
+    }
+    if (total_armies > max_score) {
+      max_score = total_armies;
+      winner = player;
+    }
+    else if (total_armies == max_score) {
+      winner = nullptr;
+    }
+  }
+  if (winner) {
+    cout << "Winner(has most armies):" << winner->GetName() << endl;
+    return winner->GetScore();
+  }
+  max_score = -1;
+  //  If still tied, the player with the most controlled regions wins.
+  for (auto e : player_has_region) {
+    if (e.second > max_score) {
+      max_score = e.second;
+      winner = e.first;
+    }
+    else if (e.second == max_score) {
+      winner = nullptr;
+    }
+  }
+  if (winner) {
+    cout << "Winner(has most regions):" << winner->GetName() << endl;
+    return winner->GetScore();
+  }
+  cout << "Tie!!" << endl;
+  return 0;
 }

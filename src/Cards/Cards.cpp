@@ -397,6 +397,11 @@ void Hand::addCard(Cards *card) {
   this->handCards->push_back(card);
 }
 
+vector<Cards*>* Hand::getHandCards() const
+{
+  return handCards;
+}
+
 void swap(Hand& first, Hand& second) {
   using std::swap;
     

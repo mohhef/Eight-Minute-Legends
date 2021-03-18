@@ -8,14 +8,17 @@
 #include "../MapLoader/MapLoader.h"
 #include "../Player/Player.h"
 #include "../Cards/Cards.h"
+#include <map>
 
 class Setup {
  public:
+  Setup();
   void loadGame();
   void initializePlayers();
   void initializeDeck();
   void initializeBidding();
   int mainLoop();
+  int computeScore();
   bool checkGameOver();
   void takeTurn(Player* player, int turn);
 
@@ -30,7 +33,8 @@ class Setup {
   vector<Player *> *players;
   Deck *deck;
   Player *startingPlayer;
-
+  std::map<Player*, int> player_has_region;
+  std::map<Player*, int> player_has_continent;
 
 
 };
