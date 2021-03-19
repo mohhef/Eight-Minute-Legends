@@ -1,6 +1,6 @@
 [Region]
-USA,North America
-Canada,North America.
+USA,North America.
+Canada,North America
 
 Germany,europe
 France,europe
