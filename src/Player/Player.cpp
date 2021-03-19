@@ -139,12 +139,15 @@ ostream &operator<<(ostream &os, const Player &player) {
 /*
 Lets a player pay an amount of coins
 */
-bool Player::PayCoin(int coins) {
+bool Player::PayCoin(int coins, bool won_bid) {
   if (*this->coins < coins) {
     cout << "Player::PayCoin(): Not enough coins." << endl;
     return false;
   } else {
     *this->coins -= coins;
+    if (won_bid) {
+      this->bidding_facility->subtractBid();
+    }
     cout << *name << " has payed " << coins << " coins." << endl;
     return true;
   }
@@ -179,18 +182,17 @@ pair<Region *, int> *Player::GetCitiesInRegion(Region *region) {
 /*
 Places an amount of armies in a region
 */
-bool Player::PlaceNewArmies(int armies_num, Region *region) {
+bool Player::PlaceNewArmies(int armies_num, Region *region, bool force) {
   if (*cubes < armies_num) {
     cout << "Player::PlaceNewArmies(): Not enough armies." << endl;
     return false;
   }
   pair<Region *, int> *cities_in_region = GetCitiesInRegion(region);
-  if (cities_in_region->second > 0 || region == map->startingRegion) {
+  if (cities_in_region->second > 0 || region == map->startingRegion || force) {
     pair<Region *, int> *armies_in_region = GetArmiesInRegion(region);
     armies_in_region->second += armies_num;
     *cubes -= armies_num;
-    cout << *name << " has placed " << armies_num << " new armies in " << *region->name
-         << "." << endl;
+    cout << *name << " has placed " << armies_num << " new armies in " << *region->name << "." << endl;
     return true;
   } else {
     cout << "Player::PlaceNewArmies(): Cannot place armies in a region in which the "
