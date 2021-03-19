@@ -44,17 +44,16 @@ void Setup::initializeDeck() {
 }
 
 void Setup::Startup() {
-  cout << "*********************Startup Phase*********************" << endl;
+  cout << "\n*********************Startup Phase*********************" << endl;
   // Placement of player armies
   for (auto &player : *players) {
     player->PlaceNewArmies(4, map->startingRegion);
   }
   // Placement of non-player armies
   if (players->size() == 2) {
-    cout << "Since there are only two players, each player takes turns placing one army "
-            "at a time of a third non-player in any region on the board until ten armies "
-            "have been placed."
-         << endl;
+    cout << "Since there are only two players, each player takes turns placing one army\n"
+            "at a time of a third non-player in any region on the board until ten armies\n"
+            "have been placed." << endl;
     for (int i = 0; i < 10; i++) {
       int turn = i % 2;
       string region_name;
@@ -62,7 +61,7 @@ void Setup::Startup() {
       while (!region) {
         cout << "[" << (*players)[turn]->GetName()
              << "'s turn] Pick a region in which one army for the non-player will be "
-                "placed: ";
+                "placed: " << endl;
         cin >> region_name;
         region = map->findRegion(region_name);
         if (!region) {
@@ -86,6 +85,7 @@ void Setup::Startup() {
   }
   cout << "Winner with highest bid: " << winner->GetName() << endl;
   winner->PayCoin(*winner->GetBiddingFacility()->getAmountBid(), true);
+  cout << "Coins remaining: " << *winner->GetBiddingFacility()->getPlayerCoins() << endl;
   starting_player = winner;
 }
 
@@ -119,8 +119,8 @@ void Setup::takeTurn(Player *player, int turn) {
   cout << "Top Board: " << endl;
   deck->showTopBoard();
   cout << "(" + player->GetName() +
-              ") Choose a card by entering its position (1-6) or enter any other number "
-              "to skip:"
+      ") Choose a card by entering its position (1-6) or enter any other number "
+      "to skip:"
        << endl;
   cin >> choiceIndex;
   while (cin.fail() || choiceIndex < 1 || choiceIndex > 6) {

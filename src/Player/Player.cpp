@@ -192,8 +192,7 @@ bool Player::PlaceNewArmies(int armies_num, Region *region, bool force) {
     pair<Region *, int> *armies_in_region = GetArmiesInRegion(region);
     armies_in_region->second += armies_num;
     *cubes -= armies_num;
-    cout << *name << " has placed " << armies_num << " new armies in " << *region->name
-         << "." << endl;
+    cout << *name << " has placed " << armies_num << " new armies in " << *region->name << "." << endl;
     return true;
   } else {
     cout << "Player::PlaceNewArmies(): Cannot place armies in a region in which the "
