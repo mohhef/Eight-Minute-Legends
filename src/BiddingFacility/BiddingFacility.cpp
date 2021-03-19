@@ -51,7 +51,7 @@ int *BiddingFacility::getPlayerCoins() { return playerCoins; }
 
 void BiddingFacility::bid() {
   int bid;
-  cout << "Enter a bid between 0 and " << *playerCoins << ": ";
+  cout << "Enter a bid between 0 and " << *playerCoins << ": " << endl;
   cin >> bid;
 
   while (cin.fail() || bid > *playerCoins || bid < 0) {

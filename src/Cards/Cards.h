@@ -36,7 +36,7 @@ class Cards {
   void setName(string name);
   void setNumber(int number);
 
-  friend void swap(Cards& first, Cards& second);
+  friend void swap(Cards &first, Cards &second);
 };
 
 class Deck {
@@ -46,7 +46,7 @@ class Deck {
   vector<Cards *> *topBoard;
 
  public:
-  Deck();
+  Deck(const int num_of_players = 2);
   Deck(const Deck &deck);
   virtual ~Deck();
 
@@ -57,7 +57,7 @@ class Deck {
 
   int getDeckSize() const;
   int *getBoardCosts() const;
-  vector<Cards *>* getDeckCards() const;
+  vector<Cards *> *getDeckCards() const;
   int static getBoardPositionCost(int position);
   Cards *getCard(int position) const;
   Cards *getTopBoardCard(int position) const;
@@ -66,7 +66,7 @@ class Deck {
   void showTopBoard();
   void removeFromTopBoard(int position);
 
-  friend void swap(Deck& first, Deck& second);
+  friend void swap(Deck &first, Deck &second);
 };
 
 class Hand {
@@ -92,5 +92,5 @@ class Hand {
   void exchange(int position, Deck &deck, int totalPlayerCoin);
   void addCard(Cards *card);
 
-  friend void swap(Hand& first, Hand& second);
+  friend void swap(Hand &first, Hand &second);
 };
