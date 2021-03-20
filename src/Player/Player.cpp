@@ -122,6 +122,7 @@ ostream &operator<<(ostream &os, const Player &player) {
   os << "Cubes: " << player.GetCubes() << endl;
   os << "Discs: " << player.GetDiscs() << endl;
   os << "Coins: " << player.GetCoins() << endl;
+  os << "HandSize:" << player.GetHand()->getCurrentHandSize()<<endl;
   os << "Cities: ";
   for (auto region : *(player.GetCities())) {
     os << *((region.first)->name) << "->" << region.second << " ";
