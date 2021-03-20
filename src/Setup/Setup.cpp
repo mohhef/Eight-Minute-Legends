@@ -154,7 +154,7 @@ void Setup::takeTurn(Player *player, int turn) {
       cin.ignore(256, '\n');
       cout << "Please enter a valid number or make sure you have enough coins:" << endl;
     }else{
-      player->GetHand()->exchange(choiceIndex - 1, *deck, playerCoins);
+      player->GetHand()->exchange(choiceIndex - 1, *deck);
       player->PayCoin(cardCost);
       int currentHandSize = player->GetHand()->getCurrentHandSize();
       string playerAction = player->GetHand()->getCard(currentHandSize - 1)->getAction();
@@ -404,7 +404,7 @@ Player *Setup::findPlayer(string playerName) {
 
 bool Setup::checkGameOver() {
   for (int i = 0; i < players->size(); ++i) {
-    if (players->at(i)->GetHand()->getCurrentHandSize() == 11) {
+    if (players->at(i)->GetHand()->getCurrentHandSize() == 1) {
       return true;
     }
   }
