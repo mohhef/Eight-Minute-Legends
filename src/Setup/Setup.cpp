@@ -16,7 +16,9 @@ Setup::Setup()
   this->starting_player = nullptr;
 }
 
-
+/*
+ * Tokenizes a string according to a delimiter
+ */
 void tokenize(std::string const &str, const char delim,
               std::vector<std::string> &out) {
   // construct a stream from the string
@@ -28,6 +30,9 @@ void tokenize(std::string const &str, const char delim,
   }
 }
 
+/*
+ * Loads the game map from a file
+ */
 void Setup::loadGame() {
   // Prompt to let user select the file
   cout << "*********************Map Loader*********************" << endl;
@@ -35,6 +40,9 @@ void Setup::loadGame() {
   map = mapLoader->chooseMap();
 }
 
+/*
+ * Initializes all the game players
+ */
 void Setup::initializePlayers() {
   // initialize the players
   cout << "*********************Player Setup*********************" << endl;
@@ -61,6 +69,9 @@ void Setup::initializePlayers() {
   }
 }
 
+/*
+ * Shuffle, initialize, remove necessary cards from the  deck
+ */
 void Setup::initializeDeck() {
   deck = new Deck();
   cout << "Top Board: " << endl;
@@ -95,7 +106,7 @@ void Setup::Startup() {
       non_player->PlaceNewArmies(1, region, true);
     }
   }
-  /// Bidding
+  // Start of the bidding
   cout << "Bidding has started..." << endl;
   Player *winner = players->at(0);
   for (auto &player : *players) {
@@ -113,6 +124,9 @@ void Setup::Startup() {
   starting_player = winner;
 }
 
+/*
+ * Gives each player a turn to play the game and checks if the game is over
+ */
 int Setup::mainLoop() {
   int turn = 1;
   bool gameOver = false;
@@ -137,6 +151,9 @@ int Setup::mainLoop() {
   return 0;
 }
 
+/*
+ * Lets the player choose from the available cards, picks up the card, pays the coins
+ */
 void Setup::takeTurn(Player *player, int turn) {
   int choiceIndex = 0;
   cout << "****** Turn #" + to_string(turn) + " ******" << endl;
@@ -176,6 +193,9 @@ void Setup::takeTurn(Player *player, int turn) {
   }
 }
 
+/*
+ * According to the card's action the proper action method will be procceded with
+ */
 bool Setup::andOrAction(Player &player, Cards &card) {
   string choice;
   cout << "Selected Card: " << card << endl << "\n";
@@ -249,6 +269,9 @@ bool Setup::andOrAction(Player &player, Cards &card) {
   return true;
 }
 
+/*
+ * Action for adding armies
+ */
 void Setup::addArmy(Player &player, int *count) {
   while (*count > 0) {
     string regionName;
@@ -277,7 +300,9 @@ void Setup::addArmy(Player &player, int *count) {
     }
   }
 }
-
+/*
+ * Action for moving only over land, to be utilized later.
+ */
 void Setup::moveOverLand(Player &player, int *count) {
   while (*count > 0) {
     string regionFrom;
@@ -314,6 +339,9 @@ void Setup::moveOverLand(Player &player, int *count) {
   }
 }
 
+/*
+ * Action for moving over land or water
+ */
 void Setup::moverOverLandOrWater(Player &player, int *count) {
   while (*count > 0) {
 
@@ -361,6 +389,9 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
   }
 }
 
+/*
+ * Action for building a city
+ */
 void Setup::buildCity(Player &player, int *count) {
   while (*count > 0) {
 
@@ -378,6 +409,9 @@ void Setup::buildCity(Player &player, int *count) {
   }
 }
 
+/*
+ * Action for destroying armies
+ */
 void Setup::destroyArmy(Player &player, int *count) {
   while (*count > 0) {
     Player *targetPlayer = nullptr;
@@ -402,6 +436,9 @@ void Setup::destroyArmy(Player &player, int *count) {
   }
 }
 
+/*
+ * Finds a player in the game
+ */
 Player *Setup::findPlayer(string playerName) {
   vector<Player *>::iterator p;
   for (p = (players)->begin(); p != (players)->end(); ++p) {
@@ -412,6 +449,9 @@ Player *Setup::findPlayer(string playerName) {
   return nullptr;
 }
 
+/*
+ * Checks if the game is over by checking the hand sizes
+ */
 bool Setup::checkGameOver() {
   for (int i = 0; i < players->size(); ++i) {
     if (players->at(i)->GetHand()->getCurrentHandSize() == 1) {
@@ -421,6 +461,9 @@ bool Setup::checkGameOver() {
   return false;
 }
 
+/*
+ * Computes the score of each player and determines the winner
+ */
 int Setup::computeScore(){
   /*
   VP_PER_DIRE, --> "Dire..."
