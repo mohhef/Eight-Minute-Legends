@@ -13,7 +13,7 @@ Setup::Setup()
   this->players = nullptr;
   this->map = nullptr;
   this->deck = nullptr;
-  this->startingPlayer = nullptr;
+  this->starting_player = nullptr;
 }
 
 

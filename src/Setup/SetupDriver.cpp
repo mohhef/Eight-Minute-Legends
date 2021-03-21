@@ -13,4 +13,5 @@ void Driver::part6() {
   setup->initializeDeck();
   setup->Startup();
   setup->mainLoop();
+  setup->computeScore();
 }
