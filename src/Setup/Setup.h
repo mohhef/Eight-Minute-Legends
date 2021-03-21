@@ -33,8 +33,5 @@ class Setup {
   vector<Player *> *players;
   Deck *deck;
   Player *startingPlayer;
-  std::map<Player*, int> player_has_region;
-  std::map<Player*, int> player_has_continent;
-
 
 };

@@ -36,8 +36,6 @@ void Setup::initializePlayers() {
     cin >> playerName;
     Player *player = new Player(map, playerName, 18, 3, 12);
     players->push_back(player);
-    player_has_region.insert({player,0});
-    player_has_continent.insert({player , 0});
   }
 
   for (auto player : *players) {
@@ -176,6 +174,8 @@ int Setup::computeScore(){
     delete handCards;
   }
 
+  std::map<Player*, int> player_has_region;
+  std::map<Player*, int> player_has_continent;
   /*
   Regions: A player gains one victory point for each region on the map he controls.
   A player controls a region if he has more armies there than any other player
