@@ -6,7 +6,6 @@
 #include <stack>
 #include <iostream>
 #include <unordered_map>
-#include <algorithm>
 
 /*
  * Default constructor that initializes regions, continents and a starting region
@@ -151,11 +150,11 @@ int Map::isAdjacent(Region *start, Region *end) {
   for (int i = 0; i < regions->size(); i++) {
     if ((*regions)[i].first == start) {
       vector<pair<Region *, bool>> adjacentRegions = (*regions)[i].second;
-      for (i = 0; i < adjacentRegions.size(); i++) {
-        if (adjacentRegions[i].first == end && adjacentRegions[i].second == 1) {
+      for (int j = 0; j < adjacentRegions.size(); j++) {
+        if (adjacentRegions[j].first == end && adjacentRegions[j].second == 1) {
           return 1;
         }
-        if (adjacentRegions[i].first == end && adjacentRegions[i].second == 0) {
+        if (adjacentRegions[j].first == end && adjacentRegions[j].second == 0) {
           return 0;
         }
       }

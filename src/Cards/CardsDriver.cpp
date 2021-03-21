@@ -1,6 +1,7 @@
 #include <iostream>
-#include "Cards.h"
+
 #include "../MainDriver.h"
+#include "Cards.h"
 
 void Driver::part4() {
   Deck *deck = new Deck();
@@ -8,12 +9,12 @@ void Driver::part4() {
 
   cout << "Top Board: " << endl;
   deck->showTopBoard();
-  int coins  = int(12);
-  myHand->exchange(2, *deck, coins);
+  int coins = int(12);
+  myHand->exchange(2, *deck);
 
   cout << "\nMy Hand after exchange: " << endl;
   cout << *myHand << endl;
-  
+
   cout << "\nTop Board after exchange: " << endl;
   deck->showTopBoard();
 

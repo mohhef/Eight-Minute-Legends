@@ -1,10 +1,11 @@
 #include "Cards.h"
-#include <iostream>
+
+#include <algorithm>
 #include <fstream>
+#include <iostream>
+#include <random>
 #include <sstream>
 #include <string>
-#include <random>
-#include <algorithm>
 #include <vector>
 
 int HAND_SIZE = 8;
@@ -48,9 +49,7 @@ Cards::Cards(string ability, string action, string name, int number) {
 /*
 Cards copy constructor
 */
-Cards::Cards(const Cards &card) {
-  deepCopy(card);
-}
+Cards::Cards(const Cards &card) { deepCopy(card); }
 
 /*
 Cards deconstructor
@@ -66,7 +65,8 @@ Cards::~Cards() {
 Stream insertion operator for cards
 */
 ostream &operator<<(ostream &os, const Cards &cards) {
-  os << "Name: " << cards.getName() << " Ability: " << cards.getAbility() << " Action: " << cards.getAction();
+  os << "Name: " << cards.getName() << " Ability: " << cards.getAbility()
+     << " Action: " << cards.getAction();
   if (cards.getNumber() != 0) {
     os << " Number: " << cards.getNumber();
   }
@@ -77,52 +77,36 @@ ostream &operator<<(ostream &os, const Cards &cards) {
 Assignment operator for cards
 */
 Cards &Cards::operator=(Cards cards) {
-  swap(*this,cards);
+  swap(*this, cards);
   return *this;
 }
 
 void Cards::deepCopy(const Cards &cards) {
   this->ability = new string(cards.getAbility());
   this->action = new string(cards.getAction());
-  this->name =  new string(cards.getName());
+  this->name = new string(cards.getName());
   this->number = new int(cards.getNumber());
 }
 
-string Cards::getAbility() const {
-  return *this->ability;
-}
+string Cards::getAbility() const { return *this->ability; }
 
-string Cards::getAction() const {
-  return *this->action;
-}
+string Cards::getAction() const { return *this->action; }
 
-string Cards::getName() const {
-  return *this->name;
-}
+string Cards::getName() const { return *this->name; }
 
-int Cards::getNumber() const {
-  return *this->number;
-}
+int Cards::getNumber() const { return *this->number; }
 
-void Cards::setAbility(string ability) {
-  *this->ability = ability;
-}
+void Cards::setAbility(string ability) { *this->ability = ability; }
 
-void Cards::setAction(string action) {
-  *this->action = action;
-}
+void Cards::setAction(string action) { *this->action = action; }
 
-void Cards::setName(string name) {
-  *this->name = name;
-}
+void Cards::setName(string name) { *this->name = name; }
 
-void Cards::setNumber(int number) {
-  *this->number = number;
-}
+void Cards::setNumber(int number) { *this->number = number; }
 
-void swap(Cards& first, Cards& second) {
+void swap(Cards &first, Cards &second) {
   using std::swap;
-    
+
   swap(first.ability, second.ability);
   swap(first.action, second.action);
   swap(first.name, second.name);
@@ -142,11 +126,11 @@ It shuffles all the cards
 It initializes the card costs
 It puts the cards to be chosen from on the board
  */
-Deck::Deck() {
+Deck::Deck(const int num_of_players) {
   string myText;
+  string filePath;
   // Workaround for relative path depending on .exe location.
   cout << "Enter the path to the file containing the cards:" << endl;
-  string filePath;
   cin >> filePath;
   ifstream MyReadFile(filePath);
   deckCards = new vector<Cards *>;
@@ -162,7 +146,10 @@ Deck::Deck() {
     // Constructor order is: Ability, Action, Name, Number
     // Card order is:      Name, Ability, Action, Number
     if (cardStrings[3] != "") {
-      deckCards->push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0], std::stoi(cardStrings[3])));
+      if (num_of_players != 2) {
+        deckCards->push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0],
+                                       std::stoi(cardStrings[3])));
+      }
     } else if (cardStrings[2] != "") {
       deckCards->push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0]));
     } else if (cardStrings[0] != "") {
@@ -182,9 +169,7 @@ Deck::Deck() {
 /*
 Deck copy constructor
 */
-Deck::Deck(const Deck &deck) {
-  deepCopy(deck);
-}
+Deck::Deck(const Deck &deck) { deepCopy(deck); }
 
 /*
 Deck deconstructor
@@ -222,7 +207,7 @@ ostream &operator<<(ostream &os, const Deck &deck) {
 /*
 Deck assignment operator
 */
-Deck& Deck::operator=(Deck deck) {
+Deck &Deck::operator=(Deck deck) {
   swap(*this, deck);
   return *this;
 }
@@ -239,25 +224,15 @@ void Deck::deepCopy(const Deck &deck) {
   }
 }
 
-int Deck::getDeckSize() const {
-  return *this->deckSize;
-}
+int Deck::getDeckSize() const { return *this->deckSize; }
 
-vector<Cards *>* Deck::getDeckCards() const {
-  return deckCards;
-}
+vector<Cards *> *Deck::getDeckCards() const { return deckCards; }
 
-int Deck::getBoardPositionCost(int position) {
-  return boardCosts[position];
-}
+int Deck::getBoardPositionCost(int position) { return boardCosts[position]; }
 
-Cards *Deck::getCard(int position) const {
-  return (*deckCards)[position];
-}
+Cards *Deck::getCard(int position) const { return (*deckCards)[position]; }
 
-Cards *Deck::getTopBoardCard(int position) const {
-  return (*topBoard)[position];
-}
+Cards *Deck::getTopBoardCard(int position) const { return (*topBoard)[position]; }
 
 /*
 Takes a card from a deck of cards
@@ -286,7 +261,7 @@ void Deck::removeFromTopBoard(int position) {
   topBoard->push_back(this->draw());
 }
 
-void swap(Deck& first, Deck& second) {
+void swap(Deck &first, Deck &second) {
   using std::swap;
   swap(first.deckSize, second.deckSize);
   swap(first.deckCards, second.deckCards);
@@ -314,9 +289,7 @@ Hand::Hand(const int maxHandSize) {
   this->handCards = new vector<Cards *>;
 }
 
-Hand::Hand(const Hand &hand) {
-  deepCopy(hand);
-}
+Hand::Hand(const Hand &hand) { deepCopy(hand); }
 
 /*
 deconstructor for hand
@@ -356,55 +329,39 @@ void Hand::deepCopy(const Hand &hand) {
   }
 }
 
-int Hand::getCurrentHandSize() const {
-  return this->handCards->size();
-}
+int Hand::getCurrentHandSize() const { return this->handCards->size(); }
 
-int Hand::getMaxHandSize() const {
-  return *this->maxHandSize;
-}
+int Hand::getMaxHandSize() const { return *this->maxHandSize; }
 
 /*
 gets a card from a hand of cards
 */
-Cards *Hand::getCard(int position) const {
-  return (*handCards)[position];
-}
+Cards *Hand::getCard(int position) const { return (*handCards)[position]; }
 
 /*
-Lets a player pick a card by position from the available cards and readjusts the available cards and the deck of cards
+Lets a player pick a card by position from the available cards and readjusts the available
+cards and the deck of cards
 */
-void Hand::exchange(int position, Deck &deck, int totalPlayerCoin) {
-    // TODO: Change to check available coins and wait for y/n decision. Also change hand size depending on players
-    if(totalPlayerCoin >= Deck::getBoardPositionCost(position)){
-        totalPlayerCoin = totalPlayerCoin - Deck::getBoardPositionCost(position);
+void Hand::exchange(int position, Deck &deck) {
+  if (this->handCards->size() < *maxHandSize - 1) {
+    this->handCards->push_back(new Cards(*deck.getTopBoardCard(position)));
+    deck.removeFromTopBoard(position);
+  } else {
+    cout << "You already have the maximum amount of cards";
+  }
 
-        if (this->handCards->size() < *maxHandSize - 1) {
-            this->handCards->push_back(new Cards(*deck.getTopBoardCard(position)));
-            deck.removeFromTopBoard(position);
-        }else{
-            cout << "You already have the maximum amount of cards";
-        }
-    }else{
-        cout << "You dont have enough coins to purchase this card";
-    }
 }
 
 /*
 adds a card to the player's hand of cards
 */
-void Hand::addCard(Cards *card) {
-  this->handCards->push_back(card);
-}
-
-vector<Cards*>* Hand::getHandCards() const
-{
+void Hand::addCard(Cards *card) { this->handCards->push_back(card); }
+vector<Cards *> *Hand::getHandCards() const {
   return handCards;
 }
-
-void swap(Hand& first, Hand& second) {
+void swap(Hand &first, Hand &second) {
   using std::swap;
-    
+
   swap(first.maxHandSize, second.maxHandSize);
   swap(first.handCards, second.handCards);
 }
