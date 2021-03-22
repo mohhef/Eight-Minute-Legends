@@ -27,7 +27,7 @@ Map *MapLoader::loadmap(string fileName) {
                 //read region
                 reading_regions = true;
                 reading_paths = false;
-                continue;
+              continue;
             }
             if (!line.compare("[Path]")) {
                 //read Path status
@@ -37,6 +37,12 @@ Map *MapLoader::loadmap(string fileName) {
             }
             string first = line.substr(0, line.find(","));// part before ;
             string second = line.substr(line.find(",") + 1, line.length());//part that after ;
+            bool isStartingRegion = false;
+
+            if(second.back()=='.'){
+              second = second.substr(0,second.length()-1);
+              isStartingRegion = true;
+            }
             assert(first != line && "Incorrect file format, check the delimiter");
             if (reading_regions) {
                 //read region info, add region to the map
@@ -47,7 +53,7 @@ Map *MapLoader::loadmap(string fileName) {
                     }
                     Region *region = new Region(first, continent);
                     // add region to map
-                    map->addRegion(region);
+                    map->addRegion(region,isStartingRegion);
                 }
                 catch (const exception &e) {
                     cout << "Invalid region format: " << e.what() << endl;
@@ -110,7 +116,7 @@ Map *MapLoader::loadmap(string fileName) {
 Map *MapLoader::chooseMap() {
     Map *loadMap = nullptr;
     while (loadMap == nullptr) {
-        // Changed since the .exe might not run within MapLoader directory, hence ../Files might fail
+        // Changed since the .exe might not run within MapLoader directory, hence ../Files might fail e.g. ../Files/validMap.txt
         cout << "Choose a map, by entering the file path" << endl;
         string fileName;
         cin >> fileName;

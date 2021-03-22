@@ -37,12 +37,11 @@ class Player {
   Hand *GetHand() const;
   Player &operator=(const Player &player);
   friend ostream &operator<<(ostream &os, const Player &player);
-  bool PayCoin(int coins);
-  bool PlaceNewArmies(int armies_num, Region *region);
+  bool PayCoin(int coins, bool won_bid = false);
+  bool PlaceNewArmies(int armies_num, Region *region, bool force = false);
   bool BuildCity(Region *region);
   bool DestroyArmy(Player *player, Region *region);
   bool MoveArmies(int armies_num, Region *origin, Region *destination);
   bool MoveOverLand(int armies_num, Region *origin, Region *destination);
   bool MoveOverWater(int armies_num, Region *origin, Region *destination);
-
 };

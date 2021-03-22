@@ -1,5 +1,5 @@
 [Region]
-USA,North America
+USA,North America.
 Canada,North America
 
 Germany,europe

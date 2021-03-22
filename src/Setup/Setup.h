@@ -4,18 +4,20 @@
 
 #pragma once
 
+#include "../Cards/Cards.h"
 #include "../Map/Map.h"
 #include "../MapLoader/MapLoader.h"
 #include "../Player/Player.h"
-#include "../Cards/Cards.h"
 
 class Setup {
  public:
-  int startGame();
-  Map *map;
-  vector<Player *> *players;
-  Deck *deck;
-  Player *startingPlayer;
+  void loadGame();
+  void initializePlayers();
+  void initializeDeck();
+  void Startup();
+  int mainLoop();
+  bool checkGameOver();
+  void takeTurn(Player *player, int turn);
 
   Player *findPlayer(string playerName);
   void addArmy(Player &player, int *count);
@@ -24,6 +26,9 @@ class Setup {
   void buildCity(Player &player, int *count);
   void destroyArmy(Player &player, int *count);
 
-  int mainLoop();
-  bool checkGameover();
+  Map *map;
+  vector<Player *> *players;
+  Player *non_player;
+  Deck *deck;
+  Player *starting_player;
 };
