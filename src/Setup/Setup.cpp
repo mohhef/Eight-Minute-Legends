@@ -39,6 +39,8 @@ void Setup::initializePlayers() {
 
 void Setup::initializeDeck() {
   deck = new Deck();
+  deck->shuffleDeck();
+  deck->drawTopBoard();
   cout << "Top Board: " << endl;
   deck->showTopBoard();
 }
