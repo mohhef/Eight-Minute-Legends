@@ -10,6 +10,7 @@ Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_nu
   cubes = new int(cubes_num);
   discs = new int(discs_num);
   coins = new int(coins_num);
+  score = new int(0);
   cities = new vector<pair<Region *, int>>;
   armies = new vector<pair<Region *, int>>;
   bidding_facility = new BiddingFacility(coins_num, name);
@@ -24,6 +25,7 @@ Player::Player(int coins, string name) {
   this->map = new Map();
   this->cubes = new int(0);
   this->discs = new int(0);
+  score = new int(0);
   this->name = new string(name);
   this->coins = new int(coins);
   cities = new vector<pair<Region *, int>>;

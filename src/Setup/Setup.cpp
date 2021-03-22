@@ -84,28 +84,28 @@ void Setup::Startup() {
   for (auto &player : *players) {
     player->PlaceNewArmies(4, map->startingRegion);
   }
-  // Placement of non-player armies
-  if (players->size() == 2) {
-    cout << "Since there are only two players, each player takes turns placing one army\n"
-            "at a time of a third non-player in any region on the board until ten armies\n"
-            "have been placed." << endl;
-    for (int i = 0; i < 10; i++) {
-      int turn = i % 2;
-      string region_name;
-      Region *region = nullptr;
-      while (!region) {
-        cout << "[" << (*players)[turn]->GetName()
-             << "'s turn] Pick a region in which one army for the non-player will be "
-                "placed: " << endl;
-        cin >> region_name;
-        region = map->findRegion(region_name);
-        if (!region) {
-          cout << "\"" << region_name << "\" does not exist. Try again." << endl;
-        }
-      }
-      non_player->PlaceNewArmies(1, region, true);
-    }
-  }
+//  // Placement of non-player armies
+//  if (players->size() == 2) {
+//    cout << "Since there are only two players, each player takes turns placing one army\n"
+//            "at a time of a third non-player in any region on the board until ten armies\n"
+//            "have been placed." << endl;
+//    for (int i = 0; i < 10; i++) {
+//      int turn = i % 2;
+//      string region_name;
+//      Region *region = nullptr;
+//      while (!region) {
+//        cout << "[" << (*players)[turn]->GetName()
+//             << "'s turn] Pick a region in which one army for the non-player will be "
+//                "placed: " << endl;
+//        cin >> region_name;
+//        region = map->findRegion(region_name);
+//        if (!region) {
+//          cout << "\"" << region_name << "\" does not exist. Try again." << endl;
+//        }
+//      }
+//      non_player->PlaceNewArmies(1, region, true);
+//    }
+//  }
   // Start of the bidding
   cout << "Bidding has started..." << endl;
   Player *winner = players->at(0);
@@ -146,6 +146,10 @@ int Setup::mainLoop() {
     turn++;
     indexOfCurrentPlayer = (indexOfCurrentPlayer + 1) % playersSize;
     gameOver = checkGameOver();
+  }
+  cout << "Current Player holdings" << endl;
+  for (auto player : *players) {
+    cout << *player << endl;
   }
   // Add code/method to compute game score here
   return 0;
@@ -454,11 +458,11 @@ Player *Setup::findPlayer(string playerName) {
  */
 bool Setup::checkGameOver() {
   for (int i = 0; i < players->size(); ++i) {
-    if (players->at(i)->GetHand()->getCurrentHandSize() == 1) {
-      return true;
+    if (players->at(i)->GetHand()->getCurrentHandSize() != 1) {
+      return false;
     }
   }
-  return false;
+  return true;
 }
 
 /*
@@ -505,7 +509,6 @@ int Setup::computeScore(){
       }
     }
     player->SetScore(VP);
-    delete handCards;
   }
 
   std::map<Player*, int> player_has_region;
@@ -564,7 +567,7 @@ int Setup::computeScore(){
         }
       }
       if (reg_owner) {
-        if (counter.count(reg_owner) > 1) {
+        if (counter.count(reg_owner) >= 1) {
           counter[reg_owner] += 1;
         }
         else {
@@ -573,6 +576,10 @@ int Setup::computeScore(){
         if (counter[reg_owner] > max_ctrl_power) {
           max_ctrl_power = counter[reg_owner];
           continent_owner = reg_owner;
+        }
+        else if (counter[reg_owner]  == max_ctrl_power) {
+          // If players have the same number of armies in a region, no one controls it.
+          continent_owner = nullptr;
         }
       }
     }
