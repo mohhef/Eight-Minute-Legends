@@ -65,6 +65,8 @@ class Deck {
 
   void showTopBoard();
   void removeFromTopBoard(int position);
+  void shuffleDeck();
+  void drawTopBoard();
 
   friend void swap(Deck &first, Deck &second);
 };
