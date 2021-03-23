@@ -349,7 +349,6 @@ void Hand::exchange(int position, Deck &deck) {
   } else {
     cout << "You already have the maximum amount of cards";
   }
-
 }
 
 /*

@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <sstream>
+#include <limits>
 #include "Setup.h"
 using namespace std;
 
@@ -84,28 +85,28 @@ void Setup::Startup() {
   for (auto &player : *players) {
     player->PlaceNewArmies(4, map->startingRegion);
   }
-//  // Placement of non-player armies
-//  if (players->size() == 2) {
-//    cout << "Since there are only two players, each player takes turns placing one army\n"
-//            "at a time of a third non-player in any region on the board until ten armies\n"
-//            "have been placed." << endl;
-//    for (int i = 0; i < 10; i++) {
-//      int turn = i % 2;
-//      string region_name;
-//      Region *region = nullptr;
-//      while (!region) {
-//        cout << "[" << (*players)[turn]->GetName()
-//             << "'s turn] Pick a region in which one army for the non-player will be "
-//                "placed: " << endl;
-//        cin >> region_name;
-//        region = map->findRegion(region_name);
-//        if (!region) {
-//          cout << "\"" << region_name << "\" does not exist. Try again." << endl;
-//        }
-//      }
-//      non_player->PlaceNewArmies(1, region, true);
-//    }
-//  }
+ // Placement of non-player armies
+ if (players->size() == 2) {
+   cout << "Since there are only two players, each player takes turns placing one army\n"
+           "at a time of a third non-player in any region on the board until ten armies\n"
+           "have been placed." << endl;
+   for (int i = 0; i < 10; i++) {
+     int turn = i % 2;
+     string region_name;
+     Region *region = nullptr;
+     while (!region) {
+       cout << "[" << (*players)[turn]->GetName()
+            << "'s turn] Pick a region in which one army for the non-player will be "
+               "placed: " << endl;
+       cin >> region_name;
+       region = map->findRegion(region_name);
+       if (!region) {
+         cout << "\"" << region_name << "\" does not exist. Try again." << endl;
+       }
+     }
+     non_player->PlaceNewArmies(1, region, true);
+   }
+ }
   // Start of the bidding
   cout << "Bidding has started..." << endl;
   Player *winner = players->at(0);
@@ -272,6 +273,7 @@ bool Setup::andOrAction(Player &player, Cards &card) {
   }
   return true;
 }
+
 
 /*
  * Action for adding armies
