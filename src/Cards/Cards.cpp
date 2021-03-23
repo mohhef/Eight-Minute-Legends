@@ -343,20 +343,21 @@ Lets a player pick a card by position from the available cards and readjusts the
 cards and the deck of cards
 */
 void Hand::exchange(int position, Deck &deck) {
-    if (this->handCards->size() < *maxHandSize - 1) {
-      this->handCards->push_back(new Cards(*deck.getTopBoardCard(position)));
-      deck.removeFromTopBoard(position);
-    } else {
-      cout << "You already have the maximum amount of cards";
-    }
-
+  if (this->handCards->size() < *maxHandSize - 1) {
+    this->handCards->push_back(new Cards(*deck.getTopBoardCard(position)));
+    deck.removeFromTopBoard(position);
+  } else {
+    cout << "You already have the maximum amount of cards";
+  }
 }
 
 /*
 adds a card to the player's hand of cards
 */
 void Hand::addCard(Cards *card) { this->handCards->push_back(card); }
-
+vector<Cards *> *Hand::getHandCards() const {
+  return handCards;
+}
 void swap(Hand &first, Hand &second) {
   using std::swap;
 

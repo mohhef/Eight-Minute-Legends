@@ -24,7 +24,7 @@ Map::Map() {
 Map::~Map() {
   for (auto continent: *continents) {
     for (auto region: continent.second) {
-      delete region->name;
+      delete region;
     }
     delete continent.first;
   }

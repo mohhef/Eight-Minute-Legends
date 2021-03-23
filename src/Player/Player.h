@@ -14,12 +14,11 @@ class Player {
   int *cubes;
   int *discs;
   int *coins;
+  int* score;
   vector<pair<Region *, int>> *cities;
   vector<pair<Region *, int>> *armies;
   BiddingFacility *bidding_facility;
   Hand *hand;
-  pair<Region *, int> *GetArmiesInRegion(Region *region);
-  pair<Region *, int> *GetCitiesInRegion(Region *region);
 
  public:
   Player(Map *map, string name, int cubes_num, int discs_num, int coins_num);
@@ -31,8 +30,14 @@ class Player {
   int GetCubes() const;
   int GetDiscs() const;
   int GetCoins() const;
+  int GetScore() const;
+  void SetScore(int);
+  pair<Region *, int> *GetArmiesInRegion(Region *region);
+  pair<Region *, int> *GetCitiesInRegion(Region *region);
   vector<pair<Region *, int>> *GetCities() const;
   vector<pair<Region *, int>> *GetArmies() const;
+  int countHandCardNameStartsWith(string) const;
+  int countHandCardAbilityEquals(string) const;
   BiddingFacility *GetBiddingFacility() const;
   Hand *GetHand() const;
   Player &operator=(const Player &player);

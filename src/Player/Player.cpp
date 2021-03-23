@@ -10,6 +10,7 @@ Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_nu
   cubes = new int(cubes_num);
   discs = new int(discs_num);
   coins = new int(coins_num);
+  score = new int(0);
   cities = new vector<pair<Region *, int>>;
   armies = new vector<pair<Region *, int>>;
   bidding_facility = new BiddingFacility(coins_num, name);
@@ -24,6 +25,7 @@ Player::Player(int coins, string name) {
   this->map = new Map();
   this->cubes = new int(0);
   this->discs = new int(0);
+  score = new int(0);
   this->name = new string(name);
   this->coins = new int(coins);
   cities = new vector<pair<Region *, int>>;
@@ -65,6 +67,8 @@ Player::~Player() {
   delete cities;
   delete armies;
   delete bidding_facility;
+  delete score;
+
 }
 
 Map *Player::GetMap() const { return map; }
@@ -76,6 +80,16 @@ int Player::GetCubes() const { return *cubes; }
 int Player::GetDiscs() const { return *discs; }
 
 int Player::GetCoins() const { return *coins; }
+
+int Player::GetScore() const
+{
+  return *score;
+}
+
+void Player::SetScore(int val)
+{
+  *(this->score) = val;
+}
 
 vector<pair<Region *, int>> *Player::GetCities() const { return cities; }
 
@@ -294,4 +308,26 @@ bool Player::MoveArmies(int armies_num, Region *origin, Region *destination) {
     cout << "Player::MovieArmies(): Not enough armies in the origin region." << endl;
     return false;
   }
+}
+
+int Player::countHandCardNameStartsWith(string str) const {
+  int cnt = 0;
+  vector<Cards*>* handCards = this->GetHand()->getHandCards();
+  for (auto pcard : *handCards) {
+    if (pcard->getName().find(str) == 0) {
+      cnt += 1;
+    }
+  }
+  return cnt;
+}
+
+int Player::countHandCardAbilityEquals(string str) const {
+  int cnt = 0;
+  vector<Cards*>* handCards = this->GetHand()->getHandCards();
+  for (auto pcard : *handCards) {
+    if (pcard->getAbility().compare(str) == 0) {
+      cnt += 1;
+    }
+  }
+  return cnt;
 }
