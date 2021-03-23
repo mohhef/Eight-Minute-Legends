@@ -91,8 +91,9 @@ class Hand {
   int getMaxHandSize() const;
   // vector<Cards*> getHandCards() const;
   Cards *getCard(int position) const;
-  void exchange(int position, Deck &deck, int totalPlayerCoin);
+  void exchange(int position, Deck &deck);
   void addCard(Cards *card);
+  vector<Cards*>* getHandCards()const;
 
   friend void swap(Hand &first, Hand &second);
 };
