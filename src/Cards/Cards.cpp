@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <chrono>
 
 int HAND_SIZE = 8;
 int TOP_BOARD_SIZE = 6;
@@ -243,8 +244,8 @@ Shuffles the deck using random_device
 void Deck::shuffleDeck() {
   cout << "Shuffling deck..." << endl;
   std::random_device rng;
-  std::mt19937 urng(rng());
-  std::shuffle(deckCards->begin(), deckCards->end(), urng);
+  std::mt19937 generator(std::chrono::system_clock::now().time_since_epoch().count());
+  std::shuffle(deckCards->begin(), deckCards->end(), generator);
 }
 
 /*
