@@ -65,9 +65,6 @@ struct Region {
   ~Region() {
     delete name;
     name = NULL;
-    delete continent;
-    continent = NULL;
-
   }
   friend ostream &operator<<(ostream &output, Region &region) {
     output << *(region.continent);
