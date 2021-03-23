@@ -20,6 +20,7 @@ class Setup {
   void takeTurn(Player *player, int turn);
 
   Player *findPlayer(string playerName);
+  bool andOrAction(Player &player, Cards &card);
   void addArmy(Player &player, int *count);
   void moveOverLand(Player &player, int *count);
   void moverOverLandOrWater(Player &player, int *count);

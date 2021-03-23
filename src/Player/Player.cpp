@@ -122,6 +122,7 @@ ostream &operator<<(ostream &os, const Player &player) {
   os << "Cubes: " << player.GetCubes() << endl;
   os << "Discs: " << player.GetDiscs() << endl;
   os << "Coins: " << player.GetCoins() << endl;
+  os << "HandSize:" << player.GetHand()->getCurrentHandSize()<<endl;
   os << "Cities: ";
   for (auto region : *(player.GetCities())) {
     os << *((region.first)->name) << "->" << region.second << " ";
@@ -286,12 +287,11 @@ bool Player::MoveArmies(int armies_num, Region *origin, Region *destination) {
     } else if (adjacency == 0) {
       return MoveOverWater(armies_num, origin, destination);
     } else {
-      cout << "Player::MoviesArmies(): Origin and destination regions are not adjacent."
-           << endl;
+      cout << "Player::MovieArmies(): Origin and destination regions are not adjacent." << endl;
       return false;
     }
   } else {
-    cout << "Player::MoviesArmies(): Not enough armies in the origin region." << endl;
+    cout << "Player::MovieArmies(): Not enough armies in the origin region." << endl;
     return false;
   }
 }

@@ -12,5 +12,5 @@ void Driver::part6() {
   setup->initializePlayers();
   setup->initializeDeck();
   setup->Startup();
-  // setup->mainLoop();
+  setup->mainLoop();
 }
