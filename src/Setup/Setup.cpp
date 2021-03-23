@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <sstream>
+#include <limits>
 #include "Setup.h"
 
 void tokenize(std::string const &str, const char delim,
@@ -137,23 +138,23 @@ void Setup::takeTurn(Player *player, int turn) {
   cout << "Top Board: " << endl;
   deck->showTopBoard();
 
-  while(true){
+  while (true) {
     cout << "(" + player->GetName() +
         ") Choose a card by entering its position (1-6) or enter any other number "
         "to skip:"
          << endl;
     cin >> choiceIndex;
-    if( choiceIndex < 1 || choiceIndex > 6){
+    if (choiceIndex < 1 || choiceIndex > 6) {
       return;
     }
     int cardCost = deck->getBoardPositionCost(choiceIndex - 1);
     Cards *chosenCard = deck->getTopBoardCard(choiceIndex - 1);
     int playerCoins = player->GetCoins();
-    if (cin.fail() || playerCoins < Deck::getBoardPositionCost(choiceIndex-1)) {
+    if (cin.fail() || playerCoins < Deck::getBoardPositionCost(choiceIndex - 1)) {
       cin.clear();
       cin.ignore(256, '\n');
       cout << "Please enter a valid number or make sure you have enough coins:" << endl;
-    }else{
+    } else {
       player->GetHand()->exchange(choiceIndex - 1, *deck);
       player->PayCoin(cardCost);
       int currentHandSize = player->GetHand()->getCurrentHandSize();
@@ -216,7 +217,8 @@ bool Setup::andOrAction(Player &player, Cards &card) {
 
     int actionChoiceIndex;
     while (true) {
-      cout << "(" + player.GetName() +")"+" Which action would you like to choose, 1 for the first, 2 for the second: " << cardAction << endl;
+      cout << "(" + player.GetName() + ")"
+          + " Which action would you like to choose, 1 for the first, 2 for the second: " << cardAction << endl;
       cin >> actionChoiceIndex;
       if (actionChoiceIndex > 2 || actionChoiceIndex < 0) {
         cin.clear();
@@ -246,12 +248,13 @@ void Setup::addArmy(Player &player, int *count) {
     Region *region = nullptr;
 
     while (!region) {
-      cout << "(" + player.GetName() +")"+" Which region do you want to add armies in?: " << endl;
+      cout << "(" + player.GetName() + ")" + " Which region do you want to add armies in?: " << endl;
       cin >> regionName;
       region = map->findRegion(regionName);
     }
     while (true) {
-      cout << "(" + player.GetName() +")"+" Enter the number of armies you wish to add, remaining "<<*count <<endl;
+      cout << "(" + player.GetName() + ")" + " Enter the number of armies you wish to add, remaining " << *count
+           << endl;
       cin >> armiesNum;
       if (armiesNum > *count || armiesNum <= 0) {
         cin.clear();
@@ -277,17 +280,18 @@ void Setup::moveOverLand(Player &player, int *count) {
     Region *to = nullptr;
 
     while (!from) {
-      cout << "(" + player.GetName() +")"+" Enter region to move from: ";
+      cout << "(" + player.GetName() + ")" + " Enter region to move from: ";
       cin >> regionFrom;
       from = map->findRegion(regionFrom);
     }
     while (!to) {
-      cout << "(" + player.GetName() +")"+" Name country to move armies to: ";
+      cout << "(" + player.GetName() + ")" + " Name country to move armies to: ";
       cin >> regionTo;
       to = map->findRegion(regionTo);
     }
     while (true) {
-      cout << "(" + player.GetName() +")"+" Enter the number of armies you wish to add, remaining "<<*count <<endl;
+      cout << "(" + player.GetName() + ")" + " Enter the number of armies you wish to add, remaining " << *count
+           << endl;
       cin >> armiesNum;
       if (armiesNum > *count || armiesNum <= 0) {
         cin.clear();
@@ -315,19 +319,20 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
     Region *to = nullptr;
 
     while (!from) {
-      cout << "(" + player.GetName() +")"+" Enter region to move from: " << endl;
+      cout << "(" + player.GetName() + ")" + " Enter region to move from: " << endl;
       cin >> regionFrom;
       from = map->findRegion(regionFrom);
     }
 
     while (!to) {
-      cout << "(" + player.GetName() +")"+" Enter region to move to: " << endl;
+      cout << "(" + player.GetName() + ")" + " Enter region to move to: " << endl;
       cin >> regionTo;
       to = map->findRegion(regionTo);
     }
 
     while (true) {
-      cout << "(" + player.GetName() +")"+" Enter the number of armies you wish to move, remaining "<<*count <<endl;
+      cout << "(" + player.GetName() + ")" + " Enter the number of armies you wish to move, remaining " << *count
+           << endl;
       cin >> armiesNum;
       int adjacency = map->isAdjacent(from, to);
       if (adjacency == 1) {
@@ -357,7 +362,7 @@ void Setup::buildCity(Player &player, int *count) {
     string regionName;
     Region *region = nullptr;
     while (!region) {
-      cout << "(" + player.GetName() +")"+" Which region do you want to build city in?: ";
+      cout << "(" + player.GetName() + ")" + " Which region do you want to build city in?: ";
       cin >> regionName;
       region = map->findRegion(regionName);
     }
@@ -375,12 +380,12 @@ void Setup::destroyArmy(Player &player, int *count) {
     Region *region = nullptr;
     string targetCountry;
     while (!targetPlayer) {
-      cout << "(" + player.GetName() +")"+" Which player do you wish to destroy their army?: " << endl;
+      cout << "(" + player.GetName() + ")" + " Which player do you wish to destroy their army?: " << endl;
       cin >> targetPlayerName;
       targetPlayer = findPlayer(targetPlayerName);
     }
     while (!region) {
-      cout << "(" + player.GetName() +")"+" Which region do you want to destroy the player's army: ";
+      cout << "(" + player.GetName() + ")" + " Which region do you want to destroy the player's army: ";
       cin >> targetCountry;
       region = map->findRegion(targetCountry);
     }
