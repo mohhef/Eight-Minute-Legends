@@ -18,6 +18,61 @@ Setup::Setup()
 }
 
 /*
+ * Setup deconstructor
+ */
+Setup::~Setup() {
+    for (int i = 0; i < players->size(); i++) {
+        delete (*players)[i];
+    }
+    players->clear();
+    delete players;
+    delete map;
+    delete deck;
+    delete starting_player;
+}
+
+/*
+ * Setup copy constructor
+ */
+Setup::Setup(const Setup &setup) {
+    this->players = new vector<Player*>;
+    for (vector<Player*>::iterator i = setup.players->begin(); i != setup.players->end(); i++) {
+        this->players->push_back(new Player(**i));
+    }
+    this->map = new Map(*setup.map);
+    this->deck = new Deck(*setup.deck);
+    this->starting_player = new Player(*setup.starting_player);
+}
+
+/*
+ * Setup stream insertion operator
+ */
+ostream &operator<<(ostream &os, const Setup &setup) {
+    os << "*********************Game Setup*********************" << endl;
+    
+    os << "Map: " << setup.map;
+    os << "Deck Cards: " << setup.deck->getDeckCards();
+    os << "Top Board Cards: ";
+    setup.deck->showTopBoard();
+    
+    os << "Players: ";
+    for (int i = 0; i < setup.players->size(); i++) {
+        os << (*setup.players)[i];
+    }
+
+    os << "******************************************************" << endl;
+
+}
+
+/*
+ * Setup assignment operator
+ */
+Setup &Setup::operator=(Setup setup) {
+    swap(*this, setup);
+    return *this;
+}
+
+/*
  * Tokenizes a string according to a delimiter
  */
 void tokenize(std::string const &str, const char delim,
