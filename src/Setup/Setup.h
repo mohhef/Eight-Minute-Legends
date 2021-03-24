@@ -14,6 +14,12 @@
 class Setup {
  public:
   Setup();
+  Setup(const Setup &setup);
+  virtual ~Setup();
+  
+  friend ostream &operator<<(ostream& os, const Setup& setup);
+  Setup& operator=(const Setup setup);
+
   void loadGame();
   void initializePlayers();
   void initializeDeck();
