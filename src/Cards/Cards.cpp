@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <chrono>
 
 int HAND_SIZE = 8;
 int TOP_BOARD_SIZE = 6;
@@ -156,14 +157,7 @@ Deck::Deck(const int num_of_players) {
       deckCards->push_back(new Cards(cardStrings[1], cardStrings[0]));
     }
   }
-  std::random_device rng;
-  std::mt19937 urng(rng());
-  std::shuffle(deckCards->begin(), deckCards->end(), urng);
   deckSize = new int(deckCards->size());
-
-  for (int i = 0; i < TOP_BOARD_SIZE; i++) {
-    topBoard->push_back(this->draw());
-  }
 }
 
 /*
@@ -242,6 +236,28 @@ Cards *Deck::draw() {
   deckCards->pop_back();
   *this->deckSize = *this->deckSize - 1;
   return card;
+}
+
+/*
+Shuffles the deck using random_device
+*/
+void Deck::shuffleDeck() {
+  cout << "Shuffling deck..." << endl;
+  std::random_device rng;
+  std::mt19937 generator(std::chrono::system_clock::now().time_since_epoch().count());
+  std::shuffle(deckCards->begin(), deckCards->end(), generator);
+}
+
+/*
+Initializes the top board if it hasn't been already
+*/
+void Deck::drawTopBoard() {
+  cout << "Drawing top board..." << endl;
+  if(topBoard->size() == 0){
+    for (int i = 0; i < TOP_BOARD_SIZE; i++) {
+      topBoard->push_back(this->draw());
+    }
+  }
 }
 
 /*
