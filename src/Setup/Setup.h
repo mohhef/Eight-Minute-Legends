@@ -14,6 +14,12 @@
 class Setup {
  public:
   Setup();
+  ~Setup();
+  void deepCopy(const Setup &obj);
+  Setup(const Setup &setup);
+  friend ostream &operator<<(ostream& os, const Setup& setup);
+  Setup& operator=(const Setup setup);
+
   void loadGame();
   void initializePlayers();
   void initializeDeck();

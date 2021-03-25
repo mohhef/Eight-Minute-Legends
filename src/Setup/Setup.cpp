@@ -9,12 +9,86 @@
 #include "Setup.h"
 using namespace std;
 
-Setup::Setup()
-{
+Setup::Setup() {
   this->players = nullptr;
   this->map = nullptr;
   this->deck = nullptr;
   this->starting_player = nullptr;
+  this->non_player = nullptr;
+}
+
+/*
+ * Destructor
+ */
+Setup::~Setup() {
+  for (int i = 0; i < players->size(); i++) {
+    delete (*players)[i];
+  }
+  players->clear();
+  delete players;
+  delete map;
+  delete deck;
+  delete starting_player;
+  delete non_player;
+}
+
+/*
+ * Copy constructor
+ */
+Setup::Setup(const Setup &setup) {
+  deepCopy(setup);
+}
+
+/*
+ * Assignment Operator
+ */
+Setup &Setup::operator=(Setup rhs) {
+  if (this != &rhs) {
+    this->~Setup();
+    deepCopy(rhs);
+  }
+  return *this;
+}
+
+/*
+ * Deep copy
+*/
+void Setup::deepCopy(const Setup &obj) {
+  for (int i = 0; i < obj.players->size(); i++) {
+    this->players->push_back(new Player(*obj.players->at(i)));
+  }
+  this->map = new Map(*obj.map);
+  this->deck = new Deck(*obj.deck);
+  this->starting_player = new Player(*obj.starting_player);
+  this->non_player = new Player(*obj.non_player);
+}
+
+/*
+ * Stream insertion operator
+ */
+ostream &operator<<(ostream &os, const Setup &setup) {
+  os << "*********************Game Setup*********************" << endl;
+  if (setup.map != nullptr) {
+    cout << *setup.map << endl;
+  }
+  if (setup.deck != nullptr) {
+    cout << *setup.deck << endl;
+  }
+  if (setup.players != nullptr) {
+    for (int i = 0; i < setup.players->size(); i++) {
+      cout << *setup.players->at(i) << endl;
+    }
+  }
+  os << "Starting player: " << endl;
+  if (setup.starting_player != nullptr) {
+    cout << *(setup.starting_player) << endl;
+  }
+  os << "Non player: " << endl;
+  if (setup.non_player != nullptr) {
+    cout << *(setup.non_player) << endl;
+  }
+  os << "******************************************************" << endl;
+  return os;
 }
 
 /*
@@ -50,6 +124,8 @@ void Setup::initializePlayers() {
   players = new vector<Player *>;
   int playerCount;
   while (playerCount != 2) {
+    cin.clear();
+    cin.ignore(256, '\n');
     cout << "Enter the number of players that would play(2 for two players)" << endl;
     cin >> playerCount;
   }
@@ -87,28 +163,28 @@ void Setup::Startup() {
   for (auto &player : *players) {
     player->PlaceNewArmies(4, map->startingRegion);
   }
- // Placement of non-player armies
- if (players->size() == 2) {
-   cout << "Since there are only two players, each player takes turns placing one army\n"
-           "at a time of a third non-player in any region on the board until ten armies\n"
-           "have been placed." << endl;
-   for (int i = 0; i < 10; i++) {
-     int turn = i % 2;
-     string region_name;
-     Region *region = nullptr;
-     while (!region) {
-       cout << "[" << (*players)[turn]->GetName()
-            << "'s turn] Pick a region in which one army for the non-player will be "
-               "placed: " << endl;
-       cin >> region_name;
-       region = map->findRegion(region_name);
-       if (!region) {
-         cout << "\"" << region_name << "\" does not exist. Try again." << endl;
-       }
-     }
-     non_player->PlaceNewArmies(1, region, true);
-   }
- }
+  // Placement of non-player armies
+  if (players->size() == 2) {
+    cout << "Since there are only two players, each player takes turns placing one army\n"
+            "at a time of a third non-player in any region on the board until ten armies\n"
+            "have been placed." << endl;
+    for (int i = 0; i < 10; i++) {
+      int turn = i % 2;
+      string region_name;
+      Region *region = nullptr;
+      while (!region) {
+        cout << "[" << (*players)[turn]->GetName()
+             << "'s turn] Pick a region in which one army for the non-player will be "
+                "placed: " << endl;
+        cin >> region_name;
+        region = map->findRegion(region_name);
+        if (!region) {
+          cout << "\"" << region_name << "\" does not exist. Try again." << endl;
+        }
+      }
+      non_player->PlaceNewArmies(1, region, true);
+    }
+  }
   // Start of the bidding
   cout << "Bidding has started..." << endl;
   Player *winner = players->at(0);
@@ -171,23 +247,23 @@ void Setup::takeTurn(Player *player, int turn) {
   cout << "Top Board: " << endl;
   deck->showTopBoard();
 
-  while(true){
+  while (true) {
     cout << "(" + player->GetName() +
         ") Choose a card by entering its position (1-6) or enter any other number "
         "to skip:"
          << endl;
     cin >> choiceIndex;
-    if( choiceIndex < 1 || choiceIndex > 6){
+    if (choiceIndex < 1 || choiceIndex > 6) {
       return;
     }
     int cardCost = deck->getBoardPositionCost(choiceIndex - 1);
     Cards *chosenCard = deck->getTopBoardCard(choiceIndex - 1);
     int playerCoins = player->GetCoins();
-    if (cin.fail() || playerCoins < Deck::getBoardPositionCost(choiceIndex-1)) {
+    if (cin.fail() || playerCoins < Deck::getBoardPositionCost(choiceIndex - 1)) {
       cin.clear();
       cin.ignore(256, '\n');
       cout << "Please enter a valid number or make sure you have enough coins:" << endl;
-    }else{
+    } else {
       player->GetHand()->exchange(choiceIndex - 1, *deck);
       player->PayCoin(cardCost);
       int currentHandSize = player->GetHand()->getCurrentHandSize();
@@ -253,7 +329,8 @@ bool Setup::andOrAction(Player &player, Cards &card) {
 
     int actionChoiceIndex;
     while (true) {
-      cout << "(" + player.GetName() +")"+" Which action would you like to choose, 1 for the first, 2 for the second: " << cardAction << endl;
+      cout << "(" + player.GetName() + ")"
+          + " Which action would you like to choose, 1 for the first, 2 for the second: " << cardAction << endl;
       cin >> actionChoiceIndex;
       if (actionChoiceIndex > 2 || actionChoiceIndex < 0) {
         cin.clear();
@@ -276,7 +353,6 @@ bool Setup::andOrAction(Player &player, Cards &card) {
   return true;
 }
 
-
 /*
  * Action for adding armies
  */
@@ -287,12 +363,13 @@ void Setup::addArmy(Player &player, int *count) {
     Region *region = nullptr;
 
     while (!region) {
-      cout << "(" + player.GetName() +")"+" Which region do you want to add armies in?: " << endl;
+      cout << "(" + player.GetName() + ")" + " Which region do you want to add armies in?: " << endl;
       cin >> regionName;
       region = map->findRegion(regionName);
     }
     while (true) {
-      cout << "(" + player.GetName() +")"+" Enter the number of armies you wish to add, remaining "<<*count <<endl;
+      cout << "(" + player.GetName() + ")" + " Enter the number of armies you wish to add, remaining " << *count
+           << endl;
       cin >> armiesNum;
       if (armiesNum > *count || armiesNum <= 0) {
         cin.clear();
@@ -320,17 +397,18 @@ void Setup::moveOverLand(Player &player, int *count) {
     Region *to = nullptr;
 
     while (!from) {
-      cout << "(" + player.GetName() +")"+" Enter region to move from: ";
+      cout << "(" + player.GetName() + ")" + " Enter region to move from: ";
       cin >> regionFrom;
       from = map->findRegion(regionFrom);
     }
     while (!to) {
-      cout << "(" + player.GetName() +")"+" Name country to move armies to: ";
+      cout << "(" + player.GetName() + ")" + " Name country to move armies to: ";
       cin >> regionTo;
       to = map->findRegion(regionTo);
     }
     while (true) {
-      cout << "(" + player.GetName() +")"+" Enter the number of armies you wish to add, remaining "<<*count <<endl;
+      cout << "(" + player.GetName() + ")" + " Enter the number of armies you wish to add, remaining " << *count
+           << endl;
       cin >> armiesNum;
       if (armiesNum > *count || armiesNum <= 0) {
         cin.clear();
@@ -361,19 +439,20 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
     Region *to = nullptr;
 
     while (!from) {
-      cout << "(" + player.GetName() +")"+" Enter region to move from: " << endl;
+      cout << "(" + player.GetName() + ")" + " Enter region to move from: " << endl;
       cin >> regionFrom;
       from = map->findRegion(regionFrom);
     }
 
     while (!to) {
-      cout << "(" + player.GetName() +")"+" Enter region to move to: " << endl;
+      cout << "(" + player.GetName() + ")" + " Enter region to move to: " << endl;
       cin >> regionTo;
       to = map->findRegion(regionTo);
     }
 
     while (true) {
-      cout << "(" + player.GetName() +")"+" Enter the number of armies you wish to move, remaining "<<*count <<endl;
+      cout << "(" + player.GetName() + ")" + " Enter the number of armies you wish to move, remaining " << *count
+           << endl;
       cin >> armiesNum;
       int adjacency = map->isAdjacent(from, to);
       if (adjacency == 1) {
@@ -406,7 +485,7 @@ void Setup::buildCity(Player &player, int *count) {
     string regionName;
     Region *region = nullptr;
     while (!region) {
-      cout << "(" + player.GetName() +")"+" Which region do you want to build city in?: ";
+      cout << "(" + player.GetName() + ")" + " Which region do you want to build city in?: ";
       cin >> regionName;
       region = map->findRegion(regionName);
     }
@@ -427,12 +506,12 @@ void Setup::destroyArmy(Player &player, int *count) {
     Region *region = nullptr;
     string targetCountry;
     while (!targetPlayer) {
-      cout << "(" + player.GetName() +")"+" Which player do you wish to destroy their army?: " << endl;
+      cout << "(" + player.GetName() + ")" + " Which player do you wish to destroy their army?: " << endl;
       cin >> targetPlayerName;
       targetPlayer = findPlayer(targetPlayerName);
     }
     while (!region) {
-      cout << "(" + player.GetName() +")"+" Which region do you want to destroy the player's army: ";
+      cout << "(" + player.GetName() + ")" + " Which region do you want to destroy the player's army: ";
       cin >> targetCountry;
       region = map->findRegion(targetCountry);
     }
@@ -472,7 +551,7 @@ bool Setup::checkGameOver() {
 /*
  * Computes the score of each player and determines the winner
  */
-int Setup::computeScore(){
+int Setup::computeScore() {
   /*
   VP_PER_DIRE, --> "Dire..."
   VP_PER_FLYING, --> ability is FLYING
@@ -485,38 +564,31 @@ int Setup::computeScore(){
   */
   for (auto player : *this->players) {
     int VP = 0;
-    vector<Cards*>* handCards = player->GetHand()->getHandCards();
+    vector<Cards *> *handCards = player->GetHand()->getHandCards();
     for (auto pcard : *handCards) {
       if (!pcard->getAbility().compare("VP_PER_DIRE")) {
         VP += player->countHandCardNameStartsWith("Dire");
-      }
-      else if (!pcard->getAbility().compare("VP_PER_FLYING")) {
+      } else if (!pcard->getAbility().compare("VP_PER_FLYING")) {
         VP += player->countHandCardAbilityEquals("FLYING");
-      }
-      else if (!pcard->getAbility().compare("VP_PER_3_COINS")) {
+      } else if (!pcard->getAbility().compare("VP_PER_3_COINS")) {
         VP += player->GetCoins() / 3;
-      }
-      else if (!pcard->getAbility().compare("VP_PER_FOREST")) {
+      } else if (!pcard->getAbility().compare("VP_PER_FOREST")) {
         VP += player->countHandCardNameStartsWith("Forest");
-      }
-      else if (!pcard->getAbility().compare("VP_PER_ANCIENT")) {
+      } else if (!pcard->getAbility().compare("VP_PER_ANCIENT")) {
         VP += player->countHandCardNameStartsWith("Ancient");
-      }
-      else if (!pcard->getAbility().compare("VP_PER_CURSED")) {
+      } else if (!pcard->getAbility().compare("VP_PER_CURSED")) {
         VP += player->countHandCardNameStartsWith("Cursed");
-      }
-      else if (!pcard->getAbility().compare("VP_PER_ARCANE")) {
+      } else if (!pcard->getAbility().compare("VP_PER_ARCANE")) {
         VP += player->countHandCardNameStartsWith("Arcane");
-      }
-      else if (!pcard->getAbility().compare("VP_PER_NIGHT")) {
+      } else if (!pcard->getAbility().compare("VP_PER_NIGHT")) {
         VP += player->countHandCardNameStartsWith("Night");
       }
     }
     player->SetScore(VP);
   }
 
-  std::map<Player*, int> player_has_region;
-  std::map<Player*, int> player_has_continent;
+  std::map<Player *, int> player_has_region;
+  std::map<Player *, int> player_has_continent;
   /*
   Regions: A player gains one victory point for each region on the map he controls.
   A player controls a region if he has more armies there than any other player
@@ -524,12 +596,12 @@ int Setup::computeScore(){
   If players have the same number of armies in a region, no one controls it.
   */
   auto continents = map->continents;
-  vector<pair<Region*, Player*>> region_control;
+  vector<pair<Region *, Player *>> region_control;
   for (auto it = continents->begin(); it != continents->end(); it++) {
-    Continent* continent = it->first;
+    Continent *continent = it->first;
     auto regions = it->second;
     for (auto reg : regions) {
-      Player* owner = nullptr;
+      Player *owner = nullptr;
       int max_ctrl_power = -1;
       for (auto player : *this->players) {
         int armies = player->GetArmiesInRegion(reg)->second;
@@ -539,8 +611,7 @@ int Setup::computeScore(){
         if (controls > max_ctrl_power) {
           max_ctrl_power = controls;
           owner = player;
-        }
-        else if (controls == max_ctrl_power) {
+        } else if (controls == max_ctrl_power) {
           // If players have the same number of armies in a region, no one controls it.
           owner = nullptr;
         }
@@ -558,12 +629,12 @@ int Setup::computeScore(){
   If players are tied for controlled regions, no one controls the continent.
   */
   for (auto it = continents->begin(); it != continents->end(); it++) {
-     auto regions = it->second;
+    auto regions = it->second;
     int max_ctrl_power = -1;
-    Player* continent_owner = nullptr;
-    std::map<Player*, int> counter;
+    Player *continent_owner = nullptr;
+    std::map<Player *, int> counter;
     for (auto reg : regions) {
-      Player* reg_owner = nullptr;
+      Player *reg_owner = nullptr;
       for (auto ctinfo : region_control) {
         if (ctinfo.first == reg) {
           reg_owner = ctinfo.second;
@@ -573,15 +644,13 @@ int Setup::computeScore(){
       if (reg_owner) {
         if (counter.count(reg_owner) >= 1) {
           counter[reg_owner] += 1;
-        }
-        else {
+        } else {
           counter[reg_owner] = 1;
         }
         if (counter[reg_owner] > max_ctrl_power) {
           max_ctrl_power = counter[reg_owner];
           continent_owner = reg_owner;
-        }
-        else if (counter[reg_owner]  == max_ctrl_power) {
+        } else if (counter[reg_owner] == max_ctrl_power) {
           // If players have the same number of armies in a region, no one controls it.
           continent_owner = nullptr;
         }
@@ -593,7 +662,7 @@ int Setup::computeScore(){
     }
   }
 
-  Player* winner = nullptr;
+  Player *winner = nullptr;
   int max_score = -1;
   cout << "PlayerName\tScores" << endl;
   for (auto player : *this->players) {
@@ -601,8 +670,7 @@ int Setup::computeScore(){
     if (player->GetScore() > max_score) {
       max_score = player->GetScore();
       winner = player;
-    }
-    else if (player->GetScore() == max_score) {
+    } else if (player->GetScore() == max_score) {
       winner = nullptr;
     }
   }
@@ -617,8 +685,7 @@ int Setup::computeScore(){
     if (player->GetCoins() > max_score) {
       max_score = player->GetCoins();
       winner = player;
-    }
-    else if (player->GetCoins() == max_score) {
+    } else if (player->GetCoins() == max_score) {
       winner = nullptr;
     }
   }
@@ -636,8 +703,7 @@ int Setup::computeScore(){
     if (total_armies > max_score) {
       max_score = total_armies;
       winner = player;
-    }
-    else if (total_armies == max_score) {
+    } else if (total_armies == max_score) {
       winner = nullptr;
     }
   }
@@ -651,8 +717,7 @@ int Setup::computeScore(){
     if (e.second > max_score) {
       max_score = e.second;
       winner = e.first;
-    }
-    else if (e.second == max_score) {
+    } else if (e.second == max_score) {
       winner = nullptr;
     }
   }
