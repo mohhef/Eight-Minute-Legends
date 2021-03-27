@@ -32,7 +32,6 @@ class Setup {
   Player *findPlayer(string playerName);
   bool andOrAction(Player &player, Cards &card);
   void addArmy(Player &player, int *count);
-  void moveOverLand(Player &player, int *count);
   void moverOverLandOrWater(Player &player, int *count);
   void buildCity(Player &player, int *count);
   void destroyArmy(Player &player, int *count);

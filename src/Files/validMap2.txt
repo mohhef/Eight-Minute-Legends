@@ -1,0 +1,14 @@
+[Region]
+USA,North America.
+
+France,europe
+
+India,asia
+
+Egypt,africa
+
+[Path]
+USA,France:0
+France,India:0
+India,Egypt:0
+Egypt,USA:0

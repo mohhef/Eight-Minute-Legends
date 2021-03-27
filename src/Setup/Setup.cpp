@@ -350,6 +350,8 @@ bool Setup::andOrAction(Player &player, Cards &card) {
       else moverOverLandOrWater(player, secondAbilityCount);
     }
   }
+  delete firstAbilityCount;
+  delete secondAbilityCount;
   return true;
 }
 
@@ -380,45 +382,6 @@ void Setup::addArmy(Player &player, int *count) {
       }
     }
     bool executed = player.PlaceNewArmies(armiesNum, region);
-    if (executed) {
-      *count -= armiesNum;
-    }
-  }
-}
-/*
- * Action for moving only over land, to be utilized later.
- */
-void Setup::moveOverLand(Player &player, int *count) {
-  while (*count > 0) {
-    string regionFrom;
-    string regionTo;
-    int armiesNum;
-    Region *from = nullptr;
-    Region *to = nullptr;
-
-    while (!from) {
-      cout << "(" + player.GetName() + ")" + " Enter region to move from: ";
-      cin >> regionFrom;
-      from = map->findRegion(regionFrom);
-    }
-    while (!to) {
-      cout << "(" + player.GetName() + ")" + " Name country to move armies to: ";
-      cin >> regionTo;
-      to = map->findRegion(regionTo);
-    }
-    while (true) {
-      cout << "(" + player.GetName() + ")" + " Enter the number of armies you wish to add, remaining " << *count
-           << endl;
-      cin >> armiesNum;
-      if (armiesNum > *count || armiesNum <= 0) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Please enter a valid number." << endl;
-      } else {
-        break;
-      }
-    }
-    bool executed = player.MoveOverLand(armiesNum, from, to);
     if (executed) {
       *count -= armiesNum;
     }
