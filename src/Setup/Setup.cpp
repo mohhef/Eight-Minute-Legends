@@ -9,6 +9,9 @@
 #include "Setup.h"
 using namespace std;
 
+/*
+ * Constructor
+ */
 Setup::Setup() {
   this->players = nullptr;
   this->map = nullptr;
