@@ -504,7 +504,7 @@ Player *Setup::findPlayer(string playerName) {
  */
 bool Setup::checkGameOver() {
   for (int i = 0; i < players->size(); ++i) {
-    if (players->at(i)->GetHand()->getCurrentHandSize() != 1) {
+    if (players->at(i)->GetHand()->getCurrentHandSize() != 13) {
       return false;
     }
   }
