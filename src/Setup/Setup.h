@@ -10,8 +10,11 @@
 #include "../Player/Player.h"
 #include "../Cards/Cards.h"
 #include <map>
+#include "GameObservers.h"
 
-class Setup {
+enum State { turnDetails, pickCard};
+
+class Setup : public Subject{
  public:
   Setup();
   ~Setup();
@@ -20,6 +23,7 @@ class Setup {
   friend ostream &operator<<(ostream& os, const Setup& setup);
   Setup& operator=(const Setup setup);
 
+  void changeState(State state);
   void loadGame();
   void initializePlayers();
   void initializeDeck();
@@ -41,4 +45,20 @@ class Setup {
   Player *non_player;
   Deck *deck;
   Player *starting_player;
+  State state;
+
+  Player *current_player;
+  Cards *selected_card;
+  int *current_cost;
+};
+
+
+class TurnView : public Observer{
+ public:
+  TurnView();
+  TurnView(Setup* s);
+  void update();
+  void display();
+ private:
+  Setup *subject;
 };

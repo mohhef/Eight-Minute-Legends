@@ -94,6 +94,35 @@ ostream &operator<<(ostream &os, const Setup &setup) {
   return os;
 }
 
+void Setup::changeState(State state) {
+  this->state = state;
+  Notify();
+}
+
+TurnView::TurnView() {
+  
+}
+TurnView::TurnView(Setup* setup){
+  subject = setup;
+  subject->Attach(this);
+}
+
+void TurnView::update(){
+  display();
+}
+
+void TurnView::display(){
+  cout <<endl<< "*********************TurnView Observer Output*********************" << endl;
+  if(subject->state == pickCard){
+    cout << subject->current_player->GetName() << "'s turn" << endl;
+    cout << subject->current_player->GetName() << " has " << subject->current_player->GetCoins() << " Coins"  <<endl;
+    cout << "Selected card: " << *(subject->selected_card) << endl;
+    cout << "Selected card cost: " << *(subject->current_cost) << endl;
+  }
+  cout << "*********************End Of Observer Output*********************" << endl <<endl;
+
+}
+
 /*
  * Tokenizes a string according to a delimiter
  */
@@ -167,27 +196,27 @@ void Setup::Startup() {
     player->PlaceNewArmies(4, map->startingRegion);
   }
   // Placement of non-player armies
-  if (players->size() == 2) {
-    cout << "Since there are only two players, each player takes turns placing one army\n"
-            "at a time of a third non-player in any region on the board until ten armies\n"
-            "have been placed." << endl;
-    for (int i = 0; i < 10; i++) {
-      int turn = i % 2;
-      string region_name;
-      Region *region = nullptr;
-      while (!region) {
-        cout << "[" << (*players)[turn]->GetName()
-             << "'s turn] Pick a region in which one army for the non-player will be "
-                "placed: " << endl;
-        cin >> region_name;
-        region = map->findRegion(region_name);
-        if (!region) {
-          cout << "\"" << region_name << "\" does not exist. Try again." << endl;
-        }
-      }
-      non_player->PlaceNewArmies(1, region, true);
-    }
-  }
+//  if (players->size() == 2) {
+//    cout << "Since there are only two players, each player takes turns placing one army\n"
+//            "at a time of a third non-player in any region on the board until ten armies\n"
+//            "have been placed." << endl;
+//    for (int i = 0; i < 10; i++) {
+//      int turn = i % 2;
+//      string region_name;
+//      Region *region = nullptr;
+//      while (!region) {
+//        cout << "[" << (*players)[turn]->GetName()
+//             << "'s turn] Pick a region in which one army for the non-player will be "
+//                "placed: " << endl;
+//        cin >> region_name;
+//        region = map->findRegion(region_name);
+//        if (!region) {
+//          cout << "\"" << region_name << "\" does not exist. Try again." << endl;
+//        }
+//      }
+//      non_player->PlaceNewArmies(1, region, true);
+//    }
+//  }
   // Start of the bidding
   cout << "Bidding has started..." << endl;
   Player *winner = players->at(0);
@@ -224,7 +253,8 @@ int Setup::mainLoop() {
   }
   cout << "*********************Game Start*********************" << endl;
   while (!gameOver) {
-    takeTurn(players->at(indexOfCurrentPlayer), turn);
+    current_player = players->at(indexOfCurrentPlayer);
+    takeTurn(current_player, turn);
     turn++;
     indexOfCurrentPlayer = (indexOfCurrentPlayer + 1) % playersSize;
     gameOver = checkGameOver();
@@ -260,7 +290,10 @@ void Setup::takeTurn(Player *player, int turn) {
       return;
     }
     int cardCost = deck->getBoardPositionCost(choiceIndex - 1);
+    current_cost = new int(cardCost);
     Cards *chosenCard = deck->getTopBoardCard(choiceIndex - 1);
+    selected_card = deck->getTopBoardCard(choiceIndex - 1);
+    changeState(pickCard);
     int playerCoins = player->GetCoins();
     if (cin.fail() || playerCoins < Deck::getBoardPositionCost(choiceIndex - 1)) {
       cin.clear();
@@ -507,7 +540,7 @@ Player *Setup::findPlayer(string playerName) {
  */
 bool Setup::checkGameOver() {
   for (int i = 0; i < players->size(); ++i) {
-    if (players->at(i)->GetHand()->getCurrentHandSize() != 13) {
+    if (players->at(i)->GetHand()->getCurrentHandSize() != 2) {
       return false;
     }
   }
