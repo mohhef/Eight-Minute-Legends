@@ -120,6 +120,7 @@ void TurnView::display() {
     cout << "Selected card cost: " << *(subject->current_cost) << endl;
   }
   if (subject->state == showBoard) {
+    cout << "Top Board:" <<endl;
     subject->deck->showTopBoard();
   }
   cout << "*********************End Of Observer Output*********************" << endl << endl;
@@ -280,7 +281,7 @@ void Setup::takeTurn(Player *player, int turn) {
   for (auto player : *players) {
     cout << *player << endl;
   }
-  cout << "Top Board: " << endl;
+  //cout << "Top Board: " << endl;
   //deck->showTopBoard();
   changeState(showBoard);
 
