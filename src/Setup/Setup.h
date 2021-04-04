@@ -12,7 +12,7 @@
 #include <map>
 #include "GameObservers.h"
 
-enum State { turnDetails, pickCard};
+enum State { pickCard, showBoard};
 
 class Setup : public Subject{
  public:

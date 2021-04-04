@@ -100,26 +100,29 @@ void Setup::changeState(State state) {
 }
 
 TurnView::TurnView() {
-  
+
 }
-TurnView::TurnView(Setup* setup){
+TurnView::TurnView(Setup *setup) {
   subject = setup;
   subject->Attach(this);
 }
 
-void TurnView::update(){
+void TurnView::update() {
   display();
 }
 
-void TurnView::display(){
-  cout <<endl<< "*********************TurnView Observer Output*********************" << endl;
-  if(subject->state == pickCard){
+void TurnView::display() {
+  cout << endl << "*********************TurnView Observer Output*********************" << endl;
+  if (subject->state == pickCard) {
     cout << subject->current_player->GetName() << "'s turn" << endl;
-    cout << subject->current_player->GetName() << " has " << subject->current_player->GetCoins() << " Coins"  <<endl;
+    cout << subject->current_player->GetName() << " has " << subject->current_player->GetCoins() << " Coins" << endl;
     cout << "Selected card: " << *(subject->selected_card) << endl;
     cout << "Selected card cost: " << *(subject->current_cost) << endl;
   }
-  cout << "*********************End Of Observer Output*********************" << endl <<endl;
+  if (subject->state == showBoard) {
+    subject->deck->showTopBoard();
+  }
+  cout << "*********************End Of Observer Output*********************" << endl << endl;
 
 }
 
@@ -278,7 +281,8 @@ void Setup::takeTurn(Player *player, int turn) {
     cout << *player << endl;
   }
   cout << "Top Board: " << endl;
-  deck->showTopBoard();
+  //deck->showTopBoard();
+  changeState(showBoard);
 
   while (true) {
     cout << "(" + player->GetName() +
