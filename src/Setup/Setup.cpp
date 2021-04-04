@@ -123,7 +123,7 @@ void TurnView::display() {
     cout << "Top Board:" <<endl;
     subject->deck->showTopBoard();
   }
-  cout << "*********************End Of Observer Output*********************" << endl << endl;
+  cout << "*********************End Of TurnView Observer Output*********************" << endl << endl;
 
 }
 
