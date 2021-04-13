@@ -206,16 +206,12 @@ pair<Region *, int> *Player::GetCitiesInRegion(Region *region) {
 Places an amount of armies in a region
 */
 bool Player::PlaceNewArmies(int armies_num, Region *region, bool force) {
-  if (*cubes < armies_num) {
-    cout << "Cannot place more than " << *cubes << " armies. Placing the maximum..." << endl;
-    pair<Region *, int> *armies_in_region = GetArmiesInRegion(region);
-    armies_in_region->second += *cubes;
-    cout << *name << " has placed " << *cubes << " new armies in " << *region->name << "." << endl;
-    *cubes = 0;
-    return true;
-  }
   pair<Region *, int> *cities_in_region = GetCitiesInRegion(region);
   if (cities_in_region->second > 0 || region == map->startingRegion || force) {
+    if (*cubes < armies_num) {
+      cout << "Cannot place more than " << *cubes << " armies. Placing the maximum..." << endl;
+      armies_num = *cubes;
+    }
     pair<Region *, int> *armies_in_region = GetArmiesInRegion(region);
     armies_in_region->second += armies_num;
     *cubes -= armies_num;
