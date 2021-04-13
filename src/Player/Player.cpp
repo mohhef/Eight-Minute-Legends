@@ -300,7 +300,7 @@ bool Player::MoveOverWater(int armies_num, Region *origin, Region *destination) 
 /*
 Move number of armies from one region to another and determine if its by land or water
 */
-bool Player::MoveArmies(int armies_num, Region *origin, Region *destination) {
+bool Player::MoveArmies(int &armies_num, Region *origin, Region *destination) {
   pair<Region *, int> *armies_in_origin = GetArmiesInRegion(origin);
   if (armies_in_origin->second < armies_num) {
     armies_num = armies_in_origin->second;
