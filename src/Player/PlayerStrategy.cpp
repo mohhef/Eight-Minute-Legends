@@ -159,7 +159,8 @@ int GreedyAIStrategy::pickCard(Deck* deck, int playerCoins, string selfName, vec
   for (int i = 0; i < deck->getTopBoardSize(); ++i) {
     string cardAction = deck->getTopBoardCard(i)->getAction();
     string abilityName = Utils::getActionName(cardAction);
-    if (tempPlayer->GetDiscs() < 1 && abilityName.find("BUILD") != string::npos) {
+    if ((tempPlayer->GetDiscs() < 1 && abilityName.find("BUILD") != string::npos) ||
+        (tempPlayer->GetCubes() < 1 && abilityName.find("PLACE") != string::npos)) {
       continue;
     }
     if (abilityName == "BUILD_CITY" || abilityName == "MOVE_ARMIES_AND_BUILD_CITY" ||
