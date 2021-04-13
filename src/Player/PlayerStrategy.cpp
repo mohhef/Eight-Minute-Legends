@@ -165,8 +165,7 @@ int GreedyAIStrategy::pickCard(Deck* deck, int playerCoins, string selfName, vec
     }
     if (abilityName == "BUILD_CITY" || abilityName == "MOVE_ARMIES_AND_BUILD_CITY" ||
         abilityName == "BUILD_CITY_AND_PLACE_ARMIES" || abilityName == "MOVE_ARMIES_AND_DESTROY_ARMIES" ||
-        abilityName == "PLACE_ARMIES_AND_DESTROY_ARMIES"|| abilityName == "PLACE_ARMIES_OR_BUILD_CITY" || 
-        abilityName == "PLACE_ARMIES") {
+        abilityName == "PLACE_ARMIES_AND_DESTROY_ARMIES"|| abilityName == "PLACE_ARMIES_OR_BUILD_CITY") {
       int totalGreed = getActionCount(cardAction);
       if (totalGreed > maxGreed && playerCoins >= deck->getBoardPositionCost(i)) {
         maxGreed = totalGreed;
