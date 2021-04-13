@@ -17,8 +17,8 @@ void Driver::part3() {
   map->addPath(germany, france, 1);
 
   // Creating players
-  Player *p1 = new Player(map, "Maxim", 18, 3, 9);
-  Player *p2 = new Player(map, "Mohamed", 18, 3, 9);
+  Player *p1 = new Player(map, "Maxim", 18, 3, 9, new HumanStrategy, 11);
+  Player *p2 = new Player(map, "Mohamed", 18, 3, 9, new HumanStrategy, 11);
 
   // Making different kinds of moves
   p1->PayCoin(3);

@@ -6,6 +6,7 @@
 #include "../BiddingFacility/BiddingFacility.h"
 #include "../Cards/Cards.h"
 #include "../Map/Map.h"
+#include "PlayerStrategy.h"
 
 class Player {
  private:
@@ -19,9 +20,10 @@ class Player {
   vector<pair<Region *, int>> *armies;
   BiddingFacility *bidding_facility;
   Hand *hand;
+  PlayerStrategy *strategy;
 
  public:
-  Player(Map *map, string name, int cubes_num, int discs_num, int coins_num);
+  Player(Map *map, string name, int cubes_num, int discs_num, int coins_num, PlayerStrategy* strategy, int maxHandSize);
   Player(int coins, string name);
   Player(const Player &player);
   ~Player();
@@ -40,6 +42,7 @@ class Player {
   int countHandCardAbilityEquals(string) const;
   BiddingFacility *GetBiddingFacility() const;
   Hand *GetHand() const;
+  PlayerStrategy *GetStrategy() const;
   Player &operator=(const Player &player);
   friend ostream &operator<<(ostream &os, const Player &player);
   bool PayCoin(int coins, bool won_bid = false);
@@ -49,4 +52,18 @@ class Player {
   bool MoveArmies(int armies_num, Region *origin, Region *destination);
   bool MoveOverLand(int armies_num, Region *origin, Region *destination);
   bool MoveOverWater(int armies_num, Region *origin, Region *destination);
+  void setStrategy(PlayerStrategy *playerStrategy);
+  int pickCard(Deck *deck, vector<Player *> *players);
+  int pickAction(string cardAction);
+  Region* pickRegion(Map *map, string type, vector<Player *> *players);
+  string pickPlayer();
+  bool skipTurn();
+  int pickArmies(string type, int count);
+  Player* pickPlayer(vector<Player *> *players);
+  int getArmyCount() const;
+  Region* getRegionWithMostArmies() const;
+  Region* getRegionWithLeastArmies() const;
+  Region* getRegionWithLeastCities() const;
+  vector<Region *> getRegionsWithArmies();
+  vector<Region *> getRegionsWithCities();
 };

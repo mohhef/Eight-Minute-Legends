@@ -9,6 +9,9 @@
 #include "Setup.h"
 using namespace std;
 
+
+static int maxHandSize;
+
 /*
  * Constructor
  */
@@ -132,15 +135,19 @@ void Setup::initializePlayers() {
     cout << "Enter the number of players that would play(2 for two players)" << endl;
     cin >> playerCount;
   }
+  // Hardcoded since we have only implemented 2 player game
+  maxHandSize = 11;
   for (int i = 0; i < playerCount; i++) {
     string playerName;
-    cout << "Enter the player's name" << endl;
+    string playerStrategy;
+    cout << "Enter player " << to_string(i+1) << "'s name" << endl;
     cin >> playerName;
-    Player *player = new Player(map, playerName, 18, 3, 14);
+    PlayerStrategy *strategy = chooseStrategy();
+    Player *player = new Player(map, playerName, 18, 3, 14, strategy, maxHandSize);
     players->push_back(player);
   }
   if (players->size() == 2) {
-    non_player = new Player(map, "Non-player", 18, 3, 14);
+    non_player = new Player(map, "Non-player", 18, 3, 14, new ModerateAIStrategy, maxHandSize);
   } else {
     non_player = nullptr;
   }
@@ -241,7 +248,6 @@ int Setup::mainLoop() {
  * Lets the player choose from the available cards, picks up the card, pays the coins
  */
 void Setup::takeTurn(Player *player, int turn) {
-  int choiceIndex = 0;
   cout << "****** Turn #" + to_string(turn) + " ******" << endl;
   cout << "Current Player holdings" << endl;
   for (auto player : *players) {
@@ -249,45 +255,39 @@ void Setup::takeTurn(Player *player, int turn) {
   }
   cout << "Top Board: " << endl;
   deck->showTopBoard();
-
-  while (true) {
-    cout << "(" + player->GetName() +
-        ") Choose a card by entering its position (1-6) or enter any other number "
-        "to skip:"
-         << endl;
-    cin >> choiceIndex;
-    if (choiceIndex < 1 || choiceIndex > 6) {
-      return;
-    }
-    int cardCost = deck->getBoardPositionCost(choiceIndex - 1);
-    Cards *chosenCard = deck->getTopBoardCard(choiceIndex - 1);
-    int playerCoins = player->GetCoins();
-    if (cin.fail() || playerCoins < Deck::getBoardPositionCost(choiceIndex - 1)) {
-      cin.clear();
-      cin.ignore(256, '\n');
-      cout << "Please enter a valid number or make sure you have enough coins:" << endl;
-    } else {
-      player->GetHand()->exchange(choiceIndex - 1, *deck);
-      player->PayCoin(cardCost);
-      int currentHandSize = player->GetHand()->getCurrentHandSize();
-      string playerAction = player->GetHand()->getCard(currentHandSize - 1)->getAction();
-      cout << player->GetName() + "'s action is: " + playerAction << endl;
-      // Add code/method to take action and after action here
-      andOrAction(*player, *chosenCard);
-      break;
-    }
+  char choice;
+  cout << "============ " << player->GetName() << "'s Turn ============" << endl;
+  cout << "Would you like to change your strategy? (y,n)" << endl;
+  cin >> choice;
+  if(choice == 'y') {
+    player->setStrategy(chooseStrategy());
   }
+  int choiceIndex = player->pickCard(deck, players);
+  if (choiceIndex < 1 || choiceIndex > 6) {
+    return;
+  }
+  int cardCost = deck->getBoardPositionCost(choiceIndex - 1);
+  Cards *chosenCard = deck->getTopBoardCard(choiceIndex - 1);
+  cout << player->GetName() << " chose the following card:\n" << *chosenCard << endl;
+  player->GetHand()->exchange(choiceIndex - 1, *deck);
+  player->PayCoin(cardCost);
+  int currentHandSize = player->GetHand()->getCurrentHandSize();
+  string playerAction = player->GetHand()->getCard(currentHandSize - 1)->getAction();
+  cout << player->GetName() + "'s action is: " + playerAction << endl;
+  // Add code/method to take action and after action here
+  cout << "Press Enter to Continue..." << endl;
+  cin.ignore(10, '\n'); 
+  cin.get();
+  andOrAction(*player, *chosenCard);
 }
 
 /*
  * According to the card's action the proper action method will be procceded with
  */
 bool Setup::andOrAction(Player &player, Cards &card) {
-  string choice;
+  
   cout << "Selected Card: " << card << endl << "\n";
-  cout << "To skip your turn enter: 0, or anything else to proceed" << endl;
-  cin >> choice;
-  if (choice == "0") {
+  if (player.skipTurn()) {
     return false;
   }
 
@@ -323,26 +323,14 @@ bool Setup::andOrAction(Player &player, Cards &card) {
     moverOverLandOrWater(player, firstAbilityCount);
     addArmy(player, secondAbilityCount);
   } else if (abilityName == "MOVE_ARMIES_AND_DESTROY_ARMIES") {
-    addArmy(player, firstAbilityCount);
+    moverOverLandOrWater(player, firstAbilityCount);
     destroyArmy(player, secondAbilityCount);
   } else if (abilityName == "PLACE_ARMIES_AND_DESTROY_ARMIES") {
     addArmy(player, firstAbilityCount);
     destroyArmy(player, secondAbilityCount);
   } else {
 
-    int actionChoiceIndex;
-    while (true) {
-      cout << "(" + player.GetName() + ")"
-          + " Which action would you like to choose, 1 for the first, 2 for the second: " << cardAction << endl;
-      cin >> actionChoiceIndex;
-      if (actionChoiceIndex > 2 || actionChoiceIndex < 0) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Please enter a valid number." << endl;
-      } else {
-        break;
-      }
-    }
+    int actionChoiceIndex = player.pickAction(cardAction);
 
     if (abilityName == "PLACE_ARMIES_OR_BUILD_CITY") {
       if (actionChoiceIndex == 1) addArmy(player, firstAbilityCount);
@@ -366,27 +354,12 @@ void Setup::addArmy(Player &player, int *count) {
     string regionName;
     int armiesNum;
     Region *region = nullptr;
+    region = player.pickRegion(map, "place", players);
 
-    while (!region) {
-      cout << "(" + player.GetName() + ")" + " Which region do you want to add armies in?: " << endl;
-      cin >> regionName;
-      region = map->findRegion(regionName);
-    }
-    while (true) {
-      cout << "(" + player.GetName() + ")" + " Enter the number of armies you wish to add, remaining " << *count
-           << endl;
-      cin >> armiesNum;
-      if (armiesNum > *count || armiesNum <= 0) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Please enter a valid number." << endl;
-      } else {
-        break;
-      }
-    }
+    armiesNum = player.pickArmies("place", *count);
     bool executed = player.PlaceNewArmies(armiesNum, region);
     if (executed) {
-      *count -= armiesNum;
+        *count -= armiesNum;
     }
   }
 }
@@ -404,40 +377,29 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
     Region *from = nullptr;
     Region *to = nullptr;
 
-    while (!from) {
-      cout << "(" + player.GetName() + ")" + " Enter region to move from: " << endl;
-      cin >> regionFrom;
-      from = map->findRegion(regionFrom);
-    }
+    from = player.pickRegion(map, "move_from", players);
+    to = player.pickRegion(map, "move_to", players);
 
-    while (!to) {
-      cout << "(" + player.GetName() + ")" + " Enter region to move to: " << endl;
-      cin >> regionTo;
-      to = map->findRegion(regionTo);
+    // Check used only for HumanStrategy. AI should only pick available moves.
+    int adjacency = map->isAdjacent(from, to);
+    if (adjacency == 1) {
+      remainingCount = *count;
+    } else if (adjacency == 0) {
+      remainingCount = *count / 3;
     }
-
-    while (true) {
-      cout << "(" + player.GetName() + ")" + " Enter the number of armies you wish to move, remaining " << *count
-           << endl;
-      cin >> armiesNum;
-      int adjacency = map->isAdjacent(from, to);
-      if (adjacency == 1) {
-        remainingCount = *count - armiesNum;
-      } else if (adjacency == 0) {
-        remainingCount = *count - 3 * armiesNum;
-      }
-      if (armiesNum > *count || armiesNum <= 0 || remainingCount < 0) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        remainingCount = 0;
-        cout << "Please enter a valid number." << endl;
-      } else {
-        break;
-      }
+    if (remainingCount < 0) {
+      cout << "You do not have enough resources to make this move." << endl;
     }
-    bool executed = player.MoveArmies(armiesNum, from, to);
-    if (executed) {
-      *count = remainingCount;
+    else {
+      armiesNum = player.pickArmies("move", remainingCount);
+      bool executed = player.MoveArmies(armiesNum, from, to);
+      if (executed) {
+        if (adjacency == 1) {
+          *count -= armiesNum;
+        } else if (adjacency == 0) {
+          *count -= armiesNum * 3;
+        }
+      }
     }
   }
 }
@@ -447,14 +409,13 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
  */
 void Setup::buildCity(Player &player, int *count) {
   while (*count > 0) {
-
+    if (player.GetDiscs() < 1) {
+      cout << "Out of discs and cannot build. Skipping action..." << endl;
+      break;
+    }
     string regionName;
     Region *region = nullptr;
-    while (!region) {
-      cout << "(" + player.GetName() + ")" + " Which region do you want to build city in?: ";
-      cin >> regionName;
-      region = map->findRegion(regionName);
-    }
+    region = player.pickRegion(map, "build", players);
     bool executed = player.BuildCity(region);
     if (executed) {
       *count -= 1;
@@ -471,17 +432,8 @@ void Setup::destroyArmy(Player &player, int *count) {
     string targetPlayerName;
     Region *region = nullptr;
     string targetCountry;
-    while (!targetPlayer) {
-      cout << "(" + player.GetName() + ")" + " Which player do you wish to destroy their army?: " << endl;
-      cin >> targetPlayerName;
-      targetPlayer = findPlayer(targetPlayerName);
-    }
-    while (!region) {
-      cout << "(" + player.GetName() + ")" + " Which region do you want to destroy the player's army: ";
-      cin >> targetCountry;
-      region = map->findRegion(targetCountry);
-    }
-
+    targetPlayer = player.pickPlayer(players);
+    region = player.pickRegion(map, "destroy", players);
     bool executed = player.DestroyArmy(targetPlayer, region);
     if (executed) {
       *count -= 1;
@@ -507,11 +459,11 @@ Player *Setup::findPlayer(string playerName) {
  */
 bool Setup::checkGameOver() {
   for (int i = 0; i < players->size(); ++i) {
-    if (players->at(i)->GetHand()->getCurrentHandSize() != 13) {
-      return false;
+    if (players->at(i)->GetHand()->getCurrentHandSize() == maxHandSize) {
+      return true;
     }
   }
-  return true;
+  return false;
 }
 
 /*
@@ -693,4 +645,25 @@ int Setup::computeScore() {
   }
   cout << "Tie!!" << endl;
   return 0;
+}
+
+PlayerStrategy *Setup::chooseStrategy() {
+  string playerStrategy;
+  PlayerStrategy *strategy;
+  while (playerStrategy != "human" && playerStrategy != "moderate" && playerStrategy != "greedy") {
+    cin.clear();
+    cin.ignore(256, '\n');
+    cout << "Enter the player's strategy: (human, moderate, greedy) " << endl;
+    cin >> playerStrategy;
+  }
+  if (playerStrategy == "human") {
+    strategy = new HumanStrategy;
+  }
+  else if (playerStrategy == "moderate"){
+    strategy = new ModerateAIStrategy;
+  }
+  else {
+    strategy = new GreedyAIStrategy;
+  }
+  return strategy;
 }
