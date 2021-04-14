@@ -8,6 +8,8 @@ using namespace std;
 
 void Driver::part6() {
   Setup *setup = new Setup();
+  TurnView turnView = TurnView(setup);
+
   //p1 (load map)
   setup->loadGame();
   //p1 (2 player game, each player has a bidding facility, game components)

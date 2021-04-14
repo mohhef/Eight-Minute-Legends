@@ -12,6 +12,7 @@ add_executable(
         Cards/CardsDriver.cpp Cards/Cards.cpp Cards/Cards.h
         BiddingFacility/BiddingFacilityDriver.cpp BiddingFacility/BiddingFacility.h BiddingFacility/BiddingFacility.cpp
         Setup/SetupDriver.cpp Setup/Setup.h Setup/Setup.cpp
+        Setup/GameObservers.cpp Setup/Setup.h Setup/GameObservers.h
 )
 
 
