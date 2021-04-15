@@ -130,6 +130,41 @@ void TurnView::display() {
        << endl;
 }
 
+StatsView::StatsView() {}
+
+StatsView::StatsView(Setup *setup) {
+  subject = setup;
+  subject->Attach(this);
+}
+
+void StatsView::update() {
+  if (subject->state == updatedConquerings) {
+    cout << endl
+         << "*********************StatsView Observer Output*********************" << endl;
+    cout << "Region Conquerings:" << endl;
+    if ((*subject->conquered_regions).empty()) {
+      cout << "Nothing to display." << endl;
+    } else {
+      for (auto conquered_region : *subject->conquered_regions) {
+        cout << conquered_region.second->GetName() << " has conquered "
+             << *(conquered_region.first->name) << endl;
+      }
+    }
+    cout << "Continent Conquerings:" << endl;
+    if ((*subject->conquered_continents).empty()) {
+      cout << "Nothing to display." << endl;
+    } else {
+      for (auto conquered_continent : *subject->conquered_continents) {
+        cout << conquered_continent.second->GetName() << " has conquered "
+             << *(conquered_continent.first->name) << endl;
+      }
+    }
+    cout << "*********************End Of StatsView Observer Output*********************"
+         << endl
+         << endl;
+  }
+}
+
 /*
  * Tokenizes a string according to a delimiter
  */
@@ -262,9 +297,8 @@ int Setup::mainLoop() {
   while (!gameOver) {
     current_player = players->at(indexOfCurrentPlayer);
     takeTurn(current_player, turn);
-    // Update the conquerings
-    // TODO: Notify all observers
     UpdateConquerings();
+    changeState(updatedConquerings);
     turn++;
     indexOfCurrentPlayer = (indexOfCurrentPlayer + 1) % playersSize;
     gameOver = checkGameOver();

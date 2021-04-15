@@ -12,7 +12,7 @@
 #include "../Player/Player.h"
 #include "GameObservers.h"
 
-enum State { pickCard, showBoard };
+enum State { pickCard, showBoard, updatedConquerings };
 
 class Setup : public Subject {
  public:
@@ -63,6 +63,16 @@ class TurnView : public Observer {
   TurnView(Setup *s);
   void update();
   void display();
+
+ private:
+  Setup *subject;
+};
+
+class StatsView : public Observer {
+ public:
+  StatsView();
+  StatsView(Setup *s);
+  void update();
 
  private:
   Setup *subject;
