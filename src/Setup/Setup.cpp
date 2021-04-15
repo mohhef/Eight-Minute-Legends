@@ -262,6 +262,9 @@ int Setup::mainLoop() {
   while (!gameOver) {
     current_player = players->at(indexOfCurrentPlayer);
     takeTurn(current_player, turn);
+    // Update the conquerings
+    // TODO: Notify all observers
+    UpdateConquerings();
     turn++;
     indexOfCurrentPlayer = (indexOfCurrentPlayer + 1) % playersSize;
     gameOver = checkGameOver();
