@@ -13,19 +13,31 @@ int getActionCount(string cardAction) {
   const char delim = '|';
   vector<string> tokenizedCardAbility;
   Utils::tokenize(cardAction, delim, tokenizedCardAbility);
-  
   string abilityName = tokenizedCardAbility.at(0);
+
   int firstAbilityCount = 0, secondAbilityCount = 0;
-  if (tokenizedCardAbility.size() >= 2) {
-    firstAbilityCount = stoi(tokenizedCardAbility.at(1));
-  }
-  // Build city. Give more weight to it
-  else {
+
+  if (abilityName == "BUILD_CITY_AND_PLACE_ARMIES") {
     firstAbilityCount = 2;
+    secondAbilityCount = stoi(tokenizedCardAbility.at(1));
+  }
+  else if (abilityName == "MOVE_ARMIES_AND_BUILD_CITY") {
+    firstAbilityCount = stoi(tokenizedCardAbility.at(1));
+    secondAbilityCount = 2;
+  }
+  else {
+    if (tokenizedCardAbility.size() >= 2) {
+      firstAbilityCount = stoi(tokenizedCardAbility.at(1));
+    }
+    else {
+      // Build city. Give more weight to it
+      firstAbilityCount = 2;
+    }
   }
   if (tokenizedCardAbility.size() >= 3) {
     secondAbilityCount = stoi(tokenizedCardAbility.at(2));
   }
+
   return firstAbilityCount + secondAbilityCount;
 }
 
@@ -122,6 +134,11 @@ Region* HumanStrategy::pickRegion(Map *map, string type, string selfName, vector
   return getRegionInput(map, type);
 }
 
+void HumanStrategy::moveRegion(Map *map, Region **from, Region **to, string selfName, vector<Player *> *players, int count) {
+  *from = getRegionInput(map, "move_from");
+  *to = getRegionInput(map, "move_to");
+}
+
 int HumanStrategy::pickArmies(string type, int count) {
   return getArmiesInput(type, count);
 }
@@ -187,7 +204,41 @@ int GreedyAIStrategy::pickAction(string cardAction) {
 }
 
 Region* GreedyAIStrategy::pickRegion(Map *map, string type, string selfName, vector<Player *> *players) {
-  return getRegionInput(map, type);
+  Region *region = nullptr;
+  Player *player = Utils::findPlayer(selfName, players);
+  if (type == "place") {
+    region = Utils::getRegionWithLeastArmies(player);
+  }
+  else if (type == "destroy") {
+    region = Utils::getRegionToDestroy(selfName, players);
+  }
+  else if (type == "build") {
+    region = Utils::getRegionToBuild(player);
+  }
+  return region;
+}
+
+void GreedyAIStrategy::moveRegion(Map *map, Region **from, Region **to, string selfName, vector<Player *> *players, int count) {
+  Player *player = Utils::findPlayer(selfName, players);
+  *from = Utils::getRegionWithMostArmies(player);
+  int leastArmiesInRegion = 100;
+  for (int i = 0; i < map->regions->size(); i++) {
+    if ((*from)->name == map->regions->at(i).first->name) {
+      for (int j = 0; j < map->regions->at(i).second.size(); j++) {
+        int adjacency = map->regions->at(i).second.at(j).second;
+        if(adjacency == 0 || adjacency == 1) {
+          int tempArmiesInRegion = Utils::getArmiesInRegion(player, &(*map->regions->at(i).second.at(j).first));
+          if (tempArmiesInRegion < leastArmiesInRegion) {
+            if (!(adjacency == 0 && count < 3)) {
+              *to = map->regions->at(i).second.at(j).first;
+              leastArmiesInRegion = tempArmiesInRegion;
+            }
+          }
+        }
+      }
+      break;
+    }
+  }
 }
 
 Player* GreedyAIStrategy::pickPlayer(string selfName, vector<Player*> *players) {
@@ -195,7 +246,7 @@ Player* GreedyAIStrategy::pickPlayer(string selfName, vector<Player*> *players) 
 }
 
 int GreedyAIStrategy::pickArmies(string type, int count) {
-  return getArmiesInput(type, count);
+  return count;
 }
 
 bool GreedyAIStrategy::skipTurn() {
@@ -212,7 +263,7 @@ int ModerateAIStrategy::pickCard(Deck* deck, int playerCoins, string selfName, v
   Player *tempPlayer = Utils::findPlayer(selfName, players);
   Region *maxRegion = Utils::getRegionWithMostArmies(tempPlayer);
   // If region is already heavily populated, move
-  if(tempPlayer->GetArmiesInRegion(maxRegion)->second >= 8 && 
+  if(tempPlayer->GetArmiesInRegion(maxRegion)->second >= 6 && 
      tempPlayer->GetArmiesInRegion(tempPlayer->getRegionWithLeastArmies())->second >= 4) {
     focus = "move";
   }
@@ -251,7 +302,42 @@ int ModerateAIStrategy::pickAction(string cardAction) {
 }
 
 Region* ModerateAIStrategy::pickRegion(Map *map, string type, string selfName, vector<Player *> *players) {
-  return getRegionInput(map, type);
+  Region *region = nullptr;
+  Player *player = Utils::findPlayer(selfName, players);
+  if (type == "place") {
+    region = Utils::getRegionWithLeastArmies(player);
+  }
+  else if (type == "destroy") {
+    region = Utils::getRegionToDestroy(selfName, players);
+  }
+  else if (type == "build") {
+    region = Utils::getRegionToBuild(player);
+  }
+  return region;
+}
+
+void ModerateAIStrategy::moveRegion(Map *map, Region **from, Region **to, string selfName, vector<Player *> *players, int count) {
+  // Region *tempDestination = Utils::getRegionWithLeastArmies(Utils::findPlayer(selfName, players));
+  Player *player = Utils::findPlayer(selfName, players);
+  *from = Utils::getRegionWithMostArmies(player);
+  int leastArmiesInRegion = 100;
+  for (int i = 0; i < map->regions->size(); i++) {
+    if ((*from)->name == map->regions->at(i).first->name) {
+      for (int j = 0; j < map->regions->at(i).second.size(); j++) {
+        int adjacency = map->regions->at(i).second.at(j).second;
+        if(adjacency == 0 || adjacency == 1) {
+          int tempArmiesInRegion = Utils::getArmiesInRegion(player, &(*map->regions->at(i).second.at(j).first));
+          if (tempArmiesInRegion < leastArmiesInRegion) {
+            if (!(adjacency == 0 && count < 3)) {
+              *to = map->regions->at(i).second.at(j).first;
+              leastArmiesInRegion = tempArmiesInRegion;
+            }
+          }
+        }
+      }
+      break;
+    }
+  }
 }
 
 Player* ModerateAIStrategy::pickPlayer(string selfName, vector<Player*> *players) {
@@ -259,7 +345,7 @@ Player* ModerateAIStrategy::pickPlayer(string selfName, vector<Player*> *players
 }
 
 int ModerateAIStrategy::pickArmies(string type, int count) {
-  return getArmiesInput(type, count);
+  return count;
 }
 
 bool ModerateAIStrategy::skipTurn() {

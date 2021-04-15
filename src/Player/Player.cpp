@@ -371,6 +371,10 @@ Player* Player::pickPlayer(vector<Player *> *players) {
   return (strategy->pickPlayer(this->GetName(), players));
 }
 
+void Player::moveRegion(Map *map, Region **from, Region **to, vector<Player *> *players, int count) {
+  strategy->moveRegion(map, from, to, this->GetName(), players, count);
+}
+
 int Player::getArmyCount() const {
   return this->armies->size();
 }
@@ -385,7 +389,7 @@ Region* Player::getRegionWithMostArmies() const {
   for (i = armies->begin(); i != armies->end(); ++i) {
     if (i->second > maxArmies) {
       maxArmies = i->second;
-      tempRegion = &(*i->first);
+      tempRegion = (&*i)->first;
     }
   }
   return tempRegion;
@@ -398,7 +402,21 @@ Region* Player::getRegionWithLeastArmies() const {
   for (i = armies->begin(); i != armies->end(); ++i) {
     if ((i->second > 0 || i->first == map->startingRegion) && i->second <= leastArmies) {
       leastArmies = i->second;
-      tempRegion = &(*i->first);
+      tempRegion = (&*i)->first;
+    }
+  }
+  return tempRegion;
+}
+
+Region* Player::getCityRegionWithLeastArmies() {
+  vector<pair<Region *, int>>::iterator i;
+  Region* tempRegion = nullptr;
+  int leastArmies = 100;
+  for (i = armies->begin(); i != armies->end(); ++i) {
+    if (((i->second > 0 && this->GetCitiesInRegion(i->first)->second > 0)|| i->first == map->startingRegion) 
+        && i->second <= leastArmies) {
+      leastArmies = i->second;
+      tempRegion = (&*i)->first;
     }
   }
   return tempRegion;
@@ -406,12 +424,12 @@ Region* Player::getRegionWithLeastArmies() const {
 
 Region* Player::getRegionWithLeastCities() const {
   vector<pair<Region *, int>>::iterator i;
-  Region* tempRegion;
+  Region* tempRegion = nullptr;
   int leastCities = 3;
   for (i = cities->begin(); i != cities->end(); ++i) {
     if ((i->second > 0 || i->first == map->startingRegion) && i->second <= leastCities) {
       leastCities = i->second;
-      tempRegion = &(*i->first);
+      tempRegion = (&*i)->first;
     }
   }
   return tempRegion;
@@ -432,7 +450,7 @@ vector<Region *> Player::getRegionsWithCities() {
   vector<Region *> regionsWithCities;
   vector<pair<Region *, int>>::iterator i;
   for (i = cities->begin(); i != cities->end(); ++i) {
-    if (i->second > 0) {
+    if (i->second > 0 || i->first == map->startingRegion) {
       regionsWithCities.push_back(i->first);
     }
   }

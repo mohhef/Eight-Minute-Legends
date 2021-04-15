@@ -57,10 +57,47 @@ Region* Utils::getRegionWithMostArmies(Player *player) {
   return player->getRegionWithMostArmies();
 }
 
+Region* Utils::getRegionWithLeastArmies(Player *player) {
+  return player->getCityRegionWithLeastArmies();
+}
+
 Region* Utils::getRegionToBuild(Player *player) {
-  return player->getRegionWithLeastCities();
+  vector<Region*> cityRegions = player->getRegionsWithArmies();
+  Region *minCityRegion = nullptr;
+  int minCities = 4;
+  for (int i = 0; i < cityRegions.size(); ++i) {
+    int tempMinCities = getCitiesInRegion(player, cityRegions.at(i));
+    if (tempMinCities < minCities) {
+      minCityRegion = cityRegions.at(i);
+      minCities = tempMinCities;
+    }
+  }
+  if (minCityRegion == nullptr) {
+    minCityRegion = player->GetMap()->startingRegion;
+  }
+  return minCityRegion;
 }
 
 Region* Utils::getRegionToPlace(Player *player) {
   return player->getRegionWithLeastArmies();
+}
+
+Region* Utils::getRegionToDestroy(string selfName, vector<Player *> *players) {
+  Player *player = findPlayer(selfName, players);
+  Player *otherPlayer = getPlayerWithMostArmies(selfName, players);
+  vector<Region*> cityRegions = player->getRegionsWithArmies();
+  for (int i = 0; i < cityRegions.size(); ++i) {
+    if (getArmiesInRegion(otherPlayer, cityRegions.at(i)) > 0) {
+      return cityRegions.at(i);
+    }
+  }
+  return nullptr;
+}
+
+int Utils::getArmiesInRegion(Player *player, Region *region) {
+  return player->GetArmiesInRegion(region)->second;
+}
+
+int Utils::getCitiesInRegion(Player *player, Region *region) { 
+  return player->GetCitiesInRegion(region)->second;
 }

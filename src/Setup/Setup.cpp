@@ -377,8 +377,10 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
     Region *from = nullptr;
     Region *to = nullptr;
 
-    from = player.pickRegion(map, "move_from", players);
-    to = player.pickRegion(map, "move_to", players);
+    // from = player.pickRegion(map, "move_from", players);
+    // to = player.pickRegion(map, "move_to", players);
+
+    player.moveRegion(map, &from, &to, players, *count);
 
     // Check used only for HumanStrategy. AI should only pick available moves.
     int adjacency = map->isAdjacent(from, to);
@@ -434,9 +436,15 @@ void Setup::destroyArmy(Player &player, int *count) {
     string targetCountry;
     targetPlayer = player.pickPlayer(players);
     region = player.pickRegion(map, "destroy", players);
-    bool executed = player.DestroyArmy(targetPlayer, region);
-    if (executed) {
-      *count -= 1;
+    if (region == nullptr) {
+      cout << "Cannot destroy any armies. Continuing..." << endl;
+      *count = 0;
+    }
+    else {
+      bool executed = player.DestroyArmy(targetPlayer, region);
+      if (executed) {
+        *count -= 1;
+      }
     }
   }
 }

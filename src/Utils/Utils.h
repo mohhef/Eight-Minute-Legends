@@ -12,6 +12,10 @@ public:
     static Player* findPlayer(string playerName, vector<Player *> *players);
     static Player* getPlayerWithMostArmies(string selfName, vector<Player *> *players);
     static Region* getRegionWithMostArmies(Player *player);
+    static Region* getRegionWithLeastArmies(Player *player);
     static Region* getRegionToBuild(Player *player);
     static Region* getRegionToPlace(Player *player);
+    static Region* getRegionToDestroy(string selfName, vector<Player *> *players);
+    static int getArmiesInRegion(Player *player, Region *region);
+    static int getCitiesInRegion(Player *player, Region *region);
 };
