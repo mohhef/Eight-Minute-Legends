@@ -68,7 +68,6 @@ Player::~Player() {
   delete armies;
   delete bidding_facility;
   delete score;
-
 }
 
 Map *Player::GetMap() const { return map; }
@@ -81,15 +80,9 @@ int Player::GetDiscs() const { return *discs; }
 
 int Player::GetCoins() const { return *coins; }
 
-int Player::GetScore() const
-{
-  return *score;
-}
+int Player::GetScore() const { return *score; }
 
-void Player::SetScore(int val)
-{
-  *(this->score) = val;
-}
+void Player::SetScore(int val) { *(this->score) = val; }
 
 vector<pair<Region *, int>> *Player::GetCities() const { return cities; }
 
@@ -136,7 +129,7 @@ ostream &operator<<(ostream &os, const Player &player) {
   os << "Cubes: " << player.GetCubes() << endl;
   os << "Discs: " << player.GetDiscs() << endl;
   os << "Coins: " << player.GetCoins() << endl;
-  os << "HandSize:" << player.GetHand()->getCurrentHandSize()<<endl;
+  os << "HandSize:" << player.GetHand()->getCurrentHandSize() << endl;
   os << "Cities: ";
   for (auto region : *(player.GetCities())) {
     os << *((region.first)->name) << "->" << region.second << " ";
@@ -146,7 +139,6 @@ ostream &operator<<(ostream &os, const Player &player) {
   for (auto region : *(player.GetArmies())) {
     os << *((region.first)->name) << "->" << region.second << " ";
   }
-  os << endl;
   os << endl;
   return os;
 }
@@ -207,7 +199,8 @@ bool Player::PlaceNewArmies(int armies_num, Region *region, bool force) {
     pair<Region *, int> *armies_in_region = GetArmiesInRegion(region);
     armies_in_region->second += armies_num;
     *cubes -= armies_num;
-    cout << *name << " has placed " << armies_num << " new armies in " << *region->name << "." << endl;
+    cout << *name << " has placed " << armies_num << " new armies in " << *region->name
+         << "." << endl;
     return true;
   } else {
     cout << "Player::PlaceNewArmies(): Cannot place armies in a region in which the "
@@ -301,7 +294,8 @@ bool Player::MoveArmies(int armies_num, Region *origin, Region *destination) {
     } else if (adjacency == 0) {
       return MoveOverWater(armies_num, origin, destination);
     } else {
-      cout << "Player::MovieArmies(): Origin and destination regions are not adjacent." << endl;
+      cout << "Player::MovieArmies(): Origin and destination regions are not adjacent."
+           << endl;
       return false;
     }
   } else {
@@ -312,7 +306,7 @@ bool Player::MoveArmies(int armies_num, Region *origin, Region *destination) {
 
 int Player::countHandCardNameStartsWith(string str) const {
   int cnt = 0;
-  vector<Cards*>* handCards = this->GetHand()->getHandCards();
+  vector<Cards *> *handCards = this->GetHand()->getHandCards();
   for (auto pcard : *handCards) {
     if (pcard->getName().find(str) == 0) {
       cnt += 1;
@@ -323,7 +317,7 @@ int Player::countHandCardNameStartsWith(string str) const {
 
 int Player::countHandCardAbilityEquals(string str) const {
   int cnt = 0;
-  vector<Cards*>* handCards = this->GetHand()->getHandCards();
+  vector<Cards *> *handCards = this->GetHand()->getHandCards();
   for (auto pcard : *handCards) {
     if (pcard->getAbility().compare(str) == 0) {
       cnt += 1;

@@ -112,8 +112,6 @@ TurnView::TurnView(Setup *setup) {
 void TurnView::update() { display(); }
 
 void TurnView::display() {
-  cout << endl
-       << "*********************TurnView Observer Output*********************" << endl;
   if (subject->state == pickCard) {
     cout << subject->current_player->GetName() << "'s turn" << endl;
     cout << subject->current_player->GetName() << " has "
@@ -125,9 +123,6 @@ void TurnView::display() {
     cout << "Top Board:" << endl;
     subject->deck->showTopBoard();
   }
-  cout << "*********************End Of TurnView Observer Output*********************"
-       << endl
-       << endl;
 }
 
 StatsView::StatsView() {}
@@ -139,9 +134,13 @@ StatsView::StatsView(Setup *setup) {
 
 void StatsView::update() {
   if (subject->state == updatedConquerings) {
-    cout << endl
-         << "*********************StatsView Observer Output*********************" << endl;
-    cout << "Region Conquerings:" << endl;
+    cout << "--------------------------- Statistics ---------------------------" << endl;
+    cout << "1) Player holdings:" << endl;
+    for (auto player : *subject->players) {
+      cout << *player;
+    }
+    cout << endl;
+    cout << "2) Region conquerings:" << endl;
     if ((*subject->conquered_regions).empty()) {
       cout << "Nothing to display." << endl;
     } else {
@@ -150,7 +149,8 @@ void StatsView::update() {
              << *(conquered_region.first->name) << endl;
       }
     }
-    cout << "Continent Conquerings:" << endl;
+    cout << endl;
+    cout << "3) Continent conquerings:" << endl;
     if ((*subject->conquered_continents).empty()) {
       cout << "Nothing to display." << endl;
     } else {
@@ -159,8 +159,7 @@ void StatsView::update() {
              << *(conquered_continent.first->name) << endl;
       }
     }
-    cout << "*********************End Of StatsView Observer Output*********************"
-         << endl
+    cout << "------------------------------------------------------------------" << endl
          << endl;
   }
 }
@@ -303,10 +302,6 @@ int Setup::mainLoop() {
     indexOfCurrentPlayer = (indexOfCurrentPlayer + 1) % playersSize;
     gameOver = checkGameOver();
   }
-  cout << "Current Player holdings" << endl;
-  for (auto player : *players) {
-    cout << *player << endl;
-  }
   // Add code/method to compute game score here
   return 0;
 }
@@ -317,10 +312,6 @@ int Setup::mainLoop() {
 void Setup::takeTurn(Player *player, int turn) {
   int choiceIndex = 0;
   cout << "****** Turn #" + to_string(turn) + " ******" << endl;
-  cout << "Current Player holdings" << endl;
-  for (auto player : *players) {
-    cout << *player << endl;
-  }
   // cout << "Top Board: " << endl;
   // deck->showTopBoard();
   changeState(showBoard);
