@@ -44,8 +44,8 @@ int *BiddingFacility::getAmountBid() { return amountBid; }
 
 string *BiddingFacility::getLastName() { return this->lastName; }
 
-void BiddingFacility::setLastName(string *name) { this->lastName = name;}
-void BiddingFacility::setAmountBid(int *amountBid) { this->amountBid = amountBid; }
+void BiddingFacility::setLastName(string name) { *this->lastName = name;}
+void BiddingFacility::setAmountBid(int amountBid) { *this->amountBid = amountBid; }
 
 int *BiddingFacility::getPlayerCoins() { return playerCoins; }
 
