@@ -428,7 +428,7 @@ void Setup::ConquerContinent(Player &player, Continent &continent) {
   if (&player == nullptr && conquered_continents->size() > 0) {
     return;
     int eraseIndex = 0;
-    for (auto conquered_continent : *conquered_continents) {
+    for (auto &conquered_continent : *conquered_continents) {
       if (conquered_continent.first->name == continent.name) {
         conquered_continents->erase(conquered_continents->begin() + eraseIndex);
         break;
@@ -438,7 +438,7 @@ void Setup::ConquerContinent(Player &player, Continent &continent) {
   }
 
   bool already_conquered = false;
-  for (auto conquered_continent : *conquered_continents) {
+  for (auto &conquered_continent : *conquered_continents) {
     if (conquered_continent.first->name == continent.name) {
       conquered_continent.second = &player;
       already_conquered = true;
