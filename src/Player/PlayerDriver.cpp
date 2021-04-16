@@ -21,11 +21,12 @@ void Driver::part3() {
   Player *p2 = new Player(map, "Mohamed", 18, 3, 9, new HumanStrategy, 11);
 
   // Making different kinds of moves
+  int armiesNum = 1;
   p1->PayCoin(3);
   p2->PayCoin(3);
   p1->PlaceNewArmies(2, germany);
   p2->PlaceNewArmies(1, germany);
-  p1->MoveArmies(1, germany, france);
+  p1->MoveArmies(armiesNum, germany, france);
   p1->BuildCity(france);
   p1->DestroyArmy(p2, germany);
 
