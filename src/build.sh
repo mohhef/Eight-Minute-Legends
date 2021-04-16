@@ -1,1 +1,1 @@
-g++ -o test.out MainDriver.cpp Map/Map.cpp MapLoader/MapLoader.cpp Player/Player.cpp Cards/Cards.cpp BiddingFacility/BiddingFacilityDriver.cpp BiddingFacility/BiddingFacility.cpp Setup/Setup.cpp Setup/SetupDriver.cpp Player/PlayerStrategy.cpp Utils/Utils.cpp -g
+g++ -o test.out MainDriver.cpp Map/Map.cpp MapLoader/MapLoader.cpp Player/Player.cpp Cards/Cards.cpp BiddingFacility/BiddingFacilityDriver.cpp BiddingFacility/BiddingFacility.cpp Setup/Setup.cpp Setup/SetupDriver.cpp Player/PlayerStrategy.cpp Utils/Utils.cpp Setup/GameObservers.cpp -g

@@ -14,6 +14,7 @@ add_executable(
         BiddingFacility/BiddingFacilityDriver.cpp BiddingFacility/BiddingFacility.h BiddingFacility/BiddingFacility.cpp
         Utils/Utils.cpp Utils/Utils.h
         Setup/SetupDriver.cpp Setup/Setup.h Setup/Setup.cpp
+        Setup/GameObservers.cpp Setup/Setup.h Setup/GameObservers.h
 )
 
 
