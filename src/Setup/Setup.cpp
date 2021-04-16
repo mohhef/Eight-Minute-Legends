@@ -378,6 +378,11 @@ void Setup::UpdateConquerings() {
         }
       }
     }
+    cout << "continent_control_count: (";
+    for (auto x : continent_control_count) {
+      cout << x << ", ";
+    }
+    cout << ")" << endl;
     int highest_continent_control_count = 0;
     for (int i = 0; i < continent_control_count.size(); i++) {
       if (continent_control_count.at(i) > highest_continent_control_count) {
@@ -426,7 +431,6 @@ void Setup::ConquerContinent(Player &player, Continent &continent) {
   }
   // if there is no continent owner(i.e. a tie)
   if (&player == nullptr && conquered_continents->size() > 0) {
-    return;
     int eraseIndex = 0;
     for (auto &conquered_continent : *conquered_continents) {
       if (conquered_continent.first->name == continent.name) {
@@ -435,6 +439,7 @@ void Setup::ConquerContinent(Player &player, Continent &continent) {
       }
       eraseIndex++;
     }
+    return;
   }
 
   bool already_conquered = false;
