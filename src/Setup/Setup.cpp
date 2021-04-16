@@ -319,8 +319,8 @@ void Setup::takeTurn(Player *player, int turn) {
   while (true) {
     cout
         << "(" + player->GetName() +
-            ") Choose a card by entering its position (1-6) or enter any other number "
-            "to skip:"
+               ") Choose a card by entering its position (1-6) or enter any other number "
+               "to skip:"
         << endl;
     cin >> choiceIndex;
     if (choiceIndex < 1 || choiceIndex > 6) {
@@ -358,7 +358,7 @@ void Setup::UpdateConquerings() {
       int highest_control_count = 0;
       for (auto player : *players) {
         int player_control_count = player->GetArmiesInRegion(region)->second +
-            player->GetCitiesInRegion(region)->second;
+                                   player->GetCitiesInRegion(region)->second;
 
         if (player_control_count > highest_control_count) {
           highest_control_count = player_control_count;
@@ -395,10 +395,10 @@ void Setup::ConquerRegion(Player &player, Region &region) {
   if (&player == nullptr && conquered_regions->size() == 0) {
     return;
   }
-  //if there is no region owner(i.e. a tie)
+  // if there is no region owner(i.e. a tie)
   if (&player == nullptr && conquered_regions->size() > 0) {
     int eraseIndex = 0;
-    for (auto conquered_region: *conquered_regions) {
+    for (auto &conquered_region : *conquered_regions) {
       if (conquered_region.first->name == region.name) {
         conquered_regions->erase(conquered_regions->begin() + eraseIndex);
         break;
@@ -409,7 +409,7 @@ void Setup::ConquerRegion(Player &player, Region &region) {
   }
 
   bool already_conquered = false;
-  for (auto conquered_region : *conquered_regions) {
+  for (auto &conquered_region : *conquered_regions) {
     if (conquered_region.first->name == region.name) {
       conquered_region.second = &player;
       already_conquered = true;
@@ -424,21 +424,21 @@ void Setup::ConquerContinent(Player &player, Continent &continent) {
   if (&player == nullptr && conquered_continents->size() == 0) {
     return;
   }
-  //if there is no continent owner(i.e. a tie)
+  // if there is no continent owner(i.e. a tie)
   if (&player == nullptr && conquered_continents->size() > 0) {
-    return;
     int eraseIndex = 0;
-    for (auto conquered_continent: *conquered_continents) {
+    for (auto &conquered_continent : *conquered_continents) {
       if (conquered_continent.first->name == continent.name) {
         conquered_continents->erase(conquered_continents->begin() + eraseIndex);
         break;
       }
       eraseIndex++;
     }
+    return;
   }
 
   bool already_conquered = false;
-  for (auto conquered_continent : *conquered_continents) {
+  for (auto &conquered_continent : *conquered_continents) {
     if (conquered_continent.first->name == continent.name) {
       conquered_continent.second = &player;
       already_conquered = true;
@@ -502,8 +502,8 @@ bool Setup::andOrAction(Player &player, Cards &card) {
     int actionChoiceIndex;
     while (true) {
       cout << "(" + player.GetName() + ")" +
-          " Which action would you like to choose, 1 for the first, 2 for the "
-          "second: "
+                  " Which action would you like to choose, 1 for the first, 2 for the "
+                  "second: "
            << cardAction << endl;
       cin >> actionChoiceIndex;
       if (actionChoiceIndex > 2 || actionChoiceIndex < 0) {
@@ -544,14 +544,14 @@ void Setup::addArmy(Player &player, int *count) {
 
     while (!region) {
       cout << "(" + player.GetName() + ")" +
-          " Which region do you want to add armies in?: "
+                  " Which region do you want to add armies in?: "
            << endl;
       cin >> regionName;
       region = map->findRegion(regionName);
     }
     while (true) {
       cout << "(" + player.GetName() + ")" +
-          " Enter the number of armies you wish to add, remaining "
+                  " Enter the number of armies you wish to add, remaining "
            << *count << endl;
       cin >> armiesNum;
       if (armiesNum > *count || armiesNum <= 0) {
@@ -595,7 +595,7 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
 
     while (true) {
       cout << "(" + player.GetName() + ")" +
-          " Enter the number of armies you wish to move, remaining "
+                  " Enter the number of armies you wish to move, remaining "
            << *count << endl;
       cin >> armiesNum;
       int adjacency = map->isAdjacent(from, to);
@@ -629,7 +629,7 @@ void Setup::buildCity(Player &player, int *count) {
     Region *region = nullptr;
     while (!region) {
       cout << "(" + player.GetName() + ")" +
-          " Which region do you want to build city in?: ";
+                  " Which region do you want to build city in?: ";
       cin >> regionName;
       region = map->findRegion(regionName);
     }
@@ -651,14 +651,14 @@ void Setup::destroyArmy(Player &player, int *count) {
     string targetCountry;
     while (!targetPlayer) {
       cout << "(" + player.GetName() + ")" +
-          " Which player do you wish to destroy their army?: "
+                  " Which player do you wish to destroy their army?: "
            << endl;
       cin >> targetPlayerName;
       targetPlayer = findPlayer(targetPlayerName);
     }
     while (!region) {
       cout << "(" + player.GetName() + ")" +
-          " Which region do you want to destroy the player's army: ";
+                  " Which region do you want to destroy the player's army: ";
       cin >> targetCountry;
       region = map->findRegion(targetCountry);
     }
