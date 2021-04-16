@@ -62,6 +62,7 @@ class Deck {
   Cards *getCard(int position) const;
   Cards *getTopBoardCard(int position) const;
   Cards *draw();
+  int getTopBoardSize();
 
   void showTopBoard();
   void removeFromTopBoard(int position);

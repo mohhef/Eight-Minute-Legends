@@ -154,7 +154,9 @@ Deck::Deck(const int num_of_players) {
     } else if (cardStrings[2] != "") {
       deckCards->push_back(new Cards(cardStrings[1], cardStrings[2], cardStrings[0]));
     } else if (cardStrings[0] != "") {
-      deckCards->push_back(new Cards(cardStrings[1], cardStrings[0]));
+      // Skip leader cards for now, since it is only a variant
+      continue;
+      // deckCards->push_back(new Cards(cardStrings[1], cardStrings[0]));
     }
   }
   deckSize = new int(deckCards->size());
@@ -261,6 +263,13 @@ void Deck::drawTopBoard() {
 }
 
 /*
+Returns the size of the top board
+*/
+int Deck::getTopBoardSize() {
+  return topBoard->size();
+}
+
+/*
 Shows the cards that can be picked from with their costs
 */
 void Deck::showTopBoard() {
@@ -359,11 +368,11 @@ Lets a player pick a card by position from the available cards and readjusts the
 cards and the deck of cards
 */
 void Hand::exchange(int position, Deck &deck) {
-  if (this->handCards->size() < *maxHandSize - 1) {
+  if (this->handCards->size() < *maxHandSize) {
     this->handCards->push_back(new Cards(*deck.getTopBoardCard(position)));
     deck.removeFromTopBoard(position);
   } else {
-    cout << "You already have the maximum amount of cards";
+    cout << "You already have the maximum amount of cards" << endl;
   }
 }
 

@@ -4,7 +4,7 @@ using namespace std;
 /*
 Player constructor to initialize player attributes
 */
-Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_num) {
+Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_num, PlayerStrategy* strategy, int maxHandSize) {
   this->map = map;
   this->name = new string(name);
   cubes = new int(cubes_num);
@@ -14,11 +14,12 @@ Player::Player(Map *map, string name, int cubes_num, int discs_num, int coins_nu
   cities = new vector<pair<Region *, int>>;
   armies = new vector<pair<Region *, int>>;
   bidding_facility = new BiddingFacility(coins_num, name);
-  hand = new Hand();
+  hand = new Hand(maxHandSize);
   for (auto region : *(this->map->regions)) {
     cities->push_back(make_pair(region.first, 0));
     armies->push_back(make_pair(region.first, 0));
   }
+  setStrategy(strategy);
 }
 
 Player::Player(int coins, string name) {
@@ -32,6 +33,7 @@ Player::Player(int coins, string name) {
   armies = new vector<pair<Region *, int>>;
   bidding_facility = new BiddingFacility(coins, name);
   this->hand = new Hand();
+  setStrategy(new HumanStrategy);
 }
 /*
 Copy constructor to copy player
@@ -52,6 +54,7 @@ Player::Player(const Player &player) {
   }
   bidding_facility = new BiddingFacility(*player.GetBiddingFacility());
   hand = player.GetHand();
+  setStrategy(player.GetStrategy());
 }
 
 /*
@@ -68,6 +71,7 @@ Player::~Player() {
   delete armies;
   delete bidding_facility;
   delete score;
+  delete strategy;
 }
 
 Map *Player::GetMap() const { return map; }
@@ -91,6 +95,10 @@ vector<pair<Region *, int>> *Player::GetArmies() const { return armies; }
 BiddingFacility *Player::GetBiddingFacility() const { return bidding_facility; }
 
 Hand *Player::GetHand() const { return hand; }
+
+PlayerStrategy* Player::GetStrategy() const {
+  return strategy;
+}
 
 /*
 Player assignment operator
@@ -117,6 +125,7 @@ Player &Player::operator=(const Player &player) {
     delete bidding_facility;
     bidding_facility = new BiddingFacility(*player.GetBiddingFacility());
     hand = player.GetHand();
+    strategy = player.GetStrategy();
   }
   return *this;
 }
@@ -190,12 +199,12 @@ pair<Region *, int> *Player::GetCitiesInRegion(Region *region) {
 Places an amount of armies in a region
 */
 bool Player::PlaceNewArmies(int armies_num, Region *region, bool force) {
-  if (*cubes < armies_num) {
-    cout << "Player::PlaceNewArmies(): Not enough armies." << endl;
-    return false;
-  }
   pair<Region *, int> *cities_in_region = GetCitiesInRegion(region);
   if (cities_in_region->second > 0 || region == map->startingRegion || force) {
+    if (*cubes < armies_num) {
+      cout << "Cannot place more than " << *cubes << " armies. Placing the maximum..." << endl;
+      armies_num = *cubes;
+    }
     pair<Region *, int> *armies_in_region = GetArmiesInRegion(region);
     armies_in_region->second += armies_num;
     *cubes -= armies_num;
@@ -285,21 +294,20 @@ bool Player::MoveOverWater(int armies_num, Region *origin, Region *destination) 
 /*
 Move number of armies from one region to another and determine if its by land or water
 */
-bool Player::MoveArmies(int armies_num, Region *origin, Region *destination) {
+bool Player::MoveArmies(int &armies_num, Region *origin, Region *destination) {
   pair<Region *, int> *armies_in_origin = GetArmiesInRegion(origin);
-  if (armies_in_origin->second >= armies_num) {
-    int adjacency = map->isAdjacent(origin, destination);
-    if (adjacency == 1) {
-      return MoveOverLand(armies_num, origin, destination);
-    } else if (adjacency == 0) {
-      return MoveOverWater(armies_num, origin, destination);
-    } else {
-      cout << "Player::MovieArmies(): Origin and destination regions are not adjacent."
-           << endl;
-      return false;
-    }
+  if (armies_in_origin->second < armies_num) {
+    armies_num = armies_in_origin->second;
+    cout << "Player::MovieArmies(): Not enough armies in the origin region. Moving max available." << endl;
+  }
+
+  int adjacency = map->isAdjacent(origin, destination);
+  if (adjacency == 1) {
+    return MoveOverLand(armies_num, origin, destination);
+  } else if (adjacency == 0) {
+    return MoveOverWater(armies_num, origin, destination);
   } else {
-    cout << "Player::MovieArmies(): Not enough armies in the origin region." << endl;
+    cout << "Player::MovieArmies(): Origin and destination regions are not adjacent." << endl;
     return false;
   }
 }
@@ -324,4 +332,125 @@ int Player::countHandCardAbilityEquals(string str) const {
     }
   }
   return cnt;
+}
+
+/*
+Methods to be used for the PlayerStrategy
+*/
+void Player::setStrategy(PlayerStrategy *playerStrategy) {
+  strategy = playerStrategy;
+}
+
+int Player::pickCard(Deck *deck, vector<Player *> *players) {
+  return (strategy->pickCard(deck, this->GetCoins(), this->GetName(), players));
+}
+
+int Player::pickAction(string cardAction) {
+  return (strategy->pickAction(cardAction));
+}
+
+Region* Player::pickRegion(Map *map, string type, vector<Player *> *players) {
+  return (strategy->pickRegion(map, type, this->GetName(), players));
+}
+
+bool Player::skipTurn() {
+  return (strategy->skipTurn());
+}
+
+int Player::pickArmies(string type, int count) {
+  return (strategy->pickArmies(type, count));
+}
+
+Player* Player::pickPlayer(vector<Player *> *players) {
+  return (strategy->pickPlayer(this->GetName(), players));
+}
+
+void Player::moveRegion(Map *map, Region **from, Region **to, vector<Player *> *players, int count) {
+  strategy->moveRegion(map, from, to, this->GetName(), players, count);
+}
+
+void Player::placeBid(vector<Player *> *players) {
+  strategy->placeBid(this->GetName(), players);
+}
+
+int Player::getArmyCount() const {
+  return this->armies->size();
+}
+
+/*
+Utility functions to be used for AI.
+*/
+Region* Player::getRegionWithMostArmies() const {
+  vector<pair<Region *, int>>::iterator i;
+  Region* tempRegion;
+  int maxArmies = 0;
+  for (i = armies->begin(); i != armies->end(); ++i) {
+    if (i->second > maxArmies) {
+      maxArmies = i->second;
+      tempRegion = (&*i)->first;
+    }
+  }
+  return tempRegion;
+}
+
+Region* Player::getRegionWithLeastArmies() const {
+  vector<pair<Region *, int>>::iterator i;
+  Region* tempRegion;
+  int leastArmies = 100;
+  for (i = armies->begin(); i != armies->end(); ++i) {
+    if ((i->second > 0 || i->first == map->startingRegion) && i->second <= leastArmies) {
+      leastArmies = i->second;
+      tempRegion = (&*i)->first;
+    }
+  }
+  return tempRegion;
+}
+
+Region* Player::getCityRegionWithLeastArmies() {
+  vector<pair<Region *, int>>::iterator i;
+  Region* tempRegion = nullptr;
+  int leastArmies = 100;
+  for (i = armies->begin(); i != armies->end(); ++i) {
+    if (((i->second > 0 && this->GetCitiesInRegion(i->first)->second > 0)|| i->first == map->startingRegion) 
+        && i->second <= leastArmies) {
+      leastArmies = i->second;
+      tempRegion = (&*i)->first;
+    }
+  }
+  return tempRegion;
+}
+
+Region* Player::getRegionWithLeastCities() const {
+  vector<pair<Region *, int>>::iterator i;
+  Region* tempRegion = nullptr;
+  int leastCities = 3;
+  for (i = cities->begin(); i != cities->end(); ++i) {
+    if ((i->second > 0 || i->first == map->startingRegion) && i->second <= leastCities) {
+      leastCities = i->second;
+      tempRegion = (&*i)->first;
+    }
+  }
+  return tempRegion;
+}
+
+vector<Region *> Player::getRegionsWithArmies() {
+  vector<Region *> regionsWithArmies;
+  vector<pair<Region *, int>>::iterator i;
+  for (i = armies->begin(); i != armies->end(); ++i) {
+    if (i->second > 0) {
+      regionsWithArmies.push_back(i->first);
+    }
+  }
+  return regionsWithArmies;
+}
+
+vector<Region *> Player::getRegionsWithCities() {
+  vector<Region *> regionsWithCities;
+  vector<pair<Region *, int>>::iterator i;
+  for (i = cities->begin(); i != cities->end(); ++i) {
+    if (i->second > 0 || i->first == map->startingRegion) {
+      regionsWithCities.push_back(i->first);
+    }
+  }
+  return regionsWithCities;
 }

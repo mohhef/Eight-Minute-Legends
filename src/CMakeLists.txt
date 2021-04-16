@@ -9,8 +9,10 @@ add_executable(
         Map/MapDriver.cpp Map/Map.cpp Map/Map.cpp
         MapLoader/MapLoaderDriver.cpp MapLoader/MapLoader.cpp MapLoader/MapLoader.h
         Player/PlayerDriver.cpp Player/Player.cpp Player/Player.h
+        Player/PlayerStrategy.cpp Player/PlayerStrategy.h
         Cards/CardsDriver.cpp Cards/Cards.cpp Cards/Cards.h
         BiddingFacility/BiddingFacilityDriver.cpp BiddingFacility/BiddingFacility.h BiddingFacility/BiddingFacility.cpp
+        Utils/Utils.cpp Utils/Utils.h
         Setup/SetupDriver.cpp Setup/Setup.h Setup/Setup.cpp
         Setup/GameObservers.cpp Setup/Setup.h Setup/GameObservers.h
 )
