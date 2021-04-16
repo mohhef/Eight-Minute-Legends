@@ -369,6 +369,10 @@ void Player::moveRegion(Map *map, Region **from, Region **to, vector<Player *> *
   strategy->moveRegion(map, from, to, this->GetName(), players, count);
 }
 
+void Player::placeBid(vector<Player *> *players) {
+  strategy->placeBid(this->GetName(), players);
+}
+
 int Player::getArmyCount() const {
   return this->armies->size();
 }

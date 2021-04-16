@@ -18,4 +18,5 @@ public:
     static Region* getRegionToDestroy(string selfName, vector<Player *> *players);
     static int getArmiesInRegion(Player *player, Region *region);
     static int getCitiesInRegion(Player *player, Region *region);
+    static int getHighestBid(string selfName, vector<Player *> *players);
 };

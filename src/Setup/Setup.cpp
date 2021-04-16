@@ -271,8 +271,12 @@ void Setup::Startup() {
   Player *winner = players->at(0);
   for (auto &player : *players) {
     cout << "[" << player->GetName() << "'s turn] ";
-    player->GetBiddingFacility()->bid();
+    player->placeBid(players);
+    cout << player->GetName()<< " bid " << *player->GetBiddingFacility()->getAmountBid() << "." << endl;
   }
+  cout << "Press Enter to Continue..." << endl;
+  cin.ignore(10, '\n'); 
+  cin.get();
   for (auto &player : *players) {
     if (player->GetBiddingFacility()->higherBid(winner->GetBiddingFacility())) {
       winner = player;

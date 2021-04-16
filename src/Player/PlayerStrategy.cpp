@@ -5,6 +5,8 @@
 #include <limits>
 #include <string>
 #include <sstream>
+#include <stdlib.h>
+#include <time.h>  
 
 /*
 Utility function to get the action count of a card
@@ -94,6 +96,11 @@ int getArmiesInput(string type, int count) {
 /*
 The HumanStrategy is basically functions that expect input from a player
 */
+void HumanStrategy::placeBid(string selfName, vector<Player *> *players) {
+  Player *tempPlayer = Utils::findPlayer(selfName, players);
+  tempPlayer->GetBiddingFacility()->bid();
+}
+
 int HumanStrategy::pickCard(Deck* deck, int playerCoins, string selfName, vector<Player *> *players) {
   int choiceIndex = 0;
   while (true) {
@@ -170,6 +177,22 @@ bool HumanStrategy::skipTurn() {
 Greedy AI to maximize greed by picking card that has the most greed points
 AI chooses card at index 0 if it doesn't find a better one or no coins.
 */
+void GreedyAIStrategy::placeBid(string selfName, vector<Player *> *players) {
+  Player *tempPlayer = Utils::findPlayer(selfName, players);
+  int highestBid = Utils::getHighestBid(selfName, players);
+  if (highestBid > 0) {
+    if (highestBid < 5)
+      tempPlayer->GetBiddingFacility()->setAmountBid(highestBid + 1);
+    else
+      tempPlayer->GetBiddingFacility()->setAmountBid(0);
+  }
+  else {
+    srand (time(NULL));
+    int randomAmount = rand() % 4 + 1;
+    tempPlayer->GetBiddingFacility()->setAmountBid(randomAmount);
+  }
+}
+
 int GreedyAIStrategy::pickCard(Deck* deck, int playerCoins, string selfName, vector<Player *> *players) {
   int maxGreed = 0, choiceIndex = 1;
   Player *tempPlayer = Utils::findPlayer(selfName, players);
@@ -257,6 +280,22 @@ bool GreedyAIStrategy::skipTurn() {
 Moderate AI to maximize utility by focusing on having most armies in regions
 AI chooses card at index 0 if it doesn't find a better one or has no coins.
 */
+void ModerateAIStrategy::placeBid(string selfName, vector<Player *> *players) {
+  Player *tempPlayer = Utils::findPlayer(selfName, players);
+  int highestBid = Utils::getHighestBid(selfName, players);
+  if (highestBid > 0) {
+    if (highestBid < 3) 
+      tempPlayer->GetBiddingFacility()->setAmountBid(highestBid + 1);
+    else
+      tempPlayer->GetBiddingFacility()->setAmountBid(0);
+  }
+  else {
+    srand (time(NULL));
+    int randomAmount = rand() % 3 + 1;
+    tempPlayer->GetBiddingFacility()->setAmountBid(randomAmount);
+  }
+}
+
 int ModerateAIStrategy::pickCard(Deck* deck, int playerCoins, string selfName, vector<Player *> *players) {
   int maxUtility = 0, choiceIndex = 1;
   string focus = "place";

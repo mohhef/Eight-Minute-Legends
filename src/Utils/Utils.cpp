@@ -53,6 +53,20 @@ Player* Utils::getPlayerWithMostArmies(string selfName, vector<Player *> *player
   return topPlayer;
 }
 
+int Utils::getHighestBid(string selfName, vector<Player *> *players) {
+  int highestBid = 0;
+  vector<Player *>::iterator p;
+  for (p = (players)->begin(); p != (players)->end(); ++p) {
+    if ((*p)->GetName() == selfName) {
+      continue;
+    }
+    if (*(*p)->GetBiddingFacility()->getAmountBid() > highestBid) {
+      highestBid = *(*p)->GetBiddingFacility()->getAmountBid();
+    }
+  }
+  return highestBid;
+}
+
 Region* Utils::getRegionWithMostArmies(Player *player) {
   return player->getRegionWithMostArmies();
 }

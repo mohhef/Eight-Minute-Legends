@@ -7,6 +7,7 @@ class Player;
 
 class PlayerStrategy {
 public:
+  virtual void placeBid(string selfName, vector<Player *> *players) = 0;
   virtual int pickCard(Deck* deck, int playerCoin, string selfName, vector<Player *> *players) = 0;
   virtual int pickAction(string cardAction) = 0;
   virtual Region* pickRegion(Map *map, string type, string selfName, vector<Player *> *players) = 0;
@@ -18,6 +19,7 @@ public:
 
 class HumanStrategy : public PlayerStrategy {
 public:
+  virtual void placeBid(string selfName, vector<Player *> *players);
   int pickCard(Deck* deck, int playerCoin, string selfName, vector<Player *> *players);
   int pickAction(string cardAction);
   Region* pickRegion(Map *map, string type, string selfName, vector<Player *> *players);
@@ -29,6 +31,7 @@ public:
 
 class GreedyAIStrategy : public PlayerStrategy {
 public:
+  virtual void placeBid(string selfName, vector<Player *> *players);
   int pickCard(Deck* deck, int playerCoin, string selfName, vector<Player *> *players);
   int pickAction(string cardAction);
   Region* pickRegion(Map *map, string type, string selfName, vector<Player *> *players);
@@ -40,6 +43,7 @@ public:
 
 class ModerateAIStrategy : public PlayerStrategy {
 public:
+  virtual void placeBid(string selfName, vector<Player *> *players);
   int pickCard(Deck* deck, int playerCoin, string selfName, vector<Player *> *players);
   int pickAction(string cardAction);
   Region* pickRegion(Map *map, string type, string selfName, vector<Player *> *players);
