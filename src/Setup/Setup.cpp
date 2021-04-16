@@ -342,8 +342,10 @@ void Setup::takeTurn(Player *player, int turn) {
     return;
   }
   int cardCost = deck->getBoardPositionCost(choiceIndex - 1);
+  current_cost = new int(cardCost);
   Cards *chosenCard = deck->getTopBoardCard(choiceIndex - 1);
-  cout << player->GetName() << " chose the following card:\n" << *chosenCard << endl;
+  selected_card = deck->getTopBoardCard(choiceIndex - 1);
+  changeState(pickCard);
   player->GetHand()->exchange(choiceIndex - 1, *deck);
   player->PayCoin(cardCost);
   int currentHandSize = player->GetHand()->getCurrentHandSize();
@@ -365,7 +367,7 @@ void Setup::UpdateConquerings() {
       int highest_control_count = 0;
       for (auto player : *players) {
         int player_control_count = player->GetArmiesInRegion(region)->second +
-            player->GetCitiesInRegion(region)->second;
+                                   player->GetCitiesInRegion(region)->second;
 
         if (player_control_count > highest_control_count) {
           highest_control_count = player_control_count;
@@ -402,10 +404,10 @@ void Setup::ConquerRegion(Player &player, Region &region) {
   if (&player == nullptr && conquered_regions->size() == 0) {
     return;
   }
-  //if there is no region owner(i.e. a tie)
+  // if there is no region owner(i.e. a tie)
   if (&player == nullptr && conquered_regions->size() > 0) {
     int eraseIndex = 0;
-    for (auto conquered_region: *conquered_regions) {
+    for (auto &conquered_region : *conquered_regions) {
       if (conquered_region.first->name == region.name) {
         conquered_regions->erase(conquered_regions->begin() + eraseIndex);
         break;
@@ -416,7 +418,7 @@ void Setup::ConquerRegion(Player &player, Region &region) {
   }
 
   bool already_conquered = false;
-  for (auto conquered_region : *conquered_regions) {
+  for (auto &conquered_region : *conquered_regions) {
     if (conquered_region.first->name == region.name) {
       conquered_region.second = &player;
       already_conquered = true;
@@ -431,21 +433,21 @@ void Setup::ConquerContinent(Player &player, Continent &continent) {
   if (&player == nullptr && conquered_continents->size() == 0) {
     return;
   }
-  //if there is no continent owner(i.e. a tie)
+  // if there is no continent owner(i.e. a tie)
   if (&player == nullptr && conquered_continents->size() > 0) {
-    return;
     int eraseIndex = 0;
-    for (auto conquered_continent: *conquered_continents) {
+    for (auto &conquered_continent : *conquered_continents) {
       if (conquered_continent.first->name == continent.name) {
         conquered_continents->erase(conquered_continents->begin() + eraseIndex);
         break;
       }
       eraseIndex++;
     }
+    return;
   }
 
   bool already_conquered = false;
-  for (auto conquered_continent : *conquered_continents) {
+  for (auto &conquered_continent : *conquered_continents) {
     if (conquered_continent.first->name == continent.name) {
       conquered_continent.second = &player;
       already_conquered = true;
@@ -768,9 +770,9 @@ int Setup::computeScore() {
 
   Player *winner = nullptr;
   int max_score = -1;
-  cout << "PlayerName\tScores" << endl;
+  cout << "PlayerName\tVictory Points\tCoins left\tCards" << endl;
   for (auto player : *this->players) {
-    cout << player->GetName() << "\t" << player->GetScore() << endl;
+    cout << player->GetName() << "\t\t\t\t" << player->GetScore() << "\t\t\t\t" << player->GetCoins() << "\t\t  " << player->GetHand()->getCurrentHandSize() << endl;
     if (player->GetScore() > max_score) {
       max_score = player->GetScore();
       winner = player;
