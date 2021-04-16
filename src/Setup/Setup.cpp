@@ -688,7 +688,7 @@ Player *Setup::findPlayer(string playerName) {
  */
 bool Setup::checkGameOver() {
   for (int i = 0; i < players->size(); ++i) {
-    if (players->at(i)->GetHand()->getCurrentHandSize() != 2) {
+    if (players->at(i)->GetHand()->getCurrentHandSize() != 1) {
       return false;
     }
   }
@@ -811,9 +811,9 @@ int Setup::computeScore() {
 
   Player *winner = nullptr;
   int max_score = -1;
-  cout << "PlayerName\tScores" << endl;
+  cout << "PlayerName\tVictory Points\tCoins left\tCards" << endl;
   for (auto player : *this->players) {
-    cout << player->GetName() << "\t" << player->GetScore() << endl;
+    cout << player->GetName() << "\t\t\t\t" << player->GetScore() << "\t\t\t\t" << player->GetCoins() << "\t\t  " << player->GetHand()->getCurrentHandSize() << endl;
     if (player->GetScore() > max_score) {
       max_score = player->GetScore();
       winner = player;
