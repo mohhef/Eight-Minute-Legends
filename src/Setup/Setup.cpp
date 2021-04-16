@@ -378,11 +378,6 @@ void Setup::UpdateConquerings() {
         }
       }
     }
-    cout << "continent_control_count: (";
-    for (auto x : continent_control_count) {
-      cout << x << ", ";
-    }
-    cout << ")" << endl;
     int highest_continent_control_count = 0;
     for (int i = 0; i < continent_control_count.size(); i++) {
       if (continent_control_count.at(i) > highest_continent_control_count) {
