@@ -354,8 +354,13 @@ Region* Player::pickRegion(Map *map, string type, vector<Player *> *players) {
 }
 
 bool Player::skipTurn() {
-  return (strategy->skipTurn());
+  return (strategy->skip("card"));
 }
+
+bool Player::skipAction() {
+  return (strategy->skip("action"));
+}
+
 
 int Player::pickArmies(string type, int count) {
   return (strategy->pickArmies(type, count));

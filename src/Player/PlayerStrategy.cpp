@@ -6,7 +6,7 @@
 #include <string>
 #include <sstream>
 #include <stdlib.h>
-#include <time.h>  
+#include <time.h>
 
 /*
 Utility function to get the action count of a card
@@ -22,16 +22,13 @@ int getActionCount(string cardAction) {
   if (abilityName == "BUILD_CITY_AND_PLACE_ARMIES") {
     firstAbilityCount = 2;
     secondAbilityCount = stoi(tokenizedCardAbility.at(1));
-  }
-  else if (abilityName == "MOVE_ARMIES_AND_BUILD_CITY") {
+  } else if (abilityName == "MOVE_ARMIES_AND_BUILD_CITY") {
     firstAbilityCount = stoi(tokenizedCardAbility.at(1));
     secondAbilityCount = 2;
-  }
-  else {
+  } else {
     if (tokenizedCardAbility.size() >= 2) {
       firstAbilityCount = stoi(tokenizedCardAbility.at(1));
-    }
-    else {
+    } else {
       // Build city. Give more weight to it
       firstAbilityCount = 2;
     }
@@ -46,24 +43,20 @@ int getActionCount(string cardAction) {
 /*
 Get the input for the region choice
 */
-Region* getRegionInput(Map *map, string type) {
+Region *getRegionInput(Map *map, string type) {
   string message = "";
   string regionName;
   Region *region = nullptr;
   if (type == "move_from") {
     message = " move from: ";
-  }
-  else if (type == "move_to") {
+  } else if (type == "move_to") {
     message = " move to: ";
-  }
-  else {
+  } else {
     if (type == "destroy") {
       message = " destroy the player's army: ";
-    }
-    else if (type == "build") {
+    } else if (type == "build") {
       message = " build a city in?:  ";
-    }
-    else if (type == "place"){
+    } else if (type == "place") {
       message = " add armies in?: ";
     }
   }
@@ -101,14 +94,14 @@ void HumanStrategy::placeBid(string selfName, vector<Player *> *players) {
   tempPlayer->GetBiddingFacility()->bid();
 }
 
-int HumanStrategy::pickCard(Deck* deck, int playerCoins, string selfName, vector<Player *> *players) {
+int HumanStrategy::pickCard(Deck *deck, int playerCoins, string selfName, vector<Player *> *players) {
   int choiceIndex = 0;
   while (true) {
     cout << "(" << selfName << ") Choose a card by entering its position (1-6) or enter any other number "
-        "to skip:"
+                               "to skip:"
          << endl;
     cin >> choiceIndex;
-    
+
     int cardCost = deck->getBoardPositionCost(choiceIndex - 1);
     Cards *chosenCard = deck->getTopBoardCard(choiceIndex - 1);
     if (cin.fail() || playerCoins < Deck::getBoardPositionCost(choiceIndex - 1)) {
@@ -116,32 +109,37 @@ int HumanStrategy::pickCard(Deck* deck, int playerCoins, string selfName, vector
       cin.ignore(256, '\n');
       cout << "Please enter a valid number or make sure you have enough coins:" << endl;
     } else {
-      return choiceIndex; 
+      return choiceIndex;
     }
   }
 }
 
 int HumanStrategy::pickAction(string cardAction) {
   int actionChoiceIndex;
-    while (true) {
-      cout << "Which action would you like to choose, 1 for the first, 2 for the second: " 
-           << cardAction << endl;
-      cin >> actionChoiceIndex;
-      if (actionChoiceIndex > 2 || actionChoiceIndex < 0) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Please enter a valid number." << endl;
-      } else {
-        return actionChoiceIndex;
-      }
+  while (true) {
+    cout << "Which action would you like to choose, 1 for the first, 2 for the second: "
+         << cardAction << endl;
+    cin >> actionChoiceIndex;
+    if (actionChoiceIndex > 2 || actionChoiceIndex < 0) {
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+      cout << "Please enter a valid number." << endl;
+    } else {
+      return actionChoiceIndex;
     }
+  }
 }
 
-Region* HumanStrategy::pickRegion(Map *map, string type, string selfName, vector<Player *> *players) {
+Region *HumanStrategy::pickRegion(Map *map, string type, string selfName, vector<Player *> *players) {
   return getRegionInput(map, type);
 }
 
-void HumanStrategy::moveRegion(Map *map, Region **from, Region **to, string selfName, vector<Player *> *players, int count) {
+void HumanStrategy::moveRegion(Map *map,
+                               Region **from,
+                               Region **to,
+                               string selfName,
+                               vector<Player *> *players,
+                               int count) {
   *from = getRegionInput(map, "move_from");
   *to = getRegionInput(map, "move_to");
 }
@@ -150,7 +148,7 @@ int HumanStrategy::pickArmies(string type, int count) {
   return getArmiesInput(type, count);
 }
 
-Player* HumanStrategy::pickPlayer(string selfName, vector<Player *> *players) {
+Player *HumanStrategy::pickPlayer(string selfName, vector<Player *> *players) {
   Player *targetPlayer = nullptr;
   string targetPlayerName = "";
   while (!targetPlayer) {
@@ -163,9 +161,9 @@ Player* HumanStrategy::pickPlayer(string selfName, vector<Player *> *players) {
   return targetPlayer;
 }
 
-bool HumanStrategy::skipTurn() {
+bool HumanStrategy::skip(string name) {
   string choice;
-  cout << "To skip your turn enter: 0, or anything else to proceed" << endl;
+  cout << "To skip " << name << " enter: 0, or anything else to proceed" << endl;
   cin >> choice;
   if (choice == "0") {
     return true;
@@ -185,15 +183,14 @@ void GreedyAIStrategy::placeBid(string selfName, vector<Player *> *players) {
       tempPlayer->GetBiddingFacility()->setAmountBid(highestBid + 1);
     else
       tempPlayer->GetBiddingFacility()->setAmountBid(0);
-  }
-  else {
-    srand (time(NULL));
+  } else {
+    srand(time(NULL));
     int randomAmount = rand() % 4 + 1;
     tempPlayer->GetBiddingFacility()->setAmountBid(randomAmount);
   }
 }
 
-int GreedyAIStrategy::pickCard(Deck* deck, int playerCoins, string selfName, vector<Player *> *players) {
+int GreedyAIStrategy::pickCard(Deck *deck, int playerCoins, string selfName, vector<Player *> *players) {
   int maxGreed = 0, choiceIndex = 1;
   Player *tempPlayer = Utils::findPlayer(selfName, players);
   for (int i = 0; i < deck->getTopBoardSize(); ++i) {
@@ -205,7 +202,7 @@ int GreedyAIStrategy::pickCard(Deck* deck, int playerCoins, string selfName, vec
     }
     if (abilityName == "BUILD_CITY" || abilityName == "MOVE_ARMIES_AND_BUILD_CITY" ||
         abilityName == "BUILD_CITY_AND_PLACE_ARMIES" || abilityName == "MOVE_ARMIES_AND_DESTROY_ARMIES" ||
-        abilityName == "PLACE_ARMIES_AND_DESTROY_ARMIES"|| abilityName == "PLACE_ARMIES_OR_BUILD_CITY") {
+        abilityName == "PLACE_ARMIES_AND_DESTROY_ARMIES" || abilityName == "PLACE_ARMIES_OR_BUILD_CITY") {
       int totalGreed = getActionCount(cardAction);
       if (totalGreed > maxGreed && playerCoins >= deck->getBoardPositionCost(i)) {
         maxGreed = totalGreed;
@@ -220,28 +217,30 @@ int GreedyAIStrategy::pickAction(string cardAction) {
   string abilityName = Utils::getActionName(cardAction);
   if (abilityName == "PLACE_ARMIES_OR_BUILD_CITY") {
     return 2;
-  }
-  else {
+  } else {
     return 1;
   }
 }
 
-Region* GreedyAIStrategy::pickRegion(Map *map, string type, string selfName, vector<Player *> *players) {
+Region *GreedyAIStrategy::pickRegion(Map *map, string type, string selfName, vector<Player *> *players) {
   Region *region = nullptr;
   Player *player = Utils::findPlayer(selfName, players);
   if (type == "place") {
     region = Utils::getRegionWithLeastArmies(player);
-  }
-  else if (type == "destroy") {
+  } else if (type == "destroy") {
     region = Utils::getRegionToDestroy(selfName, players);
-  }
-  else if (type == "build") {
+  } else if (type == "build") {
     region = Utils::getRegionToBuild(player);
   }
   return region;
 }
 
-void GreedyAIStrategy::moveRegion(Map *map, Region **from, Region **to, string selfName, vector<Player *> *players, int count) {
+void GreedyAIStrategy::moveRegion(Map *map,
+                                  Region **from,
+                                  Region **to,
+                                  string selfName,
+                                  vector<Player *> *players,
+                                  int count) {
   Player *player = Utils::findPlayer(selfName, players);
   *from = Utils::getRegionWithMostArmies(player);
   int leastArmiesInRegion = 100;
@@ -249,7 +248,7 @@ void GreedyAIStrategy::moveRegion(Map *map, Region **from, Region **to, string s
     if ((*from)->name == map->regions->at(i).first->name) {
       for (int j = 0; j < map->regions->at(i).second.size(); j++) {
         int adjacency = map->regions->at(i).second.at(j).second;
-        if(adjacency == 0 || adjacency == 1) {
+        if (adjacency == 0 || adjacency == 1) {
           int tempArmiesInRegion = Utils::getArmiesInRegion(player, &(*map->regions->at(i).second.at(j).first));
           if (tempArmiesInRegion < leastArmiesInRegion) {
             if (!(adjacency == 0 && count < 3)) {
@@ -264,7 +263,7 @@ void GreedyAIStrategy::moveRegion(Map *map, Region **from, Region **to, string s
   }
 }
 
-Player* GreedyAIStrategy::pickPlayer(string selfName, vector<Player*> *players) {
+Player *GreedyAIStrategy::pickPlayer(string selfName, vector<Player *> *players) {
   return Utils::getPlayerWithMostArmies(selfName, players);
 }
 
@@ -272,7 +271,7 @@ int GreedyAIStrategy::pickArmies(string type, int count) {
   return count;
 }
 
-bool GreedyAIStrategy::skipTurn() {
+bool GreedyAIStrategy::skip(string) {
   return false;
 }
 
@@ -284,26 +283,25 @@ void ModerateAIStrategy::placeBid(string selfName, vector<Player *> *players) {
   Player *tempPlayer = Utils::findPlayer(selfName, players);
   int highestBid = Utils::getHighestBid(selfName, players);
   if (highestBid > 0) {
-    if (highestBid < 3) 
+    if (highestBid < 3)
       tempPlayer->GetBiddingFacility()->setAmountBid(highestBid + 1);
     else
       tempPlayer->GetBiddingFacility()->setAmountBid(0);
-  }
-  else {
-    srand (time(NULL));
+  } else {
+    srand(time(NULL));
     int randomAmount = rand() % 3 + 1;
     tempPlayer->GetBiddingFacility()->setAmountBid(randomAmount);
   }
 }
 
-int ModerateAIStrategy::pickCard(Deck* deck, int playerCoins, string selfName, vector<Player *> *players) {
+int ModerateAIStrategy::pickCard(Deck *deck, int playerCoins, string selfName, vector<Player *> *players) {
   int maxUtility = 0, choiceIndex = 1;
   string focus = "place";
   Player *tempPlayer = Utils::findPlayer(selfName, players);
   Region *maxRegion = Utils::getRegionWithMostArmies(tempPlayer);
   // If region is already heavily populated, move
-  if(tempPlayer->GetArmiesInRegion(maxRegion)->second >= 6 && 
-     tempPlayer->GetArmiesInRegion(tempPlayer->getRegionWithLeastArmies())->second >= 4) {
+  if (tempPlayer->GetArmiesInRegion(maxRegion)->second >= 6 &&
+      tempPlayer->GetArmiesInRegion(tempPlayer->getRegionWithLeastArmies())->second >= 4) {
     focus = "move";
   }
   for (int i = 0; i < deck->getTopBoardSize(); ++i) {
@@ -321,10 +319,9 @@ int ModerateAIStrategy::pickCard(Deck* deck, int playerCoins, string selfName, v
         maxUtility = totalUtility;
         choiceIndex = i + 1;
       }
-    }
-    else if (focus == "move" && (abilityName == "MOVE_ARMIES" || abilityName == "MOVE_ARMIES_AND_BUILD_CITY" ||
-             abilityName == "MOVE_ARMIES_AND_PLACE_ARMIES" || abilityName == "MOVE_ARMIES_AND_DESTROY_ARMIES" ||
-             abilityName == "BUILD_CITY")) {
+    } else if (focus == "move" && (abilityName == "MOVE_ARMIES" || abilityName == "MOVE_ARMIES_AND_BUILD_CITY" ||
+        abilityName == "MOVE_ARMIES_AND_PLACE_ARMIES" || abilityName == "MOVE_ARMIES_AND_DESTROY_ARMIES" ||
+        abilityName == "BUILD_CITY")) {
       int totalUtility = getActionCount(cardAction);
       if (totalUtility > maxUtility && playerCoins >= deck->getBoardPositionCost(i)) {
         maxUtility = totalUtility;
@@ -340,22 +337,25 @@ int ModerateAIStrategy::pickAction(string cardAction) {
   return 1;
 }
 
-Region* ModerateAIStrategy::pickRegion(Map *map, string type, string selfName, vector<Player *> *players) {
+Region *ModerateAIStrategy::pickRegion(Map *map, string type, string selfName, vector<Player *> *players) {
   Region *region = nullptr;
   Player *player = Utils::findPlayer(selfName, players);
   if (type == "place") {
     region = Utils::getRegionWithLeastArmies(player);
-  }
-  else if (type == "destroy") {
+  } else if (type == "destroy") {
     region = Utils::getRegionToDestroy(selfName, players);
-  }
-  else if (type == "build") {
+  } else if (type == "build") {
     region = Utils::getRegionToBuild(player);
   }
   return region;
 }
 
-void ModerateAIStrategy::moveRegion(Map *map, Region **from, Region **to, string selfName, vector<Player *> *players, int count) {
+void ModerateAIStrategy::moveRegion(Map *map,
+                                    Region **from,
+                                    Region **to,
+                                    string selfName,
+                                    vector<Player *> *players,
+                                    int count) {
   // Region *tempDestination = Utils::getRegionWithLeastArmies(Utils::findPlayer(selfName, players));
   Player *player = Utils::findPlayer(selfName, players);
   *from = Utils::getRegionWithMostArmies(player);
@@ -364,7 +364,7 @@ void ModerateAIStrategy::moveRegion(Map *map, Region **from, Region **to, string
     if ((*from)->name == map->regions->at(i).first->name) {
       for (int j = 0; j < map->regions->at(i).second.size(); j++) {
         int adjacency = map->regions->at(i).second.at(j).second;
-        if(adjacency == 0 || adjacency == 1) {
+        if (adjacency == 0 || adjacency == 1) {
           int tempArmiesInRegion = Utils::getArmiesInRegion(player, &(*map->regions->at(i).second.at(j).first));
           if (tempArmiesInRegion < leastArmiesInRegion) {
             if (!(adjacency == 0 && count < 3)) {
@@ -379,7 +379,7 @@ void ModerateAIStrategy::moveRegion(Map *map, Region **from, Region **to, string
   }
 }
 
-Player* ModerateAIStrategy::pickPlayer(string selfName, vector<Player*> *players) {
+Player *ModerateAIStrategy::pickPlayer(string selfName, vector<Player *> *players) {
   return Utils::getPlayerWithMostArmies(selfName, players);
 }
 
@@ -387,6 +387,6 @@ int ModerateAIStrategy::pickArmies(string type, int count) {
   return count;
 }
 
-bool ModerateAIStrategy::skipTurn() {
+bool ModerateAIStrategy::skip(string) {
   return false;
 }
