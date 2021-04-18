@@ -101,9 +101,6 @@ int HumanStrategy::pickCard(Deck *deck, int playerCoins, string selfName, vector
                                "to skip:"
          << endl;
     cin >> choiceIndex;
-
-    int cardCost = deck->getBoardPositionCost(choiceIndex - 1);
-    Cards *chosenCard = deck->getTopBoardCard(choiceIndex - 1);
     if (cin.fail() || playerCoins < Deck::getBoardPositionCost(choiceIndex - 1)) {
       cin.clear();
       cin.ignore(256, '\n');
@@ -356,7 +353,6 @@ void ModerateAIStrategy::moveRegion(Map *map,
                                     string selfName,
                                     vector<Player *> *players,
                                     int count) {
-  // Region *tempDestination = Utils::getRegionWithLeastArmies(Utils::findPlayer(selfName, players));
   Player *player = Utils::findPlayer(selfName, players);
   *from = Utils::getRegionWithMostArmies(player);
   int leastArmiesInRegion = 100;

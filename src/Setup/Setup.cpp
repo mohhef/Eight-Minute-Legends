@@ -205,7 +205,7 @@ void Setup::initializePlayers() {
     cin >> playerCount;
   }
   // Hardcoded since we have only implemented 2 player game
-  maxHandSize = 11;
+  maxHandSize = 10;
   for (int i = 0; i < playerCount; i++) {
     string playerName;
     string playerStrategy;
@@ -322,12 +322,6 @@ int Setup::mainLoop() {
  */
 void Setup::takeTurn(Player *player, int turn) {
   cout << "****** Turn #" + to_string(turn) + " ******" << endl;
-  //   cout << "Current Player holdings" << endl;
-  //   for (auto player : *players) {
-  //     cout << *player << endl;
-  //   }
-  //   cout << "Top Board: " << endl;
-  //   deck->showTopBoard();
   changeState(showBoard);
   char choice;
   cout << "============ " << player->GetName() << "'s Turn ============" << endl;
@@ -562,11 +556,7 @@ void Setup::moverOverLandOrWater(Player &player, int *count) {
     Region *from = nullptr;
     Region *to = nullptr;
 
-    // from = player.pickRegion(map, "move_from", players);
-    // to = player.pickRegion(map, "move_to", players);
-
     player.moveRegion(map, &from, &to, players, *count);
-
     // Check used only for HumanStrategy. AI should only pick available moves.
     int adjacency = map->isAdjacent(from, to);
     if (adjacency == 1) {
@@ -656,11 +646,11 @@ Player *Setup::findPlayer(string playerName) {
  */
 bool Setup::checkGameOver() {
   for (int i = 0; i < players->size(); ++i) {
-    if (players->at(i)->GetHand()->getCurrentHandSize() == maxHandSize) {
-      return true;
+    if (players->at(i)->GetHand()->getCurrentHandSize() != maxHandSize) {
+      return false;
     }
   }
-  return false;
+  return true;
 }
 
 /*
@@ -779,10 +769,10 @@ int Setup::computeScore() {
 
   Player *winner = nullptr;
   int max_score = -1;
-  cout << "PlayerName\tVictory Points\tCoins left\tCards" << endl;
   for (auto player : *this->players) {
-    cout << player->GetName() << "\t\t\t\t" << player->GetScore() << "\t\t\t\t" << player->GetCoins() << "\t\t  "
-         << player->GetHand()->getCurrentHandSize() << endl;
+    cout << "PlayerName: "<<player->GetName() << ",Points: " << player->GetScore()
+    << ",Coins Left: " << player->GetCoins() << ",Cards: "
+    << player->GetHand()->getCurrentHandSize() << endl;
     if (player->GetScore() > max_score) {
       max_score = player->GetScore();
       winner = player;

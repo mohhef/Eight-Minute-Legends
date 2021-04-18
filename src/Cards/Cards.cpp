@@ -156,7 +156,6 @@ Deck::Deck(const int num_of_players) {
     } else if (cardStrings[0] != "") {
       // Skip leader cards for now, since it is only a variant
       continue;
-      // deckCards->push_back(new Cards(cardStrings[1], cardStrings[0]));
     }
   }
   deckSize = new int(deckCards->size());
@@ -380,6 +379,7 @@ void Hand::exchange(int position, Deck &deck) {
 adds a card to the player's hand of cards
 */
 void Hand::addCard(Cards *card) { this->handCards->push_back(card); }
+
 vector<Cards *> *Hand::getHandCards() const {
   return handCards;
 }

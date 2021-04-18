@@ -425,19 +425,6 @@ Region* Player::getCityRegionWithLeastArmies() {
   return tempRegion;
 }
 
-Region* Player::getRegionWithLeastCities() const {
-  vector<pair<Region *, int>>::iterator i;
-  Region* tempRegion = nullptr;
-  int leastCities = 3;
-  for (i = cities->begin(); i != cities->end(); ++i) {
-    if ((i->second > 0 || i->first == map->startingRegion) && i->second <= leastCities) {
-      leastCities = i->second;
-      tempRegion = (&*i)->first;
-    }
-  }
-  return tempRegion;
-}
-
 vector<Region *> Player::getRegionsWithArmies() {
   vector<Region *> regionsWithArmies;
   vector<pair<Region *, int>>::iterator i;
@@ -447,15 +434,4 @@ vector<Region *> Player::getRegionsWithArmies() {
     }
   }
   return regionsWithArmies;
-}
-
-vector<Region *> Player::getRegionsWithCities() {
-  vector<Region *> regionsWithCities;
-  vector<pair<Region *, int>>::iterator i;
-  for (i = cities->begin(); i != cities->end(); ++i) {
-    if (i->second > 0 || i->first == map->startingRegion) {
-      regionsWithCities.push_back(i->first);
-    }
-  }
-  return regionsWithCities;
 }

@@ -66,8 +66,6 @@ class Player {
   Region* getRegionWithMostArmies() const;
   Region* getRegionWithLeastArmies() const;
   Region* getCityRegionWithLeastArmies();
-  Region* getRegionWithLeastCities() const;
   vector<Region *> getRegionsWithArmies();
-  vector<Region *> getRegionsWithCities();
   void placeBid(vector<Player *> *players);
 };
