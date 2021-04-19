@@ -58,6 +58,7 @@ class Player {
   Region* pickRegion(Map *map, string type, vector<Player *> *players);
   string pickPlayer();
   bool skipTurn();
+  bool skipAction();
   int pickArmies(string type, int count);
   Player* pickPlayer(vector<Player *> *players);
   void moveRegion(Map *map, Region **from, Region **to, vector<Player *> *players, int count);
@@ -65,8 +66,6 @@ class Player {
   Region* getRegionWithMostArmies() const;
   Region* getRegionWithLeastArmies() const;
   Region* getCityRegionWithLeastArmies();
-  Region* getRegionWithLeastCities() const;
   vector<Region *> getRegionsWithArmies();
-  vector<Region *> getRegionsWithCities();
   void placeBid(vector<Player *> *players);
 };
