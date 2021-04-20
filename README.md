@@ -1,5 +1,7 @@
 # Eight-Minute-Legends
 This C++ applications represents the board game, eight minute empire legends.
+https://redravengames.squarespace.com/eightminute-empire-legends
+https://boardgamegeek.com/boardgame/142326/eight-minute-empire-legends
 
 **Contributors**:
 - Maxim Pobudzey 40004308
